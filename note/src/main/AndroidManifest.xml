@@ -1,2 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.lch.menote.note" />
+    package="com.lch.menote.note">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <application>
+
+        <activity android:name=".ui.LocalNoteDetailActivity" />
+        <activity android:name=".ui.ImageGalleryActivity" />
+
+    </application>
+
+</manifest>

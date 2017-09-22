@@ -19,5 +19,6 @@ class HostApp : Application() {
         ContextProvider.initContext(this)
 
         RouteEngine.init(this, HomeModule::class.java, NoteModule::class.java, UserModule::class.java)
+
     }
 }
