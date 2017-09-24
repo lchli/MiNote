@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply from: "${rootDir}/depend.gradle"
 
 
 android {
@@ -23,10 +23,12 @@ android {
 
 
 
-apply from: "${rootDir}/depend.gradle"
 dependencies {
     implementation project(":home")
     implementation project(":note")
     implementation project(":common")
     implementation project(":user")
+}
+repositories {
+    mavenCentral()
 }

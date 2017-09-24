@@ -7,8 +7,9 @@ import android.support.v4.view.ViewPager
 import com.lch.menote.common.base.BaseAppCompatActivity
 import com.lch.menote.common.base.BaseFragment
 import com.lch.menote.common.base.FragmentAdapter
+import com.lch.menote.common.route.NoteModulePaths
+import com.lch.menote.common.route.UserModulePaths
 import com.lch.menote.common.util.ResUtils
-import com.lch.menote.home.route.RoutePaths
 import com.lch.route.noaop.lib.RouteEngine
 import kotlinx.android.synthetic.main.activity_home.*
 
@@ -21,17 +22,17 @@ class HomeActivity : BaseAppCompatActivity() {
         setContentView(R.layout.activity_home)
         val adapter = FragmentAdapter(supportFragmentManager)
 
-        val local = RouteEngine.route(RoutePaths.NOTE_LOCAL) as? Fragment
+        val local = RouteEngine.route(NoteModulePaths.ROUTE_PATH_LOCAL_NOTE) as? Fragment
         if (local != null) {
             adapter.addFragment(local, ResUtils.parseString(R.string.note))
         }
 
-        val cloud = RouteEngine.route(RoutePaths.NOTE_CLOUD) as? Fragment
+        val cloud = RouteEngine.route(NoteModulePaths.ROUTE_PATH_CLOUD_NOTE) as? Fragment
         if (cloud != null) {
             adapter.addFragment(cloud, ResUtils.parseString(R.string.cloud_note))
         }
 
-        val user = RouteEngine.route(RoutePaths.USER_INDEX) as? Fragment
+        val user = RouteEngine.route(UserModulePaths.ROUTE_PATH_INDEX) as? Fragment
         if (user != null) {
             adapter.addFragment(user, ResUtils.parseString(R.string.user))
         }

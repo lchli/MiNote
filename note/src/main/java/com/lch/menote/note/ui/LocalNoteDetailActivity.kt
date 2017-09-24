@@ -75,7 +75,7 @@ class LocalNoteDetailActivity : BaseAppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val i = item.itemId
         if (i == R.id.action_edit_note) {
-            // EditNoteActivity.startSelf(this, note)
+            EditNoteActivity.startSelf(this, note)
             finish()
 
         } else if (i == android.R.id.home) {
