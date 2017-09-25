@@ -14,7 +14,7 @@ class NoteTable(private val context: Context) : NoteSource {
     override fun queryNotes(tag: String?, title: String?, sortTimeAsc: Boolean): List<Note>? {
         try {
 
-            val builder = noteDao(context).queryBuilder()
+            val builder = Dsession.noteDao(context).queryBuilder()
             if (!TextUtils.isEmpty(title)) {
                 builder.where(NoteDao.Properties.Title.like("%$title%"))
             }
@@ -38,7 +38,7 @@ class NoteTable(private val context: Context) : NoteSource {
 
     override fun save(note: Note) {
         try {
-            noteDao(context).insertOrReplace(note)
+            Dsession.noteDao(context).insertOrReplace(note)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -46,7 +46,7 @@ class NoteTable(private val context: Context) : NoteSource {
 
     override fun delete(note: Note) {
         try {
-            noteDao(context).delete(note)
+            Dsession.noteDao(context).delete(note)
         } catch (e: Exception) {
             e.printStackTrace()
         }

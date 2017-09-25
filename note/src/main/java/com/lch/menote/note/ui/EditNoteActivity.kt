@@ -22,9 +22,10 @@ import com.apkfuns.logutils.LogUtils
 import com.lch.menote.common.base.BaseAppCompatActivity
 import com.lch.menote.common.util.*
 import com.lch.menote.note.R
-import com.lch.menote.note.data.db.noteDao
+import com.lch.menote.note.data.NoteRepo
 import com.lch.menote.note.domain.Note
 import com.lch.menote.note.helper.BITMAP_MAX_MEMORY
+import com.lch.menote.note.helper.LocalNoteListChangedEvent
 import com.lch.menote.note.helper.NoteUtils
 import com.lch.menote.note.helper.STUDY_APP_ROOT_DIR
 import com.orhanobut.dialogplus.DialogPlus
@@ -48,12 +49,12 @@ class EditNoteActivity : BaseAppCompatActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        oldNote = intent.getSerializableExtra("note") as Note
+        oldNote = intent.getSerializableExtra("note") as? Note
         setContentView(R.layout.activity_edit_note)
         bt_save.setOnClickListener(this)
         bt_more.setOnClickListener(this)
 
-        imageEditText_content.setMovementMethod(ScrollingMovementMethod.getInstance())
+        imageEditText_content.movementMethod = ScrollingMovementMethod.getInstance()
         if (oldNote != null) {
             courseUUID = oldNote!!.uid
             courseDir = oldNote!!.imagesDir
@@ -117,7 +118,7 @@ class EditNoteActivity : BaseAppCompatActivity(), View.OnClickListener {
                 return
             }
             val note = Note()
-            note.type = tv_note_category.getText().toString()
+            note.type = tv_note_category.text.toString()
             note.title = title
             note.uid = courseUUID
             note.lastModifyTime = TimeUtils.getTime(System.currentTimeMillis())
@@ -125,10 +126,10 @@ class EditNoteActivity : BaseAppCompatActivity(), View.OnClickListener {
             note.imagesDir = courseDir
             note.thumbNail = thumbName
 
-            noteDao(this).save(note)
+            NoteRepo.save(note)
             deleteUnusedImages(note)
 
-            // EventBusUtils.post(LocalNoteListChangedEvent())
+            EventBusUtils.post(LocalNoteListChangedEvent())
             finish()
 
         } else if (i == R.id.bt_more) {
