@@ -42,12 +42,12 @@ class LocalNoteDetailActivity : BaseAppCompatActivity() {
                 if (span is ImageSpan) {
                     val imagePath = String.format("%s/%s", note!!.imagesDir, span.source)
                     LogUtils.e("clicked img:" + imagePath)
-                        val imgSrcs = NoteUtils.parseImageSpanSrc(imageEditText_content, STUDY_APP_ROOT_DIR)
-                        var current = imgSrcs.indexOf(imagePath)
-                        if (current == -1) {
-                            current = 0
-                        }
-                        ImageGalleryActivity.startSelf(getApplicationContext(), imgSrcs, current)
+                    val imgSrcs = NoteUtils.parseImageSpanSrc(imageEditText_content, STUDY_APP_ROOT_DIR)
+                    var current = imgSrcs.indexOf(imagePath)
+                    if (current == -1) {
+                        current = 0
+                    }
+                    ImageGalleryActivity.startSelf(getApplicationContext(), imgSrcs, current)
                 }
             }
         }, ImageSpan::class.java)
@@ -57,7 +57,7 @@ class LocalNoteDetailActivity : BaseAppCompatActivity() {
         imageEditText_content!!.text = Html.fromHtml(content, URLImageGetter(imageEditText_content), null)
         LogUtils.e("formated note.content:" + content)
 
-
+        launchActivity(MusicActivity::class.java)
     }
 
 

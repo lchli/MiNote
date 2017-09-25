@@ -39,7 +39,7 @@ import java.io.IOException
  * Created by lchli on 2016/8/12.
  */
 
-class EditNoteActivity : BaseAppCompatActivity(),View.OnClickListener {
+class EditNoteActivity : BaseAppCompatActivity(), View.OnClickListener {
 
 
     private var courseUUID: String? = null
@@ -52,8 +52,6 @@ class EditNoteActivity : BaseAppCompatActivity(),View.OnClickListener {
         setContentView(R.layout.activity_edit_note)
         bt_save.setOnClickListener(this)
         bt_more.setOnClickListener(this)
-
-        parentLayout.addView(TuneView(this))
 
         imageEditText_content.setMovementMethod(ScrollingMovementMethod.getInstance())
         if (oldNote != null) {

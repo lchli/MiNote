@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.lch.menote.note">
 
@@ -7,11 +8,10 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application>
-
         <activity android:name=".ui.LocalNoteDetailActivity" />
         <activity android:name=".ui.ImageGalleryActivity" />
         <activity android:name=".ui.EditNoteActivity" />
-
+        <activity android:name=".ui.MusicActivity"></activity>
     </application>
 
 </manifest>

@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply from: "${rootDir}/depend.gradle"
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -27,4 +26,3 @@ android {
 dependencies {
     implementation project(":common")
 }
-apply from: "${rootDir}/depend.gradle"

@@ -29,6 +29,3 @@ dependencies {
     implementation project(":common")
     implementation project(":user")
 }
-repositories {
-    mavenCentral()
-}

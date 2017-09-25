@@ -14,12 +14,12 @@ dependencies {
     implementation 'com.android.support:design:25.+'
 
 
-    implementation "com.github.lchli:router:$router_version"
+    implementation "com.github.lchli:router:+"
     implementation 'org.greenrobot:eventbus:3.0.0'
     implementation 'com.apkfuns.logutils:library:1.5.1.1'
     implementation 'org.apache.commons:commons-lang3:3.5'
     implementation 'commons-io:commons-io:2.5'
-    implementation 'org.greenrobot:greendao:3.2.2'
+    implementation "org.greenrobot:greendao:$greendao_version"
     implementation 'com.google.code.gson:gson:2.8.0'
     implementation 'cn.finalteam:galleryfinal:1.4.8.7'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
