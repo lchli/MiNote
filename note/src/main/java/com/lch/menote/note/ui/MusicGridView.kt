@@ -46,16 +46,16 @@ class MusicGridView : GridView {
     }
 
     override fun dispatchDraw(canvas: Canvas?) {
+        dispatchDrawMusic(canvas)
 
         super.dispatchDraw(canvas)
-        dispatchDrawMusic(canvas)
     }
 
     private fun dispatchDrawMusic(canvas: Canvas?) {
         if (mDatas == null) return
 
         for (i in 0 until childCount) {
-            val links = mDatas!![i].links ?: continue
+            val links = mDatas!![i].links
 
             for ((id, text) in links) {
                 drawLines(getChildAt(i), getChildAt(id), canvas, text)

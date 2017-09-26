@@ -17,11 +17,11 @@ class MusicAdapter(private val context: Context) : BsListAdapter<MusicData>() {
     override fun onBindViewHolder(holder: AbsViewHolder, position: Int) {
         val h = holder as? MusicHolder ?: return
         val data = getItem(position) ?: return
-        h.itemView.iv.setImageResource(data.resID)
+        (h.itemView as TuneView).setResource(data.tuneTexts)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbsViewHolder {
-        return MusicHolder(View.inflate(context, R.layout.note_list_item_music, null), viewType)
+        return MusicHolder(TuneView(context), viewType)
     }
 
 

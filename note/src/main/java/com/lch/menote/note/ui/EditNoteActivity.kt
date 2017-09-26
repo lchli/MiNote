@@ -20,6 +20,7 @@ import cn.finalteam.galleryfinal.model.PhotoInfo
 import cn.finalteam.toolsfinal.io.FileUtils
 import com.apkfuns.logutils.LogUtils
 import com.lch.menote.common.base.BaseAppCompatActivity
+import com.lch.menote.common.drawBitmap
 import com.lch.menote.common.util.*
 import com.lch.menote.note.R
 import com.lch.menote.note.data.NoteRepo
@@ -303,9 +304,8 @@ class EditNoteActivity : BaseAppCompatActivity(), View.OnClickListener {
         }
 
         private fun getViewBitmap(v: View): Bitmap {
-            v.isDrawingCacheEnabled = true
-            v.buildDrawingCache()
-            return v.drawingCache
+
+            return v.drawBitmap()
         }
     }
 }
