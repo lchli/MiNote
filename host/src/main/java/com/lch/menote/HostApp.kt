@@ -1,6 +1,7 @@
 package com.lch.menote
 
 import android.app.Application
+import com.blankj.utilcode.util.Utils
 import com.lch.menote.common.util.ContextProvider
 import com.lch.menote.home.route.HomeModule
 import com.lch.menote.note.route.NoteModule
@@ -17,6 +18,7 @@ class HostApp : Application() {
         Thread.setDefaultUncaughtExceptionHandler { _, e -> e.printStackTrace() }
 
         ContextProvider.initContext(this)
+        Utils.init(this)
 
         RouteEngine.init(this, HomeModule::class.java, NoteModule::class.java, UserModule::class.java)
 

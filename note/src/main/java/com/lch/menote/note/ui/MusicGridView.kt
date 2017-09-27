@@ -5,9 +5,9 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
-import android.widget.GridView
 import com.lch.menote.common.evalFontHeight
 import com.lch.menote.note.domain.MusicData
 
@@ -15,7 +15,7 @@ import com.lch.menote.note.domain.MusicData
 /**
  * Created by Administrator on 2017/9/25.
  */
-class MusicGridView : GridView {
+class MusicGridView : RecyclerView {
 
     private val p = Paint()
     private var mDatas: List<MusicData>? = null
@@ -27,7 +27,7 @@ class MusicGridView : GridView {
     init {
         p.color = Color.RED
         p.textSize = 42f
-        p.style = Paint.Style.STROKE
+
     }
 
     fun drawMusic(datas: List<MusicData>) {
@@ -37,10 +37,11 @@ class MusicGridView : GridView {
 
     private fun drawLines(v1: View, v2: View, canvas: Canvas?, text: String?) {
         val oval = RectF(v1.left.toFloat() + v1.width / 2, v1.top.toFloat(), v2.left.toFloat() + v2.width / 2, v2.top.toFloat() + v2.height / 2)
-        // context.log(oval.toString())
 
+        p.style = Paint.Style.STROKE
         canvas!!.drawArc(oval, 0f, -180f, false, p)
         if (text != null) {
+            p.style = Paint.Style.FILL
             canvas.drawText(text, oval.centerX(), oval.top + context.evalFontHeight(p) / 2, p)
         }
     }

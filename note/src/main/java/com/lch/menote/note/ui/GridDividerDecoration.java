@@ -19,11 +19,17 @@ public class GridDividerDecoration extends RecyclerView.ItemDecoration {
     public static final int VERTICAL_LIST = LinearLayoutManager.VERTICAL;
     private Drawable mDivider;
     private int mOrientation;
+    private int itemSpace;
 
     public GridDividerDecoration(Context context, int orientation) {
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
         mDivider = a.getDrawable(0);
         a.recycle();
+        setOrientation(orientation);
+    }
+
+    public GridDividerDecoration(Context context, int orientation, int itemSpace) {
+        this.itemSpace = itemSpace;
         setOrientation(orientation);
     }
 
@@ -44,6 +50,9 @@ public class GridDividerDecoration extends RecyclerView.ItemDecoration {
     }
 
     public void drawVertical(Canvas c, RecyclerView parent) {
+        if (mDivider == null) {
+            return;
+        }
         final int left = parent.getPaddingLeft();
         final int right = parent.getWidth() - parent.getPaddingRight();
         final int childCount = parent.getChildCount();
@@ -60,6 +69,9 @@ public class GridDividerDecoration extends RecyclerView.ItemDecoration {
     }
 
     public void drawHorizontal(Canvas c, RecyclerView parent) {
+        if (mDivider == null) {
+            return;
+        }
         final int top = parent.getPaddingTop();
         final int bottom = parent.getHeight() - parent.getPaddingBottom();
         final int childCount = parent.getChildCount();
@@ -78,9 +90,17 @@ public class GridDividerDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
         if (mOrientation == VERTICAL_LIST) {
-            outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
+            outRect.set(0, 0, 0, getVSpace());
         } else {
-            outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);
+            outRect.set(0, 0, getHSpace(), 0);
         }
+    }
+
+    private int getVSpace() {
+        return mDivider != null ? mDivider.getIntrinsicHeight() : itemSpace;
+    }
+
+    private int getHSpace() {
+        return mDivider != null ? mDivider.getIntrinsicWidth() : itemSpace;
     }
 }

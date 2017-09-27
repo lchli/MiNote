@@ -44,7 +44,7 @@ class ImageGalleryActivity : BaseAppCompatActivity() {
 
         override fun createView(context: Context): View {
             imageView = ImageView(context)
-            imageView!!.scaleType = ImageView.ScaleType.FIT_XY
+            imageView!!.scaleType = ImageView.ScaleType.MATRIX
             return imageView as View
         }
 

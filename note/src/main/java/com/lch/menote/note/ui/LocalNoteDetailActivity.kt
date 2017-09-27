@@ -57,7 +57,7 @@ class LocalNoteDetailActivity : BaseAppCompatActivity() {
         imageEditText_content!!.text = Html.fromHtml(content, URLImageGetter(imageEditText_content), null)
         LogUtils.e("formated note.content:" + content)
 
-        launchActivity(MusicActivity::class.java)
+
     }
 
 

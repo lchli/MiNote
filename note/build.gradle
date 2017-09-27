@@ -16,7 +16,7 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        resourcePrefix("note")
+        resourcePrefix("note_")
 
     }
     buildTypes {
