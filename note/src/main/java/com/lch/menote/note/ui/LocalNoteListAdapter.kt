@@ -5,21 +5,29 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import com.bumptech.glide.Glide
 import com.lch.menote.common.util.AppListItemAnimatorUtils
 import com.lch.menote.common.util.ContextProvider
+import com.lch.menote.common.util.EventBusUtils
 import com.lch.menote.note.R
+import com.lch.menote.note.data.NoteRepo
 import com.lch.menote.note.domain.HeadData
 import com.lch.menote.note.domain.Note
 import com.lch.menote.note.domain.NotePinedData
+import com.lch.menote.note.helper.LocalNoteListChangedEvent
 import com.lch.menote.note.helper.VIEW_TYPE_HEADER
 import com.lch.menote.note.helper.VIEW_TYPE_ITEM
 import com.lch.menote.note.helper.VIEW_TYPE_PINED
 import com.lchli.pinedrecyclerlistview.library.ListSectionData
 import com.lchli.pinedrecyclerlistview.library.pinnedRecyclerView.PinnedRecyclerAdapter
+import com.orhanobut.dialogplus.DialogPlus
 import kotlinx.android.synthetic.main.local_note_list_header.view.*
 import kotlinx.android.synthetic.main.local_note_list_item.view.*
 import kotlinx.android.synthetic.main.local_note_list_pined_item.view.*
+import org.apache.commons.io.FileUtils
+import java.io.File
+
 
 class LocalNoteListAdapter : PinnedRecyclerAdapter() {
 
@@ -131,13 +139,41 @@ class LocalNoteListAdapter : PinnedRecyclerAdapter() {
 
         if (!isScrolling) {
 
-             Glide.with(holder.itemView.getContext()).load(data.imagesDir + "/" + data.thumbNail).into(holder.listItem.course_thumb_imageView)
+            Glide.with(holder.itemView.getContext()).load(data.imagesDir + "/" + data.thumbNail).into(holder.listItem.course_thumb_imageView)
 
         } else {
             holder.listItem.course_thumb_imageView!!.setImageBitmap(def)
         }
         holder.listItem.setOnClickListener {
             LocalNoteDetailActivity.startSelf(holder.listItem.context, data)
+        }
+        val context = holder.listItem.context
+
+        holder.listItem.setOnLongClickListener {
+            val adp = ArrayAdapter<String>(context, android.R.layout.simple_expandable_list_item_1)
+            adp.add("删除")
+            adp.add("取消")
+
+            val dialog = DialogPlus.newDialog(context)
+                    .setAdapter(adp)
+                    .setOnItemClickListener { dialog, item, view, position ->
+                        when (position) {
+                            0 -> {
+                                dialog.dismiss()
+
+                                NoteRepo.delete(data)
+                                FileUtils.deleteQuietly(File(data.imagesDir))
+                                EventBusUtils.post(LocalNoteListChangedEvent())
+                            }
+                            1 -> {
+                                dialog.dismiss()
+                            }
+                        }
+                    }
+                    .setExpanded(false)
+                    .create()
+            dialog.show()
+            true
         }
 
         AppListItemAnimatorUtils.startAnim(holder.itemView)

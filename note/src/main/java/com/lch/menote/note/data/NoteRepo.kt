@@ -29,6 +29,7 @@ internal object NoteRepo {
         return noteSource.queryNotes()
     }
 
+
     fun queryNotesWithCat(): List<Any>? {
         val all = ArrayList<Any>()
         all.add(HeadData())
@@ -48,4 +49,9 @@ internal object NoteRepo {
 
         return all
     }
+
+    fun delete(note: Note) {
+        noteSource.delete(note)
+    }
+
 }

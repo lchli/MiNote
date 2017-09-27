@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.lch.menote.note">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -7,11 +8,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
 
-    <application>
+    <application tools:replace="android:icon"  android:icon="@mipmap/ic_launcher">
         <activity android:name=".ui.LocalNoteDetailActivity" />
         <activity android:name=".ui.ImageGalleryActivity" />
         <activity android:name=".ui.EditNoteActivity" />
-        <activity android:name=".ui.MusicActivity"></activity>
+        <activity android:name=".ui.MusicActivity"/>
     </application>
 
 </manifest>
