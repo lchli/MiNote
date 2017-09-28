@@ -1,11 +1,15 @@
 package com.lch.menote.common
 
+import android.R
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Paint
 import android.util.Log
+import android.widget.ArrayAdapter
 import android.widget.Toast
+import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.OnItemClickListener
 
 /**
  * Created by Administrator on 2017/9/21.
@@ -40,4 +44,16 @@ fun Context.log(tag: String, msg: String) {
 
 fun Context.log(msg: String) {
     log(GLOBAL_TAG, msg)
+}
+
+
+fun Context.showListDialog(listener: OnItemClickListener, expand: Boolean = false, items: List<String>): DialogPlus {
+    val adp = ArrayAdapter<String>(this, R.layout.simple_expandable_list_item_1, items)
+    val dia = DialogPlus.newDialog(this)
+            .setAdapter(adp)
+            .setOnItemClickListener(listener)
+            .setExpanded(expand)
+            .create()
+    dia.show()
+    return dia
 }

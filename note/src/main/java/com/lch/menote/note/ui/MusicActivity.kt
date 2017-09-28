@@ -46,7 +46,20 @@ class MusicActivity : AppCompatActivity() {
 
 
     fun addTune(v: View) {
-        val input = etTune.text.toString()
+        var input = etTune.text.toString()
+        when {
+            input.startsWith("..") -> {
+            }
+            input.startsWith(".") -> {
+                input = " " + input
+
+            }
+            else -> {
+                input = "  " + input
+            }
+
+        }
+
         var newText = ""
 
         for (i in input.indices) {

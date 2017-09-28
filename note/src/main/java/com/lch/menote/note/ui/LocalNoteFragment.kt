@@ -5,15 +5,15 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import com.lch.menote.common.base.BaseFragment
 import com.lch.menote.common.launchActivity
+import com.lch.menote.common.showListDialog
 import com.lch.menote.common.util.EventBusUtils
 import com.lch.menote.note.R
 import com.lch.menote.note.data.NoteRepo
 import com.lch.menote.note.helper.LocalNoteListChangedEvent
 import com.lch.route.noaop.Android
-import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.OnItemClickListener
 import kotlinx.android.synthetic.main.fragment_local_note_list.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
@@ -53,27 +53,18 @@ class LocalNoteFragment : BaseFragment() {
         moduleListRecyclerView.setPinnedAdapter(notesAdp)
 
         fab.setOnClickListener {
-            val adp = ArrayAdapter<String>(context, android.R.layout.simple_expandable_list_item_1)
-            adp.add("创建笔记")
-            adp.add("创建音乐")
-
-            val dialog = DialogPlus.newDialog(context)
-                    .setAdapter(adp)
-                    .setOnItemClickListener { dialog, item, view, position ->
-                        when (position) {
-                            0 -> {
-                                dialog.dismiss()
-                                EditNoteActivity.startSelf(context)
-                            }
-                            1 -> {
-                                dialog.dismiss()
-                                context.launchActivity(MusicActivity::class.java)
-                            }
-                        }
+            context.showListDialog(OnItemClickListener { dialog, item, view, position ->
+                when (position) {
+                    0 -> {
+                        dialog.dismiss()
+                        EditNoteActivity.startSelf(context)
                     }
-                    .setExpanded(false)
-                    .create()
-            dialog.show()
+                    1 -> {
+                        dialog.dismiss()
+                        context.launchActivity(MusicActivity::class.java)
+                    }
+                }
+            }, items = listOf("创建笔记", "创建音乐"))
 
         }
 

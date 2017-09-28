@@ -30,7 +30,6 @@ import com.lch.menote.note.helper.LocalNoteListChangedEvent
 import com.lch.menote.note.helper.NoteUtils
 import com.lch.menote.note.helper.STUDY_APP_ROOT_DIR
 import com.orhanobut.dialogplus.DialogPlus
-import com.orhanobut.dialogplus.OnItemClickListener
 import kotlinx.android.synthetic.main.activity_edit_note.*
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.StringUtils
@@ -136,26 +135,21 @@ class EditNoteActivity : BaseAppCompatActivity(), View.OnClickListener {
         } else if (i == R.id.bt_more) {
             val dialog = DialogPlus.newDialog(this)
                     .setAdapter(InsertImageDialogAdapter(applicationContext))
-                    .setOnItemClickListener(object : OnItemClickListener {
-                        override fun onItemClick(dialog: DialogPlus, item: Any, view: View, position: Int) {
-                            when (position) {
-                                0 -> {
-                                    dialog.dismiss()
-                                    openAlbum()
-                                }
-                                1 -> {
-                                    dialog.dismiss()
-                                    openCamera()
-                                }
+                    .setOnItemClickListener { dialog, item, view, position ->
+                        when (position) {
+                            0 -> {
+                                dialog.dismiss()
+                                openAlbum()
                             }
-
+                            1 -> {
+                                dialog.dismiss()
+                                openCamera()
+                            }
                         }
-                    })
-                    .setExpanded(true) // This will enable the expand feature, (similar to android L share
-                    // dialog)
+                    }
+                    .setExpanded(true)
                     .create()
             dialog.show()
-
 
         } else if (i == R.id.tv_note_category) {
             //noteTypePop!!.showAsDropDown(title_bar)
