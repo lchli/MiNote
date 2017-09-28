@@ -26,4 +26,5 @@ android {
 
 dependencies {
     implementation project(":common")
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 }

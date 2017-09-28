@@ -7,7 +7,8 @@ import android.os.Environment
  */
 internal val SD_PATH = Environment.getExternalStorageDirectory().absolutePath
 internal val STUDY_APP_ROOT_DIR = "$SD_PATH/StudyApp"
-internal const val NOTE_DB = "notes.db"
+internal const val NOTE_DB = "note.db"
+internal val DB_DIR = "$STUDY_APP_ROOT_DIR/database"
 
 internal const val VIEW_TYPE_HEADER = 0
 internal const val VIEW_TYPE_ITEM = 1

@@ -1,5 +1,6 @@
 package com.lch.menote.note.ui
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -8,17 +9,20 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.view.View
 import com.blankj.utilcode.util.SizeUtils
+import com.google.gson.Gson
 import com.lch.menote.common.drawBitmap
+import com.lch.menote.common.launchActivity
 import com.lch.menote.common.log
-import com.lch.menote.common.util.AppListItemAnimatorUtils
-import com.lch.menote.common.util.BitmapScaleUtil
-import com.lch.menote.common.util.ToastUtils
-import com.lch.menote.common.util.UUIDUtils
+import com.lch.menote.common.util.*
 import com.lch.menote.note.R
+import com.lch.menote.note.data.NoteRepo
 import com.lch.menote.note.domain.LinkData
 import com.lch.menote.note.domain.MusicData
+import com.lch.menote.note.domain.Note
+import com.lch.menote.note.helper.JsonHelper
+import com.lch.menote.note.helper.LocalNoteListChangedEvent
 import com.lch.route.noaop.Android
-import kotlinx.android.synthetic.main.activity_music.*
+import kotlinx.android.synthetic.main.activity_edit_music.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
@@ -29,11 +33,26 @@ class MusicActivity : AppCompatActivity() {
     private lateinit var mMusicAdapter: MusicAdapter
     private val datas = mutableListOf<MusicData>()
     private var controllViewTotalHeight = -1
+    private var courseUUID: String? = null
+
+    companion object {
+
+        private const val EXTRA_NOTE = "EXTRA_NOTE"
+
+        fun launch(context: Context, note: Note? = null) {
+            val it = Intent(context, MusicActivity::class.java)
+            if (note != null) {
+                it.putExtra(EXTRA_NOTE, note)
+            }
+            context.launchActivity(it)
+        }
+
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_music)
+        setContentView(R.layout.activity_edit_music)
 
         musicGrid.setHasFixedSize(true)
         musicGrid.layoutManager = GridLayoutManager(this, 15)
@@ -41,6 +60,21 @@ class MusicActivity : AppCompatActivity() {
 
         mMusicAdapter = MusicAdapter(this)
         musicGrid.adapter = mMusicAdapter
+
+        val note = intent.getSerializableExtra(EXTRA_NOTE) as? Note
+        if (note != null) {
+            val oldDatas: List<MusicData>? = Gson().fromJson(note.content, JsonHelper.getMusicListTypeToken())
+            if (oldDatas != null) {
+                datas.addAll(oldDatas)
+            }
+            courseUUID = note.uid
+            tv_note_category.text = note.type
+            et_note_title.setText(note.title)
+
+            refresh()
+        } else {
+            courseUUID = UUIDUtils.uuid()
+        }
 
     }
 
@@ -138,7 +172,7 @@ class MusicActivity : AppCompatActivity() {
             if (!isSuccess) {
                 ToastUtils.systemToast(R.string.save_note_thumb_fail)
             } else {
-                ToastUtils.systemToast("success")
+                ToastUtils.systemToast("图片已保存")
 
                 val scanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
                 scanIntent.data = Uri.fromFile(destFile)
@@ -154,6 +188,7 @@ class MusicActivity : AppCompatActivity() {
 
 
     fun toolBar(v: View) {
+
         if (controllViewTotalHeight == -1) {
             controllViewTotalHeight = controllView.height
             log("controllViewTotalHeight=$controllViewTotalHeight")
@@ -165,6 +200,23 @@ class MusicActivity : AppCompatActivity() {
             AppListItemAnimatorUtils.startHeightAnim(controllView, controllViewTotalHeight, 0)
         }
 
+    }
+
+    fun saveDraft(v: View) {
+        val content = Gson().toJson(datas)
+
+        val note = Note()
+        note.type = tv_note_category.text.toString()
+        note.title = et_note_title.text.toString()
+        note.uid = courseUUID
+        note.lastModifyTime = TimeUtils.getTime(System.currentTimeMillis())
+        note.content = content
+        note.category = Note.CAT_MUSIC
+
+        NoteRepo.save(note)
+        EventBusUtils.post(LocalNoteListChangedEvent())
+
+        finish()
     }
 
     private fun refresh() {

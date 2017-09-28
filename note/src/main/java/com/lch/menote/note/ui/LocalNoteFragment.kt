@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.lch.menote.common.base.BaseFragment
-import com.lch.menote.common.launchActivity
 import com.lch.menote.common.showListDialog
 import com.lch.menote.common.util.EventBusUtils
 import com.lch.menote.note.R
@@ -61,7 +60,7 @@ class LocalNoteFragment : BaseFragment() {
                     }
                     1 -> {
                         dialog.dismiss()
-                        context.launchActivity(MusicActivity::class.java)
+                        MusicActivity.launch(context)
                     }
                 }
             }, items = listOf("创建笔记", "创建音乐"))

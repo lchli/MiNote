@@ -3,9 +3,9 @@ package com.lch.menote.note.domain;
 import com.google.gson.annotations.SerializedName;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
-import org.greenrobot.greendao.annotation.Generated;
 
 import java.io.Serializable;
 
@@ -13,7 +13,10 @@ import java.io.Serializable;
  * Created by Administrator on 2017/9/21.
  */
 @Entity
-public class Note implements Serializable{
+public class Note implements Serializable {
+
+    public static final int CAT_NOTE = 1;
+    public static final int CAT_MUSIC = 2;
 
     private static final long serialVersionUID = -5367845055852303764L;
     @SerializedName("ImagesDir")
@@ -45,10 +48,12 @@ public class Note implements Serializable{
     @SerializedName("ShareUrl")
     public String ShareUrl = "";
 
-    @Generated(hash = 2133484501)
+    public int category = CAT_NOTE;
+
+    @Generated(hash = 1156300408)
     public Note(String imagesDir, String content, String lastModifyTime,
-                String title, String type, String thumbNail, String uid,
-                String userId) {
+            String title, String type, String thumbNail, String uid, String userId,
+            int category) {
         this.imagesDir = imagesDir;
         this.content = content;
         this.lastModifyTime = lastModifyTime;
@@ -57,6 +62,7 @@ public class Note implements Serializable{
         this.thumbNail = thumbNail;
         this.uid = uid;
         this.userId = userId;
+        this.category = category;
     }
 
     @Generated(hash = 1272611929)
@@ -126,6 +132,15 @@ public class Note implements Serializable{
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+    public int getCategory() {
+        return this.category;
+    }
+
+    public void setCategory(int category) {
+        this.category = category;
+    }
+
 
 
 }

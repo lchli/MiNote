@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import com.blankj.utilcode.util.SizeUtils
 import com.bumptech.glide.Glide
 import com.lch.menote.common.util.AppListItemAnimatorUtils
 import com.lch.menote.common.util.ContextProvider
@@ -132,22 +133,33 @@ class LocalNoteListAdapter : PinnedRecyclerAdapter() {
         val holder = h as ViewHolder
 
         val data = o as Note
+        val context = holder.listItem.context
 
         holder.listItem.couse_title_textView!!.setText(data.title)
 
         holder.listItem.course_time_textView!!.setText(data.lastModifyTime)
 
         if (!isScrolling) {
+            with(holder.listItem) {
+                if (data.category == Note.CAT_MUSIC) {
+                    Glide.with(getContext()).load(R.drawable.music).override(SizeUtils.dp2px(100f), SizeUtils.dp2px(100f)).into(course_thumb_imageView)
+                } else {
+                    Glide.with(getContext()).load("${data.imagesDir}/${data.thumbNail}").override(SizeUtils.dp2px(100f), SizeUtils.dp2px(100f)).into(course_thumb_imageView)
+                }
 
-            Glide.with(holder.itemView.getContext()).load(data.imagesDir + "/" + data.thumbNail).into(holder.listItem.course_thumb_imageView)
+            }
 
         } else {
             holder.listItem.course_thumb_imageView!!.setImageBitmap(def)
         }
         holder.listItem.setOnClickListener {
-            LocalNoteDetailActivity.startSelf(holder.listItem.context, data)
+            if (data.category == Note.CAT_MUSIC) {
+                MusicActivity.launch(context, data)
+            } else {
+                LocalNoteDetailActivity.startSelf(context, data)
+            }
         }
-        val context = holder.listItem.context
+
 
         holder.listItem.setOnLongClickListener {
             val adp = ArrayAdapter<String>(context, android.R.layout.simple_expandable_list_item_1)
@@ -176,7 +188,7 @@ class LocalNoteListAdapter : PinnedRecyclerAdapter() {
             true
         }
 
-        AppListItemAnimatorUtils.startAnim(holder.itemView)
+        AppListItemAnimatorUtils.startAnim(holder.listItem)
 
     }
 

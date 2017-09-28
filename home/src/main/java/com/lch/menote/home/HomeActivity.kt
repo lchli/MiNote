@@ -7,8 +7,9 @@ import android.support.v4.view.ViewPager
 import com.lch.menote.common.base.BaseAppCompatActivity
 import com.lch.menote.common.base.BaseFragment
 import com.lch.menote.common.base.FragmentAdapter
+import com.lch.menote.common.route.NoteMod
 import com.lch.menote.common.route.NoteModulePaths
-import com.lch.menote.common.route.UserModulePaths
+import com.lch.menote.common.route.UserMod
 import com.lch.menote.common.util.ResUtils
 import com.lch.route.noaop.lib.RouteEngine
 import kotlinx.android.synthetic.main.activity_home.*
@@ -32,9 +33,9 @@ class HomeActivity : BaseAppCompatActivity() {
             adapter.addFragment(cloud, ResUtils.parseString(R.string.cloud_note))
         }
 
-        val user = RouteEngine.route(UserModulePaths.ROUTE_PATH_INDEX) as? Fragment
-        if (user != null) {
-            adapter.addFragment(user, ResUtils.parseString(R.string.user))
+        val userMod = RouteEngine.getModule(UserMod.MODULE_NAME) as? UserMod
+        if (userMod != null) {
+            adapter.addFragment(userMod.indexPage(), ResUtils.parseString(R.string.user))
         }
 
         viewpager.adapter = adapter
@@ -81,5 +82,9 @@ class HomeActivity : BaseAppCompatActivity() {
         //Override and do not save.
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        (RouteEngine.getModule(NoteMod.MODULE_NAME) as? NoteMod)?.onAppBackground()
+    }
 
 }

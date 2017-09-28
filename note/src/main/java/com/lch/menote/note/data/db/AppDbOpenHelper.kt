@@ -8,11 +8,10 @@ import android.util.Log
 import com.apkfuns.logutils.LogUtils
 import com.lch.menote.common.util.ExtFileUtils
 import com.lch.menote.note.data.db.gen.DaoMaster
-import com.lch.menote.note.helper.STUDY_APP_ROOT_DIR
+import com.lch.menote.note.helper.DB_DIR
 import org.apache.commons.io.FileUtils
 import org.greenrobot.greendao.database.Database
 import java.io.File
-import java.io.IOException
 
 class AppDbOpenHelper : DaoMaster.DevOpenHelper {
 
@@ -35,27 +34,17 @@ class AppDbOpenHelper : DaoMaster.DevOpenHelper {
     override fun onUpgrade(db: Database?, oldVersion: Int, newVersion: Int) {
 
         Log.e("greenDAO", "Upgrading schema from version $oldVersion to $newVersion by dropping all tables")
-        DaoMaster.dropAllTables(db, true)
 
-        onCreate(db)
+        if (oldVersion == 1) {
+            db!!.execSQL("ALTER TABLE note ADD CATEGORY integer")
+        } else {
+            DaoMaster.dropAllTables(db, true)
+            onCreate(db)
+        }
 
     }
 
     companion object {
-
-
-        private val DB_DIR = String.format("%s/%s", STUDY_APP_ROOT_DIR, "database")
-
-
-        init {
-
-            try {
-                FileUtils.forceMkdir(File(DB_DIR))
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
-        }
 
 
         private fun chooseContext(context: Context, isSdcardDatabase: Boolean): Context {
@@ -67,6 +56,12 @@ class AppDbOpenHelper : DaoMaster.DevOpenHelper {
             } else object : ContextWrapper(context) {
 
                 override fun getDatabasePath(name: String): File {
+
+                    try {
+                        FileUtils.forceMkdir(File(DB_DIR))
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
 
                     val noteDb = File(DB_DIR, name)
 

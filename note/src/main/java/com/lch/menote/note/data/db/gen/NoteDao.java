@@ -32,6 +32,7 @@ public class NoteDao extends AbstractDao<Note, String> {
         public final static Property ThumbNail = new Property(5, String.class, "thumbNail", false, "THUMB_NAIL");
         public final static Property Uid = new Property(6, String.class, "uid", true, "UID");
         public final static Property UserId = new Property(7, String.class, "userId", false, "USER_ID");
+        public final static Property Category = new Property(8, int.class, "category", false, "CATEGORY");
     }
 
 
@@ -54,7 +55,8 @@ public class NoteDao extends AbstractDao<Note, String> {
                 "\"TYPE\" TEXT," + // 4: type
                 "\"THUMB_NAIL\" TEXT," + // 5: thumbNail
                 "\"UID\" TEXT PRIMARY KEY NOT NULL ," + // 6: uid
-                "\"USER_ID\" TEXT);"); // 7: userId
+                "\"USER_ID\" TEXT," + // 7: userId
+                "\"CATEGORY\" INTEGER NOT NULL );"); // 8: category
     }
 
     /** Drops the underlying database table. */
@@ -106,6 +108,7 @@ public class NoteDao extends AbstractDao<Note, String> {
         if (userId != null) {
             stmt.bindString(8, userId);
         }
+        stmt.bindLong(9, entity.getCategory());
     }
 
     @Override
@@ -151,6 +154,7 @@ public class NoteDao extends AbstractDao<Note, String> {
         if (userId != null) {
             stmt.bindString(8, userId);
         }
+        stmt.bindLong(9, entity.getCategory());
     }
 
     @Override
@@ -168,7 +172,8 @@ public class NoteDao extends AbstractDao<Note, String> {
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // type
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // thumbNail
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // uid
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // userId
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // userId
+            cursor.getInt(offset + 8) // category
         );
         return entity;
     }
@@ -183,6 +188,7 @@ public class NoteDao extends AbstractDao<Note, String> {
         entity.setThumbNail(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setUid(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setUserId(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setCategory(cursor.getInt(offset + 8));
      }
     
     @Override

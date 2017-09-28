@@ -1,2 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.lch.menote.user" />
+    package="com.lch.menote.user">
+
+    <application>
+        <activity android:name=".LockPwdActivity"></activity>
+    </application>
+
+</manifest>
