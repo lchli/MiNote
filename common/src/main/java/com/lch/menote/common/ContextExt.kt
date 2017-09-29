@@ -8,6 +8,7 @@ import android.graphics.Paint
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import com.lch.menote.common.util.UiHandler
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.OnItemClickListener
 
@@ -15,6 +16,7 @@ import com.orhanobut.dialogplus.OnItemClickListener
  * Created by Administrator on 2017/9/21.
  */
 private val GLOBAL_TAG = "MiNote"
+private val LOG_ENABLE = BuildConfig.DEBUG
 
 fun Context.launchActivity(clazz: Class<out Activity>) {
     val it = Intent(this, clazz)
@@ -23,7 +25,9 @@ fun Context.launchActivity(clazz: Class<out Activity>) {
 }
 
 fun Context.toast(msg: String, duration: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(this, msg, duration).show()
+    UiHandler.post({
+        Toast.makeText(this, msg, duration).show()
+    })
 }
 
 fun Context.launchActivity(it: Intent) {
@@ -46,6 +50,12 @@ fun Context.log(msg: String) {
     log(GLOBAL_TAG, msg)
 }
 
+
+fun Context.logIfDebug(msg: String) {
+    if (LOG_ENABLE) {
+        log(msg)
+    }
+}
 
 fun Context.showListDialog(listener: OnItemClickListener, expand: Boolean = false, items: List<String>): DialogPlus {
     val adp = ArrayAdapter<String>(this, R.layout.simple_expandable_list_item_1, items)

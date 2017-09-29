@@ -144,7 +144,7 @@ class LocalNoteListAdapter : PinnedRecyclerAdapter() {
                 if (data.category == Note.CAT_MUSIC) {
                     Glide.with(getContext()).load(R.drawable.music).override(SizeUtils.dp2px(100f), SizeUtils.dp2px(100f)).into(course_thumb_imageView)
                 } else {
-                    Glide.with(getContext()).load("${data.imagesDir}/${data.thumbNail}").override(SizeUtils.dp2px(100f), SizeUtils.dp2px(100f)).into(course_thumb_imageView)
+                    Glide.with(getContext()).load(R.drawable.app_logo).override(SizeUtils.dp2px(100f), SizeUtils.dp2px(100f)).into(course_thumb_imageView)
                 }
 
             }
@@ -164,7 +164,6 @@ class LocalNoteListAdapter : PinnedRecyclerAdapter() {
         holder.listItem.setOnLongClickListener {
             val adp = ArrayAdapter<String>(context, android.R.layout.simple_expandable_list_item_1)
             adp.add("删除")
-            adp.add("取消")
 
             val dialog = DialogPlus.newDialog(context)
                     .setAdapter(adp)
@@ -177,9 +176,7 @@ class LocalNoteListAdapter : PinnedRecyclerAdapter() {
                                 FileUtils.deleteQuietly(File(data.imagesDir))
                                 EventBusUtils.post(LocalNoteListChangedEvent())
                             }
-                            1 -> {
-                                dialog.dismiss()
-                            }
+
                         }
                     }
                     .setExpanded(false)

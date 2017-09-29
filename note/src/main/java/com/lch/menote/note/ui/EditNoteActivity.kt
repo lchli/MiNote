@@ -34,7 +34,6 @@ import kotlinx.android.synthetic.main.activity_edit_note.*
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.StringUtils
 import java.io.File
-import java.io.IOException
 
 /**
  * Created by lchli on 2016/8/12.
@@ -100,23 +99,7 @@ class EditNoteActivity : BaseAppCompatActivity(), View.OnClickListener {
                 ToastUtils.systemToast(R.string.note_content_cannot_empty)
                 return
             }
-            val thumbName = UUIDUtils.uuid() + ".jpg"
-            val destFile = File(courseDir, thumbName)
-            if (!destFile.exists()) {
-                try {
-                    destFile.createNewFile()
-                } catch (e: IOException) {
-                    ToastUtils.systemToast(R.string.save_note_thumb_fail)
-                    e.printStackTrace()
-                    return
-                }
 
-            }
-            val isSuccess = BitmapScaleUtil.saveBitmap(getViewBitmap(imageEditText_content), destFile, 100)
-            if (!isSuccess) {
-                ToastUtils.systemToast(R.string.save_note_thumb_fail)
-                return
-            }
             val note = Note()
             note.type = tv_note_category.text.toString()
             note.title = title
@@ -124,7 +107,6 @@ class EditNoteActivity : BaseAppCompatActivity(), View.OnClickListener {
             note.lastModifyTime = TimeUtils.getTime(System.currentTimeMillis())
             note.content = htmlContent
             note.imagesDir = courseDir
-            note.thumbNail = thumbName
 
             NoteRepo.save(note)
             deleteUnusedImages(note)

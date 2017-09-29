@@ -27,5 +27,7 @@ dependencies {
     implementation 'com.bigkoo:convenientbanner:2.0.5'
     implementation 'com.orhanobut:dialogplus:1.11@aar'
     implementation 'com.blankj:utilcode:1.9.1'
+    implementation 'com.andrognito.patternlockview:patternlockview:1.0.0'
+
 
 }

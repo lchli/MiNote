@@ -2,8 +2,10 @@ package com.lch.menote.user
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.text.TextUtils
 import android.view.View
+import com.andrognito.patternlockview.PatternLockView
+import com.andrognito.patternlockview.listener.PatternLockViewListener
+import com.lch.menote.common.logIfDebug
 import com.lch.menote.common.route.HomeModulePaths
 import com.lch.menote.common.route.NoteMod
 import com.lch.menote.common.showListDialog
@@ -15,26 +17,49 @@ import kotlinx.android.synthetic.main.activity_pwd.*
 
 class LockPwdActivity : AppCompatActivity() {
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pwd)
-
-        if (TextUtils.isEmpty(UserRepo.getLockPwd())) {
-            etLockPwd.hint = "请设置解锁密码"
-        }
-    }
-
-    fun confirm(v: View) {
-        val inputPwd = etLockPwd.text.toString()
-        if (inputPwd.length < 6) {
-            toast("密码至少6位")
-            return
+        val numbers = Array(patternLockView.dotCount) { IntArray(patternLockView.dotCount) }
+        var i = 0
+        for (childArr in numbers) {
+            for (index in childArr.indices) {
+                childArr[index] = i++
+            }
         }
 
-        UserRepo.saveLockPwd(inputPwd)
-        RouteEngine.route(HomeModulePaths.ROUTE_PATH_HOME)
-        finish()
+        patternLockView.addPatternLockListener(object : PatternLockViewListener {
+            override fun onComplete(pattern: MutableList<PatternLockView.Dot>?) {
+                if (pattern == null || pattern.size < 1) {
+                    toast("密码至少6位")
+                    return
+                }
+                var inputPwd = ""
+
+                for (dot in pattern) {
+                    inputPwd += numbers[dot.row][dot.column]
+                }
+                logIfDebug("inputPwd:$inputPwd")
+
+                UserRepo.saveLockPwd(inputPwd)
+                RouteEngine.route(HomeModulePaths.ROUTE_PATH_HOME)
+                finish()
+
+            }
+
+            override fun onCleared() {
+            }
+
+            override fun onStarted() {
+            }
+
+            override fun onProgress(progressPattern: MutableList<PatternLockView.Dot>?) {
+            }
+        })
+
     }
+
 
     fun reset(v: View) {
 

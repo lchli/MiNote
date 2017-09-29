@@ -104,7 +104,12 @@ class MusicActivity : AppCompatActivity() {
             }
         }
 
-        datas.add(MusicData(mutableListOf(), newText))
+        if (mMusicAdapter.currentSelected.isNotEmpty()) {
+            val selected = mMusicAdapter.currentSelected[0]
+            selected.tuneTexts = newText
+        } else {
+            datas.add(MusicData(mutableListOf(), newText, UUIDUtils.uuid()))
+        }
 
         refresh()
     }
@@ -112,15 +117,11 @@ class MusicActivity : AppCompatActivity() {
 
     fun addLine(v: View) {
         try {
-            val ft = etTune.text.toString().split("+")
-            val n1 = ft[0].toInt()
-            val n2 = ft[1].toInt()
-            var text: String? = null
-            if (ft.size >= 3) {
-                text = ft[2]
+            if (mMusicAdapter.currentSelected.size < 2) {
+                return
             }
 
-            datas[n1].links.add(LinkData(n2, text))
+            mMusicAdapter.currentSelected[0].links.add(LinkData(mMusicAdapter.currentSelected[1], etTune.text.toString()))
 
             refresh()
         } catch (e: Exception) {
@@ -130,11 +131,11 @@ class MusicActivity : AppCompatActivity() {
 
     fun deleteLine(v: View) {
         try {
-            val ft = etTune.text.toString().split("+")
-            val n1 = ft[0].toInt()
-            val n2 = ft[1].toInt()
+            if (mMusicAdapter.currentSelected.size < 2) {
+                return
+            }
 
-            datas[n1].links.remove(LinkData(n2))
+            mMusicAdapter.currentSelected[0].links.remove(LinkData(mMusicAdapter.currentSelected[1]))
 
             refresh()
         } catch (e: Exception) {

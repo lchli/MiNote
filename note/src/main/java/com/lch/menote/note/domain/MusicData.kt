@@ -3,16 +3,26 @@ package com.lch.menote.note.domain
 /**
  * Created by Administrator on 2017/9/25.
  */
-data class MusicData internal constructor(val links: MutableList<LinkData>, val tuneTexts: String)
+data class MusicData internal constructor(val links: MutableList<LinkData>, var tuneTexts: String, var uid: String) {
+    override fun hashCode(): Int {
 
-data class LinkData(val id: Int, val text: String? = null) {
+        return uid.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        val that = other as? MusicData ?: return false
+        return uid == that.uid
+    }
+}
+
+data class LinkData(val data: MusicData, val text: String? = null) {
 
     override fun hashCode(): Int {
-        return id
+        return data.hashCode()
     }
 
     override fun equals(other: Any?): Boolean {
         val that = other as? LinkData ?: return false
-        return id == that.id
+        return data == that.data
     }
 }

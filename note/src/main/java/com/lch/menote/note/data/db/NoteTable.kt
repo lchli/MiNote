@@ -2,6 +2,8 @@ package com.lch.menote.note.data.db
 
 import android.content.Context
 import android.text.TextUtils
+import android.widget.Toast
+import com.lch.menote.common.toast
 import com.lch.menote.note.data.NoteSource
 import com.lch.menote.note.data.db.gen.NoteDao
 import com.lch.menote.note.domain.Note
@@ -32,6 +34,7 @@ class NoteTable(private val context: Context) : NoteSource {
             return builder.list()
         } catch (e: Exception) {
             e.printStackTrace()
+            detectLockError(e)
         }
         return null
     }
@@ -41,6 +44,7 @@ class NoteTable(private val context: Context) : NoteSource {
             Dsession.noteDao(context).insertOrReplace(note)
         } catch (e: Exception) {
             e.printStackTrace()
+            detectLockError(e)
         }
     }
 
@@ -49,6 +53,13 @@ class NoteTable(private val context: Context) : NoteSource {
             Dsession.noteDao(context).delete(note)
         } catch (e: Exception) {
             e.printStackTrace()
+            detectLockError(e)
+        }
+    }
+
+    private fun detectLockError(e: Exception) {
+        if (e.message?.contains("encrypted") == true) {
+            context.toast("数据解锁失败！如果忘记密码只能重置", Toast.LENGTH_LONG)
         }
     }
 }

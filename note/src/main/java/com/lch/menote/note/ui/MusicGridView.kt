@@ -46,6 +46,10 @@ class MusicGridView : RecyclerView {
         }
     }
 
+    private fun dispatchDrawMusicImpl(from: MusicData, to: MusicData, canvas: Canvas, linktext: String?) {
+        drawLines(getChildAt(mDatas!!.indexOf(from)), getChildAt(mDatas!!.indexOf(to)), canvas, linktext)
+    }
+
     override fun dispatchDraw(canvas: Canvas?) {
         dispatchDrawMusic(canvas)
 
@@ -55,11 +59,11 @@ class MusicGridView : RecyclerView {
     private fun dispatchDrawMusic(canvas: Canvas?) {
         if (mDatas == null) return
 
-        for (i in 0 until childCount) {
+        for (i in 0 until mDatas!!.size) {
             val links = mDatas!![i].links
 
-            for ((id, text) in links) {
-                drawLines(getChildAt(i), getChildAt(id), canvas, text)
+            for ((data, text) in links) {
+                dispatchDrawMusicImpl(mDatas!![i], data, canvas!!, text)
             }
         }
 
