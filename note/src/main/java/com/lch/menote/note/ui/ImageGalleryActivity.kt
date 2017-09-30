@@ -4,12 +4,15 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import com.bigkoo.convenientbanner.ConvenientBanner
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator
 import com.bigkoo.convenientbanner.holder.Holder
 import com.bumptech.glide.Glide
+import com.lch.menote.common.WRAP_CONTENT
 import com.lch.menote.common.base.BaseAppCompatActivity
 import com.lch.menote.note.R
 import kotlinx.android.synthetic.main.activity_image_gallery.*
@@ -44,7 +47,7 @@ class ImageGalleryActivity : BaseAppCompatActivity() {
 
         override fun createView(context: Context): View {
             imageView = ImageView(context)
-            imageView!!.scaleType = ImageView.ScaleType.MATRIX
+            imageView!!.scaleType = ImageView.ScaleType.FIT_CENTER
             return imageView as View
         }
 

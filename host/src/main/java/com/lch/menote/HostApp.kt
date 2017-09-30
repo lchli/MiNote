@@ -2,6 +2,7 @@ package com.lch.menote
 
 import android.app.Application
 import com.blankj.utilcode.util.Utils
+import com.lch.menote.common.Glo
 import com.lch.menote.common.util.ContextProvider
 import com.lch.menote.home.route.HomeModule
 import com.lch.menote.note.route.NoteModule
@@ -16,6 +17,7 @@ class HostApp : Application() {
     override fun onCreate() {
         super.onCreate()
         Thread.setDefaultUncaughtExceptionHandler { _, e -> e.printStackTrace() }
+        Glo.init(this)
 
         ContextProvider.initContext(this)
         Utils.init(this)

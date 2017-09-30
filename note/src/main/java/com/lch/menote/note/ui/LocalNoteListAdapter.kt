@@ -8,18 +8,15 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.blankj.utilcode.util.SizeUtils
 import com.bumptech.glide.Glide
-import com.lch.menote.common.util.AppListItemAnimatorUtils
-import com.lch.menote.common.util.ContextProvider
-import com.lch.menote.common.util.EventBusUtils
+import com.lch.menote.common.Glo
+import com.lch.menote.common.netkit.file.helper.*
+import com.lch.menote.common.util.*
 import com.lch.menote.note.R
 import com.lch.menote.note.data.NoteRepo
 import com.lch.menote.note.domain.HeadData
 import com.lch.menote.note.domain.Note
 import com.lch.menote.note.domain.NotePinedData
-import com.lch.menote.note.helper.LocalNoteListChangedEvent
-import com.lch.menote.note.helper.VIEW_TYPE_HEADER
-import com.lch.menote.note.helper.VIEW_TYPE_ITEM
-import com.lch.menote.note.helper.VIEW_TYPE_PINED
+import com.lch.menote.note.helper.*
 import com.lchli.pinedrecyclerlistview.library.ListSectionData
 import com.lchli.pinedrecyclerlistview.library.pinnedRecyclerView.PinnedRecyclerAdapter
 import com.orhanobut.dialogplus.DialogPlus
@@ -185,8 +182,86 @@ class LocalNoteListAdapter : PinnedRecyclerAdapter() {
             true
         }
 
-        AppListItemAnimatorUtils.startAnim(holder.listItem)
+        holder.listItem.course_upload.setOnClickListener(View.OnClickListener {
+            //            val session = getSession()
+//
+//            if (session == null) {
+//
+//                ToastUtils.systemToast(R.string.not_login)
+//
+//                return@OnClickListener
+//
+//            }
 
+
+//            val params = MapUtils.stringMap()
+//
+//            params.put("Uid", data.uid)
+//
+//            params.put("Title", data.title)
+//
+//            // params.put("UserId", session!!.uid)
+//
+//            params.put("ImagesDir", data.imagesDir)
+//
+//            params.put("LastModifyTime", data.lastModifyTime)
+//
+//            params.put("Type", data.type)
+//
+//            params.put("ThumbNail", data.thumbNail)
+//
+//            params.put("Content", data.content)
+
+
+            val files = File(data.imagesDir).listFiles()
+
+            val uploadFileParams = UploadFileParams.newInstance().setUrl(UrlConst.UPLOAD_NOTE_URL)
+                    .addParam("Uid", data.uid)
+                    .addParam("Title", data.title)
+                    .addParam("ImagesDir", data.imagesDir)
+                    .addParam("LastModifyTime", data.lastModifyTime)
+                    .addParam("Type", data.type)
+                    .addParam("ThumbNail", data.thumbNail)
+                    .addParam("Content", data.content)
+
+            if (files != null) {
+
+                for (f in files) {
+                    uploadFileParams.addFile(FileOptions().setFile(f))
+                }
+
+            }
+
+
+            Glo.fileManager.uploadFile(uploadFileParams, object : FileTransferListener {
+                override fun onResponse(response: FileResponse?) {
+//                    if (response.code === OkErrorCode.SUCCESS) {
+//
+//                        ToastUtils.systemToast(ResUtils.parseString(R.string.upload_note_success))
+//
+//                        EventBusUtils.post(CloudNoteListChangedEvent())
+//
+//                    } else {
+//
+//                        ToastUtils.systemToast(response.errorMsg)
+//
+//                    }
+                }
+
+                override fun onError(error: NetworkError?) {
+                    ToastUtils.systemToast(error!!.msg)
+                }
+
+                override fun onProgress(percent: Double) {
+                }
+            })
+
+
+
+            AppListItemAnimatorUtils.startAnim(holder.listItem)
+
+
+        })
     }
 
 

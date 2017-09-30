@@ -9,17 +9,15 @@ import android.text.Html
 import android.widget.TextView
 
 import com.lch.menote.common.util.BitmapScaleUtil
+import com.lch.menote.common.util.HttpHelper
 import com.lch.menote.common.util.UiHandler
 import com.lch.menote.note.helper.BITMAP_MAX_MEMORY
 import com.lch.menote.note.helper.STUDY_APP_ROOT_DIR
 
 
 class URLImageGetter(private val textView: TextView) : Html.ImageGetter {
-    private val context: Context
 
-    init {
-        this.context = textView.context
-    }
+    private val context: Context = textView.context
 
     override fun getDrawable(src: String): Drawable {
         val urlDrawable = URLDrawable(context, src)
@@ -42,11 +40,11 @@ class URLImageGetter(private val textView: TextView) : Html.ImageGetter {
         override fun doInBackground(vararg params: String): Drawable? {
             val source = params[0]
             val bmp: Bitmap?
-            //            if (isNetImagePath(source)) {
-            //                bmp = BitmapScaleUtil.decodeSampledBitmapFromUrl(HttpHelper.addExtraParamsToUrl(source,LocalConst.getNoteServerVerifyParams()), LocalConst.BITMAP_MAX_MEMORY);
-            //            } else {
-            bmp = BitmapScaleUtil.decodeSampledBitmapFromPath(STUDY_APP_ROOT_DIR + source, BITMAP_MAX_MEMORY)
-            //}
+            bmp = if (isNetImagePath(source)) {
+                BitmapScaleUtil.decodeSampledBitmapFromUrl(HttpHelper.addExtraParamsToUrl(source,null),BITMAP_MAX_MEMORY);
+            } else {
+                BitmapScaleUtil.decodeSampledBitmapFromPath(STUDY_APP_ROOT_DIR + source, BITMAP_MAX_MEMORY)
+            }
             return if (bmp == null) {
                 null
             } else BitmapDrawable(bmp)
