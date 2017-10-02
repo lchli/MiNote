@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import com.blankj.utilcode.util.SizeUtils
 import com.bumptech.glide.Glide
 import com.lch.menote.common.Glo
+import com.lch.menote.common.log
 import com.lch.menote.common.netkit.file.helper.*
 import com.lch.menote.common.util.*
 import com.lch.menote.note.R
@@ -223,11 +224,12 @@ class LocalNoteListAdapter : PinnedRecyclerAdapter() {
                     .addParam("Type", data.type)
                     .addParam("ThumbNail", data.thumbNail)
                     .addParam("Content", data.content)
+                    .addParam("UserId", "12334")
 
             if (files != null) {
 
                 for (f in files) {
-                    uploadFileParams.addFile(FileOptions().setFile(f))
+                    uploadFileParams.addFile(FileOptions().setFile(f).setFileKey("images"))
                 }
 
             }
@@ -235,7 +237,8 @@ class LocalNoteListAdapter : PinnedRecyclerAdapter() {
 
             Glo.fileManager.uploadFile(uploadFileParams, object : FileTransferListener {
                 override fun onResponse(response: FileResponse?) {
-//                    if (response.code === OkErrorCode.SUCCESS) {
+                    context.log(response!!.reponseString)
+//                    if (response!!. === OkErrorCode.SUCCESS) {
 //
 //                        ToastUtils.systemToast(ResUtils.parseString(R.string.upload_note_success))
 //

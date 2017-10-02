@@ -3,8 +3,7 @@ package com.lch.menote.note.helper;
 public class UrlConst {
 
 
-
-    public static  String DEFAULT_IP = "";
+    public static String DEFAULT_IP = "http://192.168.1.101";
 
     public static final String SERVER = DEFAULT_IP + ":8080";
 
@@ -21,9 +20,6 @@ public class UrlConst {
     public static final String DELETE_NOTE_URL = SERVER + "/DeleteNote";
 
     public static final String GET_USER_INFO_URL = SERVER + "/GetUserInfo";
-
-
-
 
 
 }
