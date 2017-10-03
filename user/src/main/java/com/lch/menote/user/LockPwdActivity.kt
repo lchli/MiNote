@@ -10,12 +10,14 @@ import com.lch.menote.common.route.HomeModulePaths
 import com.lch.menote.common.route.NoteMod
 import com.lch.menote.common.showListDialog
 import com.lch.menote.common.toast
-import com.lch.menote.user.data.UserRepo
+import com.lch.menote.user.data.DataSources
 import com.lch.route.noaop.lib.RouteEngine
 import com.orhanobut.dialogplus.OnItemClickListener
 import kotlinx.android.synthetic.main.activity_pwd.*
 
 class LockPwdActivity : AppCompatActivity() {
+
+    private var inputPwd = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,20 +33,14 @@ class LockPwdActivity : AppCompatActivity() {
 
         patternLockView.addPatternLockListener(object : PatternLockViewListener {
             override fun onComplete(pattern: MutableList<PatternLockView.Dot>?) {
-                if (pattern == null || pattern.size < 1) {
-                    toast("密码至少6位")
-                    return
-                }
-                var inputPwd = ""
 
-                for (dot in pattern) {
-                    inputPwd += numbers[dot.row][dot.column]
-                }
-                logIfDebug("inputPwd:$inputPwd")
+                if (pattern != null) {
 
-                UserRepo.saveLockPwd(inputPwd)
-                RouteEngine.route(HomeModulePaths.ROUTE_PATH_HOME)
-                finish()
+                    for (dot in pattern) {
+                        inputPwd += numbers[dot.row][dot.column]
+                    }
+                }
+
 
             }
 
@@ -58,6 +54,20 @@ class LockPwdActivity : AppCompatActivity() {
             }
         })
 
+    }
+
+
+    fun ok(v: View) {
+        logIfDebug("inputPwd:$inputPwd")
+
+        if (inputPwd.isEmpty()) {
+            toast("密码不能为空")
+            return
+        }
+
+        DataSources.mem.saveLockPwd(inputPwd)
+        RouteEngine.route(HomeModulePaths.ROUTE_PATH_HOME)
+        finish()
     }
 
 

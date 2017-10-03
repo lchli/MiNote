@@ -56,15 +56,19 @@ class WhoApp {
 
         install(Routing) {
 
+            styles()
+
             index(dao)
             register(dao)
             login(dao)
             uploadNote(dao)
             queryAllNote(dao)
+            noteDetail(dao)
+            queryUser(dao)
 
-            static("noteImages") {
+            static(Const.UPLOAD_DIR) {
                 //staticRootFolder = File(".")
-                files("noteImages")
+                files(Const.UPLOAD_DIR)
             }
 
         }

@@ -9,8 +9,9 @@ import com.lch.menote.common.base.BaseFragment
 import com.lch.menote.common.showListDialog
 import com.lch.menote.common.util.EventBusUtils
 import com.lch.menote.note.R
+import com.lch.menote.note.data.DataSources
 import com.lch.menote.note.data.NoteRepo
-import com.lch.menote.note.helper.LocalNoteListChangedEvent
+import com.lch.menote.note.domain.LocalNoteListChangedEvent
 import com.lch.route.noaop.Android
 import com.orhanobut.dialogplus.OnItemClickListener
 import kotlinx.android.synthetic.main.fragment_local_note_list.*
@@ -74,7 +75,7 @@ class LocalNoteFragment : BaseFragment() {
 
     private fun queryNotesAsync() {
         val job = async(CommonPool) {
-            NoteRepo.queryNotesWithCat()
+            NoteRepo(DataSources.localNote).queryNotesWithCat()
         }
 
         launch(Android) {

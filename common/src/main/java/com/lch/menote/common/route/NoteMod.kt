@@ -24,4 +24,7 @@ interface NoteMod {
 
     fun onAppBackground(params: Map<String, String>? = null)
 
+    fun onUserLogout(params: Map<String, String>? = null)
+    fun onUserLogin(params: Map<String, String>? = null)
+
 }

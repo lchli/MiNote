@@ -13,7 +13,7 @@ import com.lch.menote.note.domain.Note
  */
 class NoteTable(private val context: Context) : NoteSource {
 
-    override fun queryNotes(tag: String?, title: String?, sortTimeAsc: Boolean): List<Note>? {
+    override fun queryNotes(tag: String?, title: String?, sortTimeAsc: Boolean,useId:String): List<Note>? {
         try {
 
             val builder = Dsession.noteDao(context).queryBuilder()

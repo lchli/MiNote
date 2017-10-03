@@ -6,7 +6,7 @@ import com.lch.menote.common.Glo
 import com.lch.menote.common.util.ContextProvider
 import com.lch.menote.home.route.HomeModule
 import com.lch.menote.note.route.NoteModule
-import com.lch.menote.user.UserModule
+import com.lch.menote.user.route.UserModule
 import com.lch.route.noaop.lib.RouteEngine
 
 /**

@@ -28,23 +28,24 @@ fun Route.register(dao: DAOFacade) {
             try {
                 val old = dao.queryByUserName(userName)
                 if (old != null) {
-                    call.respond(RegisterResponse(-1, "user exist"))
+                    call.respondJson(LoginResponse(-1, "user exist"))
                 } else {
-                    dao.saveUser(User(userName, userPwd, userId))
-                    call.respond(RegisterResponse(0, "success"))
+                    val user = User(userName, userPwd, userId)
+                    dao.saveUser(user)
+                    call.respondJson(LoginResponse(0, "success", user))
                 }
             } catch (e: Throwable) {
                 e.printStackTrace()
-                call.respond(RegisterResponse(-1, e.message))
+                call.respondJson(LoginResponse(-1, e.message))
             }
         } else {
-            call.respond(RegisterResponse(-1, "user name or pwd can not be null"))
+            call.respondJson(LoginResponse(-1, "user name or pwd can not be null"))
         }
 
 
     }
 
-    get<Register>{
+    get<Register> {
         call.respond(FreeMarkerContent("register.ftl", mapOf("userId" to "uid", "error" to "err"), ""))
     }
 }

@@ -13,6 +13,7 @@
         <activity android:name=".ui.ImageGalleryActivity" />
         <activity android:name=".ui.EditNoteActivity" />
         <activity android:name=".ui.MusicActivity"/>
+        <activity android:name=".ui.CloudNoteDetailActivity"/>
     </application>
 
 </manifest>

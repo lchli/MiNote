@@ -15,12 +15,13 @@ import com.lch.menote.common.launchActivity
 import com.lch.menote.common.log
 import com.lch.menote.common.util.*
 import com.lch.menote.note.R
+import com.lch.menote.note.data.DataSources
 import com.lch.menote.note.data.NoteRepo
 import com.lch.menote.note.domain.LinkData
+import com.lch.menote.note.domain.LocalNoteListChangedEvent
 import com.lch.menote.note.domain.MusicData
 import com.lch.menote.note.domain.Note
 import com.lch.menote.note.helper.JsonHelper
-import com.lch.menote.note.helper.LocalNoteListChangedEvent
 import com.lch.route.noaop.Android
 import kotlinx.android.synthetic.main.activity_edit_music.*
 import kotlinx.coroutines.experimental.CommonPool
@@ -214,7 +215,7 @@ class MusicActivity : AppCompatActivity() {
         note.content = content
         note.category = Note.CAT_MUSIC
 
-        NoteRepo.save(note)
+        NoteRepo(DataSources.localNote).save(note)
         EventBusUtils.post(LocalNoteListChangedEvent())
 
         finish()

@@ -13,10 +13,17 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.apkfuns.logutils.LogUtils
 import com.lch.menote.common.base.BaseAppCompatActivity
-import com.lch.menote.common.util.MapUtils
+import com.lch.menote.common.route.UserMod
+import com.lch.menote.common.toast
 import com.lch.menote.note.R
 import com.lch.menote.note.domain.Note
+import com.lch.route.noaop.Android
+import com.lch.route.noaop.lib.RouteEngine
 import kotlinx.android.synthetic.main.activity_cloud_note_detail.*
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
+import org.json.JSONObject
 
 class CloudNoteDetailActivity : BaseAppCompatActivity() {
 
@@ -41,12 +48,7 @@ class CloudNoteDetailActivity : BaseAppCompatActivity() {
 
         LogUtils.e("note.content:" + note!!.content)
 
-
-        val params = MapUtils.stringMap()
-
-        params.put("uid", note!!.userId)
-
-
+        loadUserAsync()
 
         web.getSettings().setSupportZoom(false)
 
@@ -57,6 +59,39 @@ class CloudNoteDetailActivity : BaseAppCompatActivity() {
 
         web.loadUrl(note!!.ShareUrl)
 
+    }
+
+
+    private fun loadUserAsync() {
+
+        val job = async(CommonPool) {
+            try {
+                val mod = RouteEngine.getModule(UserMod.MODULE_NAME) as? UserMod ?: throw Exception("can not find user module")
+
+                val userJson = mod.queryUser(mapOf("userId" to note!!.userId)) ?: throw Exception("userId not found")
+
+
+                JSONObject(userJson)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                e
+            }
+
+        }
+
+        launch(Android) {
+            val e = job.await()
+
+            if (e is Exception) {
+                applicationContext.toast(e.message)
+
+            } else {
+                userNick.text = (e as JSONObject).getString("userName")
+            }
+
+
+        }
     }
 
 

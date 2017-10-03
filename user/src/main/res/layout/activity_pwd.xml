@@ -35,9 +35,22 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:background="@color/titleView_bgColor"
+            android:onClick="ok"
+            android:text="确定"
+            android:textColor="#fff" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:background="@color/titleView_bgColor"
+            android:layout_marginLeft="10dp"
             android:onClick="reset"
             android:text="重置"
             android:textColor="#fff" />
+
+
     </LinearLayout>
 
 </LinearLayout>

@@ -19,33 +19,33 @@ public class Note implements Serializable {
     public static final int CAT_MUSIC = 2;
 
     private static final long serialVersionUID = -5367845055852303764L;
-    @SerializedName("ImagesDir")
+    @SerializedName("imageDir")
     public String imagesDir = "";
 
-    @SerializedName("Content")
+    @SerializedName("content")
     public String content = "";
 
-    @SerializedName("LastModifyTime")
+    @SerializedName("lastModifyTime")
     public String lastModifyTime;
 
-    @SerializedName("Title")
+    @SerializedName("title")
     public String title = "";
 
-    @SerializedName("Type")
+    @SerializedName("type")
     public String type = "";
 
-    @SerializedName("ThumbNail")
+    @SerializedName("thumbnail")
     public String thumbNail = "";
 
-    @SerializedName("Uid")
+    @SerializedName("noteId")
     @Id
     public String uid;
 
-    @SerializedName("UserId")
+    @SerializedName("userId")
     public String userId;
 
     @Transient
-    @SerializedName("ShareUrl")
+    @SerializedName("shareUrl")
     public String ShareUrl = "";
 
     public int category = CAT_NOTE;
@@ -141,6 +141,19 @@ public class Note implements Serializable {
         this.category = category;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "Note{" +
+                "imagesDir='" + imagesDir + '\'' +
+                ", content='" + content + '\'' +
+                ", lastModifyTime='" + lastModifyTime + '\'' +
+                ", title='" + title + '\'' +
+                ", type='" + type + '\'' +
+                ", thumbNail='" + thumbNail + '\'' +
+                ", uid='" + uid + '\'' +
+                ", userId='" + userId + '\'' +
+                ", ShareUrl='" + ShareUrl + '\'' +
+                ", category=" + category +
+                '}';
+    }
 }

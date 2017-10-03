@@ -30,20 +30,20 @@ fun Route.login(dao: DAOFacade) {
                 if (user != null) {
 
                     if (user.password == userPwd) {
-                        call.respond(LoginResponse(0, "success",user))
+                        call.respondJson(LoginResponse(0, "success", user))
                     } else {
-                        call.respond(RegisterResponse(-1, "pwd error"))
+                        call.respondJson(LoginResponse(-1, "pwd error"))
                     }
                 } else {
-                    call.respond(RegisterResponse(-1, "user not exist"))
+                    call.respondJson(LoginResponse(-1, "user not exist"))
                 }
 
             } catch (e: Throwable) {
                 e.printStackTrace()
-                call.respond(RegisterResponse(-1, e.message))
+                call.respondJson(LoginResponse(-1, e.message))
             }
         } else {
-            call.respond(RegisterResponse(-1, "userName or pwd can not be null"))
+            call.respondJson(LoginResponse(-1, "userName or pwd can not be null"))
         }
 
 

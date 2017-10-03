@@ -10,7 +10,7 @@ abstract class BaseFragment : Fragment() {
 
     var isInitLoadDataCalled = false
 
-    fun initLoadData() {
+    open fun initLoadData() {
         //def impl.
     }
 }

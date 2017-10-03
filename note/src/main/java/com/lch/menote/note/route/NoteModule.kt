@@ -7,8 +7,10 @@ import cn.finalteam.galleryfinal.FunctionConfig
 import cn.finalteam.galleryfinal.GalleryFinal
 import cn.finalteam.galleryfinal.ThemeConfig
 import com.lch.menote.common.route.NoteMod
-import com.lch.menote.note.data.NoteRepo
+import com.lch.menote.common.util.EventBusUtils
+import com.lch.menote.note.data.DataSources
 import com.lch.menote.note.data.db.Dsession
+import com.lch.menote.note.domain.CloudNoteListChangedEvent
 import com.lch.menote.note.helper.DB_DIR
 import com.lch.menote.note.helper.GlideImageLoader
 import com.lch.menote.note.ui.CloudNoteFragment
@@ -26,7 +28,7 @@ import java.io.File
 class NoteModule : Router, NoteMod {
 
     override fun init(context: Context) {
-        NoteRepo.init(context)
+        DataSources.init(context)
 
         val functionConfig = FunctionConfig.Builder()
                 .setEnableCamera(true)
@@ -63,5 +65,14 @@ class NoteModule : Router, NoteMod {
 
     override fun onAppBackground(params: Map<String, String>?) {
         Dsession.destroy()
+    }
+
+    override fun onUserLogout(params: Map<String, String>?) {
+        EventBusUtils.post(CloudNoteListChangedEvent())
+
+    }
+
+    override fun onUserLogin(params: Map<String, String>?) {
+        EventBusUtils.post(CloudNoteListChangedEvent())
     }
 }

@@ -6,8 +6,6 @@ package com.lch.minote.server
 import org.jetbrains.ktor.locations.post
 import org.jetbrains.ktor.request.PartData
 import org.jetbrains.ktor.request.receiveMultipart
-import org.jetbrains.ktor.response.respond
-import org.jetbrains.ktor.response.respondText
 import org.jetbrains.ktor.routing.Route
 import java.io.File
 
@@ -57,35 +55,13 @@ fun Route.uploadNote(dao: DAOFacade) {
                     }
 
                 }
-
+            }
                 //it.dispose()
 
-            }
-           else if (it is PartData.FileItem) {
-
-                val ext = File(it.originalFileName).extension
-                val dir = File("noteImages/${note.noteId}/")
-                if (!dir.exists()) {
-                    dir.mkdirs()
-                }
-
-                val file = File(dir, it.originalFileName)
-                it.streamProvider().use { its -> file.outputStream().buffered().use { its.copyTo(it) } }
-                videoFile = file
-
-            }
-
-            it.dispose()
-
-        }
-
-
-//        multipart.parts.forEach {
-//
-//            if (it is PartData.FileItem) {
+//            } else if (it is PartData.FileItem) {
 //
 //                val ext = File(it.originalFileName).extension
-//                val dir = File("resources/${note.noteId}/")
+//                val dir = File("${Const.UPLOAD_DIR}/${note.noteId}/")
 //                if (!dir.exists()) {
 //                    dir.mkdirs()
 //                }
@@ -97,7 +73,27 @@ fun Route.uploadNote(dao: DAOFacade) {
 //            }
 //
 //            it.dispose()
-//        }
+
+        }
+
+
+        multipart.parts.forEach {
+
+            if (it is PartData.FileItem) {
+
+                val dir = File("${Const.UPLOAD_DIR}/${note.noteId}/")
+                if (!dir.exists()) {
+                    dir.mkdirs()
+                }
+
+                val file = File(dir, it.originalFileName)
+                it.streamProvider().use { its -> file.outputStream().buffered().use { its.copyTo(it) } }
+                videoFile = file
+
+            }
+
+            it.dispose()
+        }
 
         try {
 
@@ -108,10 +104,10 @@ fun Route.uploadNote(dao: DAOFacade) {
                 dao.insertNote(note)
             }
 
-            call.respondText("123")
+            call.respondJson(BaseResponse(0, "success"))
         } catch (e: Throwable) {
             e.printStackTrace()
-            call.respond(BaseResponse(-1, e.message))
+            call.respondJson(BaseResponse(-1, e.message))
         }
 
     }

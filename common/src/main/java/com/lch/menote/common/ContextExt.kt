@@ -24,7 +24,10 @@ fun Context.launchActivity(clazz: Class<out Activity>) {
     startActivity(it)
 }
 
-fun Context.toast(msg: String, duration: Int = Toast.LENGTH_SHORT) {
+fun Context.toast(msg: String?, duration: Int = Toast.LENGTH_SHORT) {
+    if (msg == null) {
+        return
+    }
     UiHandler.post({
         Toast.makeText(this, msg, duration).show()
     })

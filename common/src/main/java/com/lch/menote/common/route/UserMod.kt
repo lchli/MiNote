@@ -23,4 +23,8 @@ interface UserMod {
     fun getLockPwd(params: Map<String, String>? = null): String
 
     fun onAppBackground(params: Map<String, String>? = null)
+
+    fun userId(params: Map<String, String>? = null): String?
+
+    fun queryUser(params: Map<String, String>? = null): String?
 }

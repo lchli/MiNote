@@ -1,10 +1,13 @@
-package com.lch.menote.user
+package com.lch.menote.user.route
 
 import android.content.Context
 import android.support.v4.app.Fragment
+import com.google.gson.Gson
 import com.lch.menote.common.launchActivity
 import com.lch.menote.common.route.UserMod
-import com.lch.menote.user.data.UserRepo
+import com.lch.menote.user.LockPwdActivity
+import com.lch.menote.user.data.DataSources
+import com.lch.menote.user.ui.UserFragmentContainer
 import com.lch.route.noaop.lib.RouteMethod
 import com.lch.route.noaop.lib.RouteService
 import com.lch.route.noaop.lib.Router
@@ -16,6 +19,10 @@ import kotlin.properties.Delegates
 @RouteService(UserMod.MODULE_NAME)
 class UserModule : Router, UserMod {
 
+    companion object {
+        const val SP = "user-sp"
+    }
+
     private var mContext: Context by Delegates.notNull()
 
     override fun init(context: Context) {
@@ -24,7 +31,7 @@ class UserModule : Router, UserMod {
 
     @RouteMethod(UserMod.INDEX)
     override fun indexPage(params: Map<String, String>?): Fragment {
-        return UserFragment()
+        return UserFragmentContainer()
     }
 
     @RouteMethod(UserMod.PWD_PAGE)
@@ -34,10 +41,32 @@ class UserModule : Router, UserMod {
 
     @RouteMethod(UserMod.GET_LOCK_PWD)
     override fun getLockPwd(params: Map<String, String>?): String {
-        return UserRepo.getLockPwd()!!
+        return DataSources.mem.getLockPwd()!!
     }
 
     override fun onAppBackground(params: Map<String, String>?) {
-        UserRepo.clearLockPwd()
+        DataSources.mem.clearLockPwd()
+    }
+
+    override fun userId(params: Map<String, String>?): String? {
+        val user = DataSources.sp.getUser()
+        if (user != null) {
+            return user.userId
+        }
+
+        return null
+    }
+
+    override fun queryUser(params: Map<String, String>?): String? {
+        if (params == null || params["userId"] == null) {
+            return null
+        }
+        try {
+            val user = DataSources.net.getUser(params["userId"]!!)
+            return Gson().toJson(user)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
     }
 }

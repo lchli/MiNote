@@ -11,6 +11,7 @@ interface DAOFacade : Closeable {
     fun init()
     fun saveUser(user: User)
     fun queryByUserName(userName: String): User?
+    fun queryByUserId(userId: String): User?
     fun queryNote(noteId: String): Note?
     fun insertNote(note: Note)
     fun updateNote(note: Note)
@@ -51,6 +52,15 @@ class DAOFacadeDatabase(val db: Database = Database.connect("jdbc:h2:mem:test", 
                 .singleOrNull()
     }
 
+    override fun queryByUserId(userId: String): User? = db.transaction {
+
+        UserTable.select { UserTable.userId.eq(userId) }
+                .mapNotNull {
+                    User(it[UserTable.userName], it[UserTable.password], it[UserTable.userId])
+                }
+                .singleOrNull()
+    }
+
 
     override fun queryNote(noteId: String): Note? = db.transaction {
 
@@ -70,7 +80,7 @@ class DAOFacadeDatabase(val db: Database = Database.connect("jdbc:h2:mem:test", 
 
                 NoteTable.select { NoteTable.userId.eq(userId) }
                         .mapNotNull {
-                            val ImagesDir = "${WhoApp.DEFAULT_IP}/noteImages/${it[NoteTable.noteId]}"
+                            val ImagesDir = "${WhoApp.DEFAULT_IP}/${Const.UPLOAD_DIR}/${it[NoteTable.noteId]}"
 
                             val ShareUrl = "${WhoApp.DEFAULT_IP}/noteDetail?Uid=${it[NoteTable.noteId]}"
 
@@ -88,7 +98,7 @@ class DAOFacadeDatabase(val db: Database = Database.connect("jdbc:h2:mem:test", 
 
                 NoteTable.selectAll()
                         .mapNotNull {
-                            val ImagesDir = "${WhoApp.DEFAULT_IP}/noteImages/${it[NoteTable.noteId]}"
+                            val ImagesDir = "${WhoApp.DEFAULT_IP}/${Const.UPLOAD_DIR}/${it[NoteTable.noteId]}"
 
                             val ShareUrl = "${WhoApp.DEFAULT_IP}/noteDetail?Uid=${it[NoteTable.noteId]}"
 

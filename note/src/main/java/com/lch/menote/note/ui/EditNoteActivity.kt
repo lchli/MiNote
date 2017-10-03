@@ -23,10 +23,11 @@ import com.lch.menote.common.base.BaseAppCompatActivity
 import com.lch.menote.common.drawBitmap
 import com.lch.menote.common.util.*
 import com.lch.menote.note.R
+import com.lch.menote.note.data.DataSources
 import com.lch.menote.note.data.NoteRepo
+import com.lch.menote.note.domain.LocalNoteListChangedEvent
 import com.lch.menote.note.domain.Note
 import com.lch.menote.note.helper.BITMAP_MAX_MEMORY
-import com.lch.menote.note.helper.LocalNoteListChangedEvent
 import com.lch.menote.note.helper.NoteUtils
 import com.lch.menote.note.helper.STUDY_APP_ROOT_DIR
 import com.orhanobut.dialogplus.DialogPlus
@@ -108,7 +109,7 @@ class EditNoteActivity : BaseAppCompatActivity(), View.OnClickListener {
             note.content = htmlContent
             note.imagesDir = courseDir
 
-            NoteRepo.save(note)
+            NoteRepo(DataSources.localNote).save(note)
             deleteUnusedImages(note)
 
             EventBusUtils.post(LocalNoteListChangedEvent())
