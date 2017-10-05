@@ -20,6 +20,6 @@ object NoteTable : Table() {
 }
 
 @location("/uploadNote")
-data class Note(var noteId: String? = null, var userId: String? = null, var title: String? = null, var imageDir: String = "",
-                var lastModifyTime: String? = null, var type: String? = null,
-                var thumbnail: String? = null, var content: String? = null, var shareUrl: String= "")
+data class Note(var noteId: String? = null, var userId: String? = null, var title: String? = "", var imageDir: String = "",
+                var lastModifyTime: String? =System.currentTimeMillis().toString(), var type: String? = "",
+                var thumbnail: String? = "", var content: String? = "", var shareUrl: String= "")

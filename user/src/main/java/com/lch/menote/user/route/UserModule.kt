@@ -2,9 +2,9 @@ package com.lch.menote.user.route
 
 import android.content.Context
 import android.support.v4.app.Fragment
-import com.google.gson.Gson
 import com.lch.menote.common.launchActivity
 import com.lch.menote.common.route.UserMod
+import com.lch.menote.common.route.model.User
 import com.lch.menote.user.LockPwdActivity
 import com.lch.menote.user.data.DataSources
 import com.lch.menote.user.ui.UserFragmentContainer
@@ -48,22 +48,17 @@ class UserModule : Router, UserMod {
         DataSources.mem.clearLockPwd()
     }
 
-    override fun userId(params: Map<String, String>?): String? {
+    override fun userSession(): User? {
         val user = DataSources.sp.getUser()
-        if (user != null) {
-            return user.userId
-        }
 
-        return null
+        return user
     }
 
-    override fun queryUser(params: Map<String, String>?): String? {
-        if (params == null || params["userId"] == null) {
-            return null
-        }
+    override fun queryUser(userId: String): User? {
+
         try {
-            val user = DataSources.net.getUser(params["userId"]!!)
-            return Gson().toJson(user)
+            val user = DataSources.net.getUser(userId)
+            return user
         } catch (e: Exception) {
             e.printStackTrace()
             return null

@@ -2,8 +2,8 @@ package com.lch.menote.user.data.sp
 
 import com.blankj.utilcode.util.SPUtils
 import com.google.gson.Gson
+import com.lch.menote.common.route.model.User
 import com.lch.menote.user.data.UserSource
-import com.lch.menote.user.domain.User
 import com.lch.menote.user.route.UserModule
 
 /**

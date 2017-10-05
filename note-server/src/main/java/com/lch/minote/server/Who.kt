@@ -65,6 +65,8 @@ class WhoApp {
             queryAllNote(dao)
             noteDetail(dao)
             queryUser(dao)
+            writeNote(dao)
+            deleteNote(dao)
 
             static(Const.UPLOAD_DIR) {
                 //staticRootFolder = File(".")

@@ -1,5 +1,6 @@
 package com.lch.minote.server
 
+import org.apache.commons.io.FileUtils
 import org.jetbrains.exposed.sql.*
 import java.io.Closeable
 import java.io.File
@@ -13,6 +14,7 @@ interface DAOFacade : Closeable {
     fun queryByUserName(userName: String): User?
     fun queryByUserId(userId: String): User?
     fun queryNote(noteId: String): Note?
+    fun deleteNote(noteId: String)
     fun insertNote(note: Note)
     fun updateNote(note: Note)
     fun queryAllNote(userId: String): List<Note>?
@@ -147,4 +149,11 @@ class DAOFacadeDatabase(val db: Database = Database.connect("jdbc:h2:mem:test", 
         }
     }
 
+    override fun deleteNote(noteId: String) {
+        db.transaction {
+            NoteTable.deleteWhere { NoteTable.noteId eq noteId }
+
+            FileUtils.deleteDirectory(File("resources/"+noteId))
+        }
+    }
 }

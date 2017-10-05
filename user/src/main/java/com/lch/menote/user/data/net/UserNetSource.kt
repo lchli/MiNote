@@ -1,8 +1,8 @@
 package com.lch.menote.user.data.net
 
 import com.lch.menote.common.Glo
+import com.lch.menote.common.route.model.User
 import com.lch.menote.user.data.UserSource
-import com.lch.menote.user.domain.User
 
 /**
  * Created by lichenghang on 2017/10/3.

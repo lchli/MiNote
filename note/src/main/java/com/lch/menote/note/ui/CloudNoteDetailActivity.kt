@@ -14,6 +14,7 @@ import android.webkit.WebViewClient
 import com.apkfuns.logutils.LogUtils
 import com.lch.menote.common.base.BaseAppCompatActivity
 import com.lch.menote.common.route.UserMod
+import com.lch.menote.common.route.model.User
 import com.lch.menote.common.toast
 import com.lch.menote.note.R
 import com.lch.menote.note.domain.Note
@@ -23,7 +24,6 @@ import kotlinx.android.synthetic.main.activity_cloud_note_detail.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
-import org.json.JSONObject
 
 class CloudNoteDetailActivity : BaseAppCompatActivity() {
 
@@ -68,10 +68,8 @@ class CloudNoteDetailActivity : BaseAppCompatActivity() {
             try {
                 val mod = RouteEngine.getModule(UserMod.MODULE_NAME) as? UserMod ?: throw Exception("can not find user module")
 
-                val userJson = mod.queryUser(mapOf("userId" to note!!.userId)) ?: throw Exception("userId not found")
+                mod.queryUser(note!!.userId) ?: throw Exception("userId not found")
 
-
-                JSONObject(userJson)
 
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -87,7 +85,7 @@ class CloudNoteDetailActivity : BaseAppCompatActivity() {
                 applicationContext.toast(e.message)
 
             } else {
-                userNick.text = (e as JSONObject).getString("userName")
+                userNick.text = (e as User).userName
             }
 
 

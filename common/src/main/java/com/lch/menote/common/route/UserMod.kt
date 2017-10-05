@@ -1,6 +1,7 @@
 package com.lch.menote.common.route
 
 import android.support.v4.app.Fragment
+import com.lch.menote.common.route.model.User
 
 /**
  * Created by Administrator on 2017/9/28.
@@ -24,7 +25,7 @@ interface UserMod {
 
     fun onAppBackground(params: Map<String, String>? = null)
 
-    fun userId(params: Map<String, String>? = null): String?
+    fun userSession(): User?
 
-    fun queryUser(params: Map<String, String>? = null): String?
+    fun queryUser(userId: String): User?
 }

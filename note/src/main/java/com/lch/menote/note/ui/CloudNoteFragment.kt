@@ -62,10 +62,10 @@ class CloudNoteFragment : BaseFragment() {
             try {
                 val mod = RouteEngine.getModule(UserMod.MODULE_NAME) as? UserMod ?: throw Exception("can not find user module")
 
-                val userId = mod.userId() ?: throw Exception("not login")
+                val user = mod.userSession() ?: throw Exception("not login")
 
 
-                DataSources.netNote.queryNotes(useId = userId)
+                DataSources.netNote.queryNotes(useId = user.userId)
 
             } catch (e: Exception) {
                 e.printStackTrace()

@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.lch.menote.common.base.BaseFragment
+import com.lch.menote.common.route.model.User
 import com.lch.menote.user.R
 import com.lch.menote.user.data.DataSources
-import com.lch.menote.user.domain.User
 
 /**
  * Created by lchli on 2016/8/10.

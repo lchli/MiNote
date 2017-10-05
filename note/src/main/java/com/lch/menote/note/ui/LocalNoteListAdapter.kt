@@ -199,8 +199,8 @@ class LocalNoteListAdapter : PinnedRecyclerAdapter() {
                     return
                 }
 
-                val userId = mod.userId()
-                if (userId == null) {
+                val user = mod.userSession()
+                if (user == null) {
                     context.toast("not login")
                     return
                 }
@@ -216,7 +216,7 @@ class LocalNoteListAdapter : PinnedRecyclerAdapter() {
                         .addParam("Type", data.type)
                         .addParam("ThumbNail", data.thumbNail)
                         .addParam("Content", data.content)
-                        .addParam("UserId", userId)
+                        .addParam("UserId", user.userId)
 
                 if (files != null) {
 

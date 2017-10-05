@@ -1,6 +1,7 @@
 package com.lch.menote.user.data
 
-import com.lch.menote.user.domain.User
+import com.lch.menote.common.route.model.User
+
 
 /**
  * Created by lichenghang on 2017/10/3.
