@@ -21,6 +21,7 @@ import cn.finalteam.toolsfinal.io.FileUtils
 import com.apkfuns.logutils.LogUtils
 import com.lch.menote.common.base.BaseAppCompatActivity
 import com.lch.menote.common.drawBitmap
+import com.lch.menote.common.saveViewBmpToSdcard2
 import com.lch.menote.common.util.*
 import com.lch.menote.note.R
 import com.lch.menote.note.data.DataSources
@@ -79,7 +80,7 @@ class EditNoteActivity : BaseAppCompatActivity(), View.OnClickListener {
         val bmp = BitmapScaleUtil.decodeSampledBitmapFromPath(imagePath, BITMAP_MAX_MEMORY) ?: return@ImageGetter null
 
         val w = bmp.width
-        val h = bmp.height
+        val h = bmp.height/2
 
         val drawable = BitmapDrawable(bmp)
         val left = (ScreenHelper.getScreenWidth(applicationContext) - w) / 2
@@ -127,6 +128,11 @@ class EditNoteActivity : BaseAppCompatActivity(), View.OnClickListener {
                             1 -> {
                                 dialog.dismiss()
                                 openCamera()
+                            }
+
+                            2 -> {
+                                dialog.dismiss()
+                                imageEditText_content.saveViewBmpToSdcard2()
                             }
                         }
                     }
@@ -203,14 +209,12 @@ class EditNoteActivity : BaseAppCompatActivity(), View.OnClickListener {
 
     internal class InsertImageDialogAdapter(context: Context) : BaseAdapter() {
 
-        private val layoutInflater: LayoutInflater
+        private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
+        private val datas = arrayOf(0, 1, 2)
 
-        init {
-            layoutInflater = LayoutInflater.from(context)
-        }
 
         override fun getCount(): Int {
-            return 2
+            return datas.size
         }
 
         override fun getItem(position: Int): Any {
@@ -238,13 +242,18 @@ class EditNoteActivity : BaseAppCompatActivity(), View.OnClickListener {
 
             val context = parent.context
             when (position) {
-                0 -> {
+                datas[0] -> {
                     viewHolder.textView!!.text = context.getString(R.string.photo_album)
                     viewHolder.imageView!!.setImageResource(R.drawable.ic_album)
                 }
-                1 -> {
+                datas[1] -> {
                     viewHolder.textView!!.text = context.getString(R.string.camera)
                     viewHolder.imageView!!.setImageResource(R.drawable.ic_camera)
+                }
+
+                datas[2] -> {
+                    viewHolder.textView!!.text = context.getString(R.string.save_as_img)
+                    viewHolder.imageView!!.setImageResource(R.drawable.ic_exit)
                 }
             }
 

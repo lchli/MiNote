@@ -2,18 +2,19 @@ package com.lch.menote.note.ui
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.view.View
 import com.blankj.utilcode.util.SizeUtils
 import com.google.gson.Gson
-import com.lch.menote.common.drawBitmap
 import com.lch.menote.common.launchActivity
 import com.lch.menote.common.log
-import com.lch.menote.common.util.*
+import com.lch.menote.common.saveViewBmpToSdcard
+import com.lch.menote.common.util.AppListItemAnimatorUtils
+import com.lch.menote.common.util.EventBusUtils
+import com.lch.menote.common.util.TimeUtils
+import com.lch.menote.common.util.UUIDUtils
 import com.lch.menote.note.R
 import com.lch.menote.note.data.DataSources
 import com.lch.menote.note.data.NoteRepo
@@ -22,12 +23,7 @@ import com.lch.menote.note.domain.LocalNoteListChangedEvent
 import com.lch.menote.note.domain.MusicData
 import com.lch.menote.note.domain.Note
 import com.lch.menote.note.helper.JsonHelper
-import com.lch.route.noaop.Android
 import kotlinx.android.synthetic.main.activity_edit_music.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
-import java.io.File
 
 class MusicActivity : AppCompatActivity() {
 
@@ -160,31 +156,7 @@ class MusicActivity : AppCompatActivity() {
     }
 
     fun save(v: View) {
-
-        val viewBmp = musicGrid.drawBitmap()
-        val destFile = File(Environment.getExternalStorageDirectory(), UUIDUtils.uuid() + ".jpg")
-
-        val job = async(CommonPool) {
-            BitmapScaleUtil.saveBitmap(viewBmp, destFile, 100)
-        }
-
-        launch(Android) {
-
-            val isSuccess = job.await()
-            if (!isSuccess) {
-                ToastUtils.systemToast(R.string.save_note_thumb_fail)
-            } else {
-                ToastUtils.systemToast("图片已保存")
-
-                val scanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
-                scanIntent.data = Uri.fromFile(destFile)
-                applicationContext.sendBroadcast(scanIntent)
-
-                ImageGalleryActivity.startSelf(applicationContext, arrayListOf(destFile.absolutePath), 0)
-
-            }
-        }
-
+        musicGrid.saveViewBmpToSdcard()
 
     }
 

@@ -21,6 +21,7 @@
     <string name="save_note_thumb_fail">保存笔记预览图失败！</string>
     <string name="photo_album">相册</string>
     <string name="camera">照相</string>
+    <string name="save_as_img">存为图片</string>
     <string name="sort_time_asc">时间升序</string>
     <string name="sort_time_desc">时间降序</string>
     <string name="loading_msg">正在加载...</string>

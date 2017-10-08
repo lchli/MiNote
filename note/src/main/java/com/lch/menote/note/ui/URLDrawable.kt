@@ -36,7 +36,7 @@ class URLDrawable(context: Context, private val imageName: String) : BitmapDrawa
         val width = ScreenHelper.getScreenWidth(context)
         val size = NoteUtils.parseNoteImageSize(imageName)
         val w = size[0]
-        val h = size[1]
+        val h = size[1]/2
         return Rect((width - w) / 2, 0, (width - w) / 2 + w, h)
 
     }

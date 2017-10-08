@@ -35,7 +35,11 @@ class MusicGridView : RecyclerView {
         invalidate()
     }
 
-    private fun drawLines(v1: View, v2: View, canvas: Canvas?, text: String?) {
+    private fun drawLines(v1: View?, v2: View?, canvas: Canvas?, text: String?) {
+        if(v1==null||v2==null){
+            return
+        }
+
         val oval = RectF(v1.left.toFloat() + v1.width / 2, v1.top.toFloat(), v2.left.toFloat() + v2.width / 2, v2.top.toFloat() + v2.height / 2)
 
         p.style = Paint.Style.STROKE
