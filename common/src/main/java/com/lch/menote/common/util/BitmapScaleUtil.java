@@ -120,7 +120,7 @@ public class BitmapScaleUtil {
     }
 
     /**
-     * assume one pix use 4 bytes.Bitmap.Config.ARGB_8888.
+     * assume one pix use 4 bytes.Bitmap.NetKit.ARGB_8888.
      */
     private final static int calculateInSampleSize(
             Options options, long reqMemorySize) {

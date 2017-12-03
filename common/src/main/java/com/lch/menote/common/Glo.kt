@@ -2,7 +2,7 @@ package com.lch.menote.common
 
 import android.content.Context
 import com.lch.menote.common.netkit.file.FileManager
-import com.lch.menote.common.netkit.text.Retrofits
+import com.lch.menote.common.netkit.string.Retrofits
 import retrofit2.Retrofit
 import kotlin.properties.Delegates
 

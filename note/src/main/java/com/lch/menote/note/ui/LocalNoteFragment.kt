@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.lch.menote.common.base.BaseFragment
+import com.lch.menote.common.netkit.NetKit
+import com.lch.menote.common.netkit.string.Callback
+import com.lch.menote.common.netkit.string.StringRequestParams
 import com.lch.menote.common.showListDialog
 import com.lch.menote.common.util.EventBusUtils
 import com.lch.menote.note.R
@@ -82,6 +85,25 @@ class LocalNoteFragment : BaseFragment() {
             val result = job.await()
             notesAdp.refresh(result)
         }
+
+        NetKit.stringRequest().post(
+                StringRequestParams()
+                        .setUrl("")
+                        .addParam("UserId", "")
+                        .addParam("UserToken", ""),
+                { responseString ->
+                    listOf()
+
+                }, object : Callback<List<Any>> {
+            override fun onSuccess(result: List<Any>?) {
+
+            }
+
+            override fun onFail(msg: String?) {
+            }
+        }
+        )
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

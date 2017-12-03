@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager
 import com.lch.menote.common.base.BaseAppCompatActivity
 import com.lch.menote.common.base.BaseFragment
 import com.lch.menote.common.base.FragmentAdapter
+import com.lch.menote.common.netkit.NetKit
 import com.lch.menote.common.route.NoteMod
 import com.lch.menote.common.route.NoteModulePaths
 import com.lch.menote.common.route.UserMod
@@ -73,6 +74,8 @@ class HomeActivity : BaseAppCompatActivity() {
 
         tabs.tabMode = TabLayout.MODE_FIXED
         tabs.setupWithViewPager(viewpager)
+
+
 
 
     }

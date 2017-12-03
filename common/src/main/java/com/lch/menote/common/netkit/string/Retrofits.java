@@ -1,6 +1,6 @@
-package com.lch.menote.common.netkit.text;
+package com.lch.menote.common.netkit.string;
 
-import com.lch.menote.common.netkit.NetClient;
+import com.lch.menote.common.netkit.NetKit;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +25,7 @@ public final class Retrofits {
                     r = new Retrofit.Builder()
                             .baseUrl(baseUrl)
                             .addConverterFactory(GsonConverterFactory.create())
-                            .callFactory(NetClient.ok())
+                            .callFactory(NetKit.client())
                             .build();
                     fits.put(baseUrl, r);
                 }
@@ -34,4 +34,6 @@ public final class Retrofits {
 
         return r;
     }
+
+
 }

@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.blankj.utilcode.util.EncryptUtils;
-import com.lch.menote.common.netkit.NetClient;
+import com.lch.menote.common.netkit.NetKit;
 import com.lch.menote.common.netkit.file.helper.DownloadFileParams;
 import com.lch.menote.common.netkit.file.helper.FileConst;
 import com.lch.menote.common.netkit.file.helper.FileOptions;
@@ -57,7 +57,7 @@ public class FileTransferImpl extends FileTransfer {
     private final ExecutorService executorService = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60, TimeUnit.SECONDS,
             new SynchronousQueue<Runnable>(), Util.threadFactory("OkHttp Dispatcher", false));
 
-    private final OkHttpClient mOkHttpClient = NetClient.ok();
+    private final OkHttpClient mOkHttpClient = NetKit.client();
 
 
     @Override
