@@ -2,17 +2,11 @@ package com.lch.menote.home
 
 import android.os.Bundle
 import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import com.lch.menote.common.base.BaseAppCompatActivity
 import com.lch.menote.common.base.BaseFragment
-import com.lch.menote.common.base.FragmentAdapter
-import com.lch.menote.common.netkit.NetKit
-import com.lch.menote.common.route.NoteMod
-import com.lch.menote.common.route.NoteModulePaths
-import com.lch.menote.common.route.UserMod
 import com.lch.menote.common.util.ResUtils
-import com.lch.route.noaop.lib.RouteEngine
+import com.lch.menote.home.route.RouteCall
 import kotlinx.android.synthetic.main.activity_home.*
 
 
@@ -22,21 +16,21 @@ class HomeActivity : BaseAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-        val adapter = FragmentAdapter(supportFragmentManager)
+        val adapter = com.lch.menote.common.base.FragmentAdapter(supportFragmentManager)
 
-        val local = RouteEngine.route(NoteModulePaths.ROUTE_PATH_LOCAL_NOTE) as? Fragment
+        val local = RouteCall.getNoteModule()?.localFrament(null)
         if (local != null) {
             adapter.addFragment(local, ResUtils.parseString(R.string.note))
         }
 
-        val cloud = RouteEngine.route(NoteModulePaths.ROUTE_PATH_CLOUD_NOTE) as? Fragment
+        val cloud = RouteCall.getNoteModule()?.cloudFragment(null)
         if (cloud != null) {
             adapter.addFragment(cloud, ResUtils.parseString(R.string.cloud_note))
         }
 
-        val userMod = RouteEngine.getModule(UserMod.MODULE_NAME) as? UserMod
-        if (userMod != null) {
-            adapter.addFragment(userMod.indexPage(), ResUtils.parseString(R.string.user))
+        val userFragment =RouteCall.getUserModule()?.indexPage(null)
+        if (userFragment != null) {
+            adapter.addFragment(userFragment, ResUtils.parseString(R.string.user))
         }
 
         viewpager.adapter = adapter
@@ -50,7 +44,7 @@ class HomeActivity : BaseAppCompatActivity() {
 
             override fun onPageSelected(position: Int) {
 
-                val fragmentAdapter = viewpager.adapter as FragmentAdapter
+                val fragmentAdapter = viewpager.adapter as com.lch.menote.common.base.FragmentAdapter
 
                 val fragment = fragmentAdapter.getItem(position) as BaseFragment
 
@@ -87,7 +81,8 @@ class HomeActivity : BaseAppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        (RouteEngine.getModule(NoteMod.MODULE_NAME) as? NoteMod)?.onAppBackground()
+
+        RouteCall.getNoteModule()?.onAppBackground(null)
     }
 
 }

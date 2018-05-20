@@ -12,8 +12,8 @@ import com.lch.menote.common.base.BaseAppCompatActivity
 import com.lch.menote.common.launchActivity
 import com.lch.menote.note.R
 import com.lch.menote.note.domain.Note
+import com.lch.menote.note.helper.ConstantUtil
 import com.lch.menote.note.helper.NoteUtils
-import com.lch.menote.note.helper.STUDY_APP_ROOT_DIR
 import kotlinx.android.synthetic.main.activity_local_note_detail.*
 import kotlin.properties.Delegates
 
@@ -42,7 +42,7 @@ class LocalNoteDetailActivity : BaseAppCompatActivity() {
                 if (span is ImageSpan) {
                     val imagePath = String.format("%s/%s", note!!.imagesDir, span.source)
                     LogUtils.e("clicked img:" + imagePath)
-                    val imgSrcs = NoteUtils.parseImageSpanSrc(imageEditText_content, STUDY_APP_ROOT_DIR)
+                    val imgSrcs = NoteUtils.parseImageSpanSrc(imageEditText_content, ConstantUtil. STUDY_APP_ROOT_DIR)
                     var current = imgSrcs.indexOf(imagePath)
                     if (current == -1) {
                         current = 0
@@ -75,7 +75,8 @@ class LocalNoteDetailActivity : BaseAppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val i = item.itemId
         if (i == R.id.action_edit_note) {
-            EditNoteActivity.startSelf(this, note)
+            //EditNoteActivity.startSelf(this, note)
+
             finish()
 
         } else if (i == android.R.id.home) {

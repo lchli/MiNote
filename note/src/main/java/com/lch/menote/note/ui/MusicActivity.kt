@@ -17,7 +17,6 @@ import com.lch.menote.common.util.TimeUtils
 import com.lch.menote.common.util.UUIDUtils
 import com.lch.menote.note.R
 import com.lch.menote.note.data.DataSources
-import com.lch.menote.note.data.NoteRepo
 import com.lch.menote.note.domain.LinkData
 import com.lch.menote.note.domain.LocalNoteListChangedEvent
 import com.lch.menote.note.domain.MusicData
@@ -187,7 +186,7 @@ class MusicActivity : AppCompatActivity() {
         note.content = content
         note.category = Note.CAT_MUSIC
 
-        NoteRepo(DataSources.localNote).save(note)
+        DataSources.localNote.save(note)
         EventBusUtils.post(LocalNoteListChangedEvent())
 
         finish()

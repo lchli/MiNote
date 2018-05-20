@@ -1,8 +1,8 @@
 package com.lch.menote.user.data.net
 
 import com.lch.menote.common.Glo
-import com.lch.menote.common.route.model.User
 import com.lch.menote.user.data.UserSource
+import com.lch.menote.userapi.User
 
 /**
  * Created by lichenghang on 2017/10/3.
@@ -41,7 +41,7 @@ object UserNetSource : UserSource {
     }
 
     override fun getUser(userId: String): User? {
-        val api = Glo.noteRetrofit.create(UserApi::class.java)
+        val api = Glo.noteRetrofit?.create(UserApi::class.java)
         val resp = api.queryUser(userId).execute()
         val body = resp.body()
         if (body != null) {

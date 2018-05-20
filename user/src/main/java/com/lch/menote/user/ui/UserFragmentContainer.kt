@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.lch.menote.common.base.BaseFragment
-import com.lch.menote.common.route.model.User
 import com.lch.menote.user.R
-import com.lch.menote.user.data.DataSources
+import com.lch.menote.user.data.DI
+import com.lch.menote.userapi.User
 
 /**
  * Created by lchli on 2016/8/10.
@@ -58,7 +58,7 @@ class UserFragmentContainer : BaseFragment() {
         var session: User? = null
 
         try {
-            session = DataSources.sp.getUser()
+            session = DI.provideSpSource().getUser()
         } catch (e: Exception) {
             e.printStackTrace()
         }

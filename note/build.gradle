@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'org.greenrobot.greendao'
-apply from: "${rootDir}/depend.gradle"
+
+apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
@@ -28,9 +29,42 @@ android {
 }
 
 dependencies {
-    implementation project(":common")
-    implementation 'com.github.lchli:AndroidPinnedRecyclerView:1.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    testImplementation "junit:junit:$junit_version"
+
+
+    compile "com.android.support:design:${rootProject.ext.android_support_version}"
+    compile "com.android.support:appcompat-v7:${rootProject.ext.android_support_version}"
+    compile "com.android.support.constraint:constraint-layout:${rootProject.ext.constraint_layout_version}"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_version"
+    compile "com.github.lchli:router:$router_version"
+    compile "com.github.lchli:AndroidPinnedRecyclerView:$AndroidPinnedRecyclerView_version"
+    compile "org.greenrobot:eventbus:$eventbus_version"
+    compile "com.apkfuns.logutils:library:$logutils_version"
+    compile "org.apache.commons:commons-lang3:$commons_lang_version"
+    compile "commons-io:commons-io:$commons_io_version"
+    compile "org.greenrobot:greendao:$greendao_version"
+    compile "net.zetetic:android-database-sqlcipher:$sqlcipher_version@aar"
+    compile "com.google.code.gson:gson:$gson_version"
+    compile 'cn.finalteam:galleryfinal:1.4.8.7'
+    compile "com.github.bumptech.glide:glide:$glide_version"
+
+    compile "com.bigkoo:convenientbanner:$convenientbanner_version"
+    compile "com.orhanobut:dialogplus:$dialogplus_version@aar"
+    compile "com.blankj:utilcode:$utilcode_version"
+
+    compile "com.andrognito.patternlockview:patternlockview:$patternlockview_version"
+    compile "com.squareup.okhttp3:okhttp:$okhttp_version"
+    compile "com.squareup.retrofit2:retrofit:$retrofit2_version"
+    compile "com.squareup.retrofit2:converter-gson:$retrofit2_version"
+    compile "com.github.lchli:NetKit:$rootProject.ext.netkit_version"
+
+
+
+    compile project(":common")
+    compile project(":noteapi")
+    compile project(":userapi")
+
 }
 
 

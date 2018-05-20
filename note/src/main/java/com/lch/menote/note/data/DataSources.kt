@@ -1,8 +1,8 @@
 package com.lch.menote.note.data
 
 import android.content.Context
-import com.lch.menote.note.data.db.NoteTable
-import com.lch.menote.note.data.net.NoteNetSource
+import com.lch.menote.note.data.db.DbNoteRepo
+import com.lch.menote.note.data.net.NetNoteRepo
 import kotlin.properties.Delegates
 
 /**
@@ -14,7 +14,7 @@ internal object DataSources {
     var netNote: NoteSource by Delegates.notNull()
 
     fun init(context: Context) {
-        localNote = NoteTable(context)
-        netNote = NoteNetSource()
+        localNote = DbNoteRepo(context)
+        netNote = NetNoteRepo()
     }
 }

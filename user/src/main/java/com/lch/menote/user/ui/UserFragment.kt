@@ -5,10 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.lch.menote.common.base.BaseFragment
-import com.lch.menote.common.route.NoteMod
 import com.lch.menote.user.R
-import com.lch.menote.user.data.DataSources
-import com.lch.route.noaop.lib.RouteEngine
+import com.lch.menote.user.data.DI
+import com.lch.menote.user.route.RouteCall
 import kotlinx.android.synthetic.main.fragment_user.*
 
 /**
@@ -26,16 +25,16 @@ class UserFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         logout_widget.setOnClickListener {
-            DataSources.sp.removeCurrentUser()
+            DI.provideSpSource().removeCurrentUser()
 
-            val mod = RouteEngine.getModule(NoteMod.MODULE_NAME) as? NoteMod
-            mod?.onUserLogout()
+            val mod = RouteCall.getNoteModule()
+            mod?.onUserLogout(null)
 
             val userFragmentContainer = parentFragment as UserFragmentContainer
             userFragmentContainer.toLogin(true)
         }
 
-        val session = DataSources.sp.getUser()
+        val session = DI.provideSpSource().getUser()
 
         if (session != null) {
             user_nick.text = session.userName

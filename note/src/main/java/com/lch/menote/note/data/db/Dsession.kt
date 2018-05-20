@@ -1,11 +1,11 @@
 package com.lch.menote.note.data.db
 
 import android.content.Context
-import com.lch.menote.common.route.UserMod
 import com.lch.menote.note.data.db.gen.DaoMaster
 import com.lch.menote.note.data.db.gen.DaoSession
 import com.lch.menote.note.data.db.gen.NoteDao
-import com.lch.menote.note.helper.NOTE_DB
+import com.lch.menote.note.helper.ConstantUtil
+import com.lch.menote.userapi.UserRouteApi
 import com.lch.route.noaop.lib.RouteEngine
 
 /**
@@ -17,14 +17,14 @@ object Dsession {
 
     private fun daoSession(context: Context): DaoSession {
         if (noteDaoSession == null) {
-            val helper = AppDbOpenHelper(context, NOTE_DB, isSdcardDatabase = true)
-            val pwd = (RouteEngine.getModule(UserMod.MODULE_NAME) as? UserMod)?.getLockPwd()
+            val helper = AppDbOpenHelper(context, ConstantUtil.NOTE_DB, isSdcardDatabase = true)
+            val pwd = (RouteEngine.getModule(UserRouteApi.MODULE_NAME) as? UserRouteApi)?.getLockPwd(null)
             noteDaoSession = DaoMaster(helper.getEncryptedWritableDb(pwd!!)).newSession()
         }
         return noteDaoSession!!
     }
 
-    internal fun destroy() {
+     fun destroy() {
 
         noteDaoSession?.database?.close()
         noteDaoSession?.clear()

@@ -9,4 +9,7 @@
 /build
 /captures
 .externalNativeBuild
+*.hprof
+.hprof
+java_pid700.hprof
 

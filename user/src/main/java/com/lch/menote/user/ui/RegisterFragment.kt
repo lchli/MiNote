@@ -5,12 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.lch.menote.common.base.BaseFragment
-import com.lch.menote.common.route.NoteMod
 import com.lch.menote.common.toast
 import com.lch.menote.user.R
-import com.lch.menote.user.data.DataSources
+import com.lch.menote.user.data.DI
+import com.lch.menote.user.route.RouteCall
 import com.lch.route.noaop.Android
-import com.lch.route.noaop.lib.RouteEngine
 import kotlinx.android.synthetic.main.fragment_register.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
@@ -47,9 +46,9 @@ class RegisterFragment : BaseFragment() {
                 val username = user_account_edit.text.toString()
                 val pwd = user_pwd_edit.text.toString()
 
-                val user = DataSources.net.addUser(username, pwd)
+                val user = DI.provideNetSource().addUser(username, pwd)
                 if (user != null) {
-                    DataSources.sp.addUser(user)
+                    DI.provideSpSource().addUser(user)
 
                 } else {
                     Exception("register fail")
@@ -68,8 +67,8 @@ class RegisterFragment : BaseFragment() {
                 getContext().toast(e.message)
 
             } else {
-                val mod = RouteEngine.getModule(NoteMod.MODULE_NAME) as? NoteMod
-                mod?.onUserLogin()
+                val mod = RouteCall.getNoteModule()
+                mod?.onUserLogin(null)
 
                 val userFragmentContainer = parentFragment as UserFragmentContainer
                 userFragmentContainer.toUserCenter(false)

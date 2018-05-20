@@ -1,8 +1,8 @@
 package com.lch.menote.user.data.mem
 
 import com.blankj.utilcode.util.EncryptUtils
-import com.lch.menote.common.route.model.User
 import com.lch.menote.user.data.UserSource
+import com.lch.menote.userapi.User
 
 /**
  * Created by lichenghang on 2017/10/3.

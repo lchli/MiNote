@@ -6,12 +6,10 @@ import android.view.View
 import com.andrognito.patternlockview.PatternLockView
 import com.andrognito.patternlockview.listener.PatternLockViewListener
 import com.lch.menote.common.logIfDebug
-import com.lch.menote.common.route.HomeModulePaths
-import com.lch.menote.common.route.NoteMod
 import com.lch.menote.common.showListDialog
 import com.lch.menote.common.toast
-import com.lch.menote.user.data.DataSources
-import com.lch.route.noaop.lib.RouteEngine
+import com.lch.menote.user.data.DI
+import com.lch.menote.user.route.RouteCall
 import com.orhanobut.dialogplus.OnItemClickListener
 import kotlinx.android.synthetic.main.activity_pwd.*
 
@@ -65,8 +63,8 @@ class LockPwdActivity : AppCompatActivity() {
             return
         }
 
-        DataSources.mem.saveLockPwd(inputPwd)
-        RouteEngine.route(HomeModulePaths.ROUTE_PATH_HOME)
+        DI.provideMemSource().saveLockPwd(inputPwd)
+        RouteCall.getHomeModule()?.launchHome(null)
         finish()
     }
 
@@ -75,7 +73,7 @@ class LockPwdActivity : AppCompatActivity() {
 
         showListDialog(OnItemClickListener { dialog, item, view, position ->
             if (position == 1) {
-                (RouteEngine.getModule(NoteMod.MODULE_NAME) as? NoteMod)?.clearDB()
+                RouteCall.getNoteModule()?.clearDB(null)
                 toast("重置成功")
             }
             dialog.dismiss()

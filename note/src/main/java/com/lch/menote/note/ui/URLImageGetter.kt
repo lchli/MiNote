@@ -7,12 +7,10 @@ import android.graphics.drawable.Drawable
 import android.os.AsyncTask
 import android.text.Html
 import android.widget.TextView
-
 import com.lch.menote.common.util.BitmapScaleUtil
 import com.lch.menote.common.util.HttpHelper
 import com.lch.menote.common.util.UiHandler
-import com.lch.menote.note.helper.BITMAP_MAX_MEMORY
-import com.lch.menote.note.helper.STUDY_APP_ROOT_DIR
+import com.lch.menote.note.helper.ConstantUtil
 
 
 class URLImageGetter(private val textView: TextView) : Html.ImageGetter {
@@ -41,9 +39,9 @@ class URLImageGetter(private val textView: TextView) : Html.ImageGetter {
             val source = params[0]
             val bmp: Bitmap?
             bmp = if (isNetImagePath(source)) {
-                BitmapScaleUtil.decodeSampledBitmapFromUrl(HttpHelper.addExtraParamsToUrl(source,null),BITMAP_MAX_MEMORY);
+                BitmapScaleUtil.decodeSampledBitmapFromUrl(HttpHelper.addExtraParamsToUrl(source,null), ConstantUtil.BITMAP_MAX_MEMORY);
             } else {
-                BitmapScaleUtil.decodeSampledBitmapFromPath(STUDY_APP_ROOT_DIR + source, BITMAP_MAX_MEMORY)
+                BitmapScaleUtil.decodeSampledBitmapFromPath(ConstantUtil.STUDY_APP_ROOT_DIR + source, ConstantUtil.BITMAP_MAX_MEMORY)
             }
             return if (bmp == null) {
                 null

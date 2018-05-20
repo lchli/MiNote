@@ -4,9 +4,9 @@ import android.app.Application
 import com.blankj.utilcode.util.Utils
 import com.lch.menote.common.Glo
 import com.lch.menote.common.util.ContextProvider
-import com.lch.menote.home.route.HomeModule
-import com.lch.menote.note.route.NoteModule
-import com.lch.menote.user.route.UserModule
+import com.lch.menote.home.route.HomeRouteApiImpl
+import com.lch.menote.note.route.NoteRouteApiImpl
+import com.lch.menote.user.route.UserRouteApiImpl
 import com.lch.route.noaop.lib.RouteEngine
 
 /**
@@ -22,7 +22,7 @@ class HostApp : Application() {
         ContextProvider.initContext(this)
         Utils.init(this)
 
-        RouteEngine.init(this, HomeModule::class.java, NoteModule::class.java, UserModule::class.java)
+        RouteEngine.init(this, HomeRouteApiImpl::class.java, NoteRouteApiImpl::class.java, UserRouteApiImpl::class.java)
 
     }
 }

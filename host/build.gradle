@@ -1,12 +1,14 @@
 apply plugin: 'com.android.application'
-apply from: "${rootDir}/depend.gradle"
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
 
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
-        applicationId "com.lch.menote"
+        applicationId "com.lch.menote.debug"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -28,10 +30,20 @@ android {
 }
 
 
+configurations.all {
+    resolutionStrategy {
+        force "com.android.support:appcompat-v7:$android_support_version",
+                "com.android.support:design:$android_support_version"
+    }
+}
+
 
 dependencies {
-    implementation project(":home")
-    implementation project(":note")
-    implementation project(":common")
-    implementation project(":user")
+    testImplementation "junit:junit:$junit_version"
+
+    compile project(":common")
+
+    compile project(":home")
+    compile project(":note")
+    compile project(":user")
 }

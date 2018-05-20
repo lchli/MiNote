@@ -1,6 +1,6 @@
 package com.lch.menote.user.data
 
-import com.lch.menote.common.route.model.User
+import com.lch.menote.userapi.User
 
 
 /**

@@ -13,13 +13,12 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.apkfuns.logutils.LogUtils
 import com.lch.menote.common.base.BaseAppCompatActivity
-import com.lch.menote.common.route.UserMod
-import com.lch.menote.common.route.model.User
 import com.lch.menote.common.toast
 import com.lch.menote.note.R
 import com.lch.menote.note.domain.Note
+import com.lch.menote.note.route.RouteCall
+import com.lch.menote.userapi.User
 import com.lch.route.noaop.Android
-import com.lch.route.noaop.lib.RouteEngine
 import kotlinx.android.synthetic.main.activity_cloud_note_detail.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
@@ -66,7 +65,7 @@ class CloudNoteDetailActivity : BaseAppCompatActivity() {
 
         val job = async(CommonPool) {
             try {
-                val mod = RouteEngine.getModule(UserMod.MODULE_NAME) as? UserMod ?: throw Exception("can not find user module")
+                val mod = RouteCall.getUserModule()?: throw Exception("can not find user module")
 
                 mod.queryUser(note!!.userId) ?: throw Exception("userId not found")
 

@@ -2,9 +2,9 @@ package com.lch.menote.user.data.sp
 
 import com.blankj.utilcode.util.SPUtils
 import com.google.gson.Gson
-import com.lch.menote.common.route.model.User
 import com.lch.menote.user.data.UserSource
-import com.lch.menote.user.route.UserModule
+import com.lch.menote.user.route.UserRouteApiImpl
+import com.lch.menote.userapi.User
 
 /**
  * Created by lichenghang on 2017/10/3.
@@ -18,7 +18,7 @@ object UserSpSource : UserSource {
     }
 
     override fun getUser(): User? {
-        val json = SPUtils.getInstance(UserModule.SP).getString(KEY_USER_SESSION)
+        val json = SPUtils.getInstance(UserRouteApiImpl.SP).getString(KEY_USER_SESSION)
         return Gson().fromJson(json, User::class.java)
     }
 
@@ -27,7 +27,7 @@ object UserSpSource : UserSource {
     }
 
     override fun addUser(user: User) {
-        SPUtils.getInstance(UserModule.SP).put(KEY_USER_SESSION, Gson().toJson(user))
+        SPUtils.getInstance(UserRouteApiImpl.SP).put(KEY_USER_SESSION, Gson().toJson(user))
 
     }
 
@@ -44,7 +44,7 @@ object UserSpSource : UserSource {
     }
 
     override fun removeCurrentUser() {
-        SPUtils.getInstance(UserModule.SP).remove(KEY_USER_SESSION)
+        SPUtils.getInstance(UserRouteApiImpl.SP).remove(KEY_USER_SESSION)
     }
 
     override fun getUser(userId: String): User? {

@@ -1,23 +1,15 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+    apply from: "./versions.gradle"
 
-    ext {
-        minSdkVersion = 15
-        compileSdkVersion = 25
-        buildToolsVersion = "25.0.0"
-        targetSdkVersion = 25
-
-        kotlin_version = '1.1.3-2'
-        greendao_version = '3.2.2'
-
-    }
 
     repositories {
         google()
         jcenter()
         mavenLocal()
         mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.0-beta6'
@@ -32,6 +24,7 @@ allprojects {
         jcenter()
         mavenLocal()
         mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
 }
 

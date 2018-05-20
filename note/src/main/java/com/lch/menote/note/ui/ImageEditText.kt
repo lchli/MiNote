@@ -7,7 +7,7 @@ import android.util.AttributeSet
 import android.widget.EditText
 import android.widget.TextView
 import com.lch.menote.common.util.BitmapScaleUtil
-import com.lch.menote.note.helper.BITMAP_MAX_MEMORY
+import com.lch.menote.note.helper.ConstantUtil
 import com.lch.menote.note.helper.NoteUtils
 import java.io.File
 import java.io.IOException
@@ -39,7 +39,7 @@ class ImageEditText : EditText {
         object : AsyncTask<Void, Void, String>() {
             override fun doInBackground(vararg params: Void): String? {
                 try {
-                    val bmp = BitmapScaleUtil.decodeSampledBitmapFromPath(imagePath, BITMAP_MAX_MEMORY)
+                    val bmp = BitmapScaleUtil.decodeSampledBitmapFromPath(imagePath, ConstantUtil.BITMAP_MAX_MEMORY)
                     val imageName = NoteUtils.buildNoteImageName(bmp!!.width, bmp.height)
                     val destFile = File(courseDir, imageName)
                     if (!destFile.exists()) {

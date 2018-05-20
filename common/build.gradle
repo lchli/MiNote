@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "${rootDir}/depend.gradle"
+
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -24,3 +26,24 @@ android {
     }
 }
 
+dependencies{
+    testImplementation "junit:junit:$junit_version"
+
+
+    compile "com.android.support:design:${rootProject.ext.android_support_version}"
+    compile "com.android.support:appcompat-v7:${rootProject.ext.android_support_version}"
+    compile "com.android.support.constraint:constraint-layout:${rootProject.ext.constraint_layout_version}"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_version"
+    compile "com.orhanobut:dialogplus:$dialogplus_version@aar"
+    compile "com.squareup.okhttp3:okhttp:$okhttp_version"
+    compile "com.squareup.retrofit2:retrofit:$retrofit2_version"
+    compile "com.squareup.retrofit2:converter-gson:$retrofit2_version"
+    compile "org.apache.commons:commons-lang3:$commons_lang_version"
+    compile "commons-io:commons-io:$commons_io_version"
+    compile "com.blankj:utilcode:$utilcode_version"
+    compile "org.greenrobot:eventbus:$eventbus_version"
+    compile "com.apkfuns.logutils:library:$logutils_version"
+
+    compile "com.alibaba:fastjson:${fastjson_version}.android"
+}

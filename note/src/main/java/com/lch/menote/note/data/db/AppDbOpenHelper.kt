@@ -8,7 +8,7 @@ import android.util.Log
 import com.apkfuns.logutils.LogUtils
 import com.lch.menote.common.util.ExtFileUtils
 import com.lch.menote.note.data.db.gen.DaoMaster
-import com.lch.menote.note.helper.DB_DIR
+import com.lch.menote.note.helper.ConstantUtil
 import org.apache.commons.io.FileUtils
 import org.greenrobot.greendao.database.Database
 import java.io.File
@@ -58,14 +58,14 @@ class AppDbOpenHelper : DaoMaster.DevOpenHelper {
                 override fun getDatabasePath(name: String): File {
 
                     try {
-                        FileUtils.forceMkdir(File(DB_DIR))
+                        FileUtils.forceMkdir(File(ConstantUtil.DB_DIR))
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
 
-                    val noteDb = File(DB_DIR, name)
+                    val noteDb = File(ConstantUtil.DB_DIR, name)
 
-                    LogUtils.e("DB_DIR exists:" + File(DB_DIR).exists())
+                    LogUtils.e("DB_DIR exists:" + File(ConstantUtil.DB_DIR).exists())
 
                     ExtFileUtils.makeFile(noteDb.absolutePath)
 

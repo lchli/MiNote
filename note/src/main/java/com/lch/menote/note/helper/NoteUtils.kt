@@ -25,7 +25,7 @@ object NoteUtils {
 
     private val HTML_IMG_PATTERN = "<br><img src=\"/resources/%s/%s\" /><br>"
 
-    private val NOTE_IMAGES_DIR = "$STUDY_APP_ROOT_DIR/resources"
+    private val NOTE_IMAGES_DIR = "${ConstantUtil.STUDY_APP_ROOT_DIR}/resources"
 
     init {
         try {
