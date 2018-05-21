@@ -27,7 +27,7 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
     private Callback callback;
 
     public interface Callback{
-        void showOperation(NoteElement e);
+        void showOperation(int position);
     }
 
     public NoteElementAdapter(NoteElementController controller,Callback cb) {
@@ -56,7 +56,7 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
     }
 
     @Override
-    public void onBindViewHolder(@NotNull AbsViewHolder holder, int position) {
+    public void onBindViewHolder(@NotNull AbsViewHolder holder, final int position) {
         int viewType = getItemViewType(position);
         final NoteElement data = getItem(position);
         if (data == null) {
@@ -67,11 +67,12 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
             case ITEM_TEXT: {
                final HText h = (HText) holder;
                 h.note_edittext.setText(data.text);
+                h.note_edittext.setSelection(data.text!=null?data.text.length():0);
 
                 h.note_radioButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                      callback.showOperation(data);
+                      callback.showOperation(position);
 
                     }
                 });
@@ -102,7 +103,7 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
                 h.note_radioButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        callback.showOperation(data);
+                        callback.showOperation(position);
                     }
                 });
             }

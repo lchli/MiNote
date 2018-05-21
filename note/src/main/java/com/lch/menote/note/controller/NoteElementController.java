@@ -2,6 +2,7 @@ package com.lch.menote.note.controller;
 
 import com.lch.menote.note.data.mem.MemNoteElementSource;
 import com.lch.menote.note.domain.NoteElement;
+import com.lch.netkit.common.mvc.ResponseValue;
 
 import java.util.List;
 
@@ -11,35 +12,37 @@ import java.util.List;
 
 public class NoteElementController {
 
-    private MemNoteElementSource memNoteElementSource = new MemNoteElementSource();
+    private static MemNoteElementSource memNoteElementSource = new MemNoteElementSource();
 
 
-    public void insertText() {
+    public ResponseValue<Void> insertText(int position) {
         NoteElement noteElement = new NoteElement();
         noteElement.type = NoteElement.TYPE_TEXT;
 
-        memNoteElementSource.save(noteElement);
+        memNoteElementSource.save(noteElement,position);
+
+        return new ResponseValue<>();
     }
 
-    public void insertImg(String path) {
+    public ResponseValue<Void> insertImg(String path,int position) {
         NoteElement noteElement = new NoteElement();
         noteElement.type = NoteElement.TYPE_IMG;
 
-        memNoteElementSource.save(noteElement);
+        memNoteElementSource.save(noteElement,position);
+
+        return new ResponseValue<>();
     }
 
-    public List<NoteElement> getElements(){
-        return memNoteElementSource.getElements();
+    public ResponseValue<List<NoteElement>> getElements(){
+        ResponseValue<List<NoteElement>> res=new ResponseValue<>();
+        res.data= memNoteElementSource.getElements();
+        return res;
     }
 
-    public void delete(NoteElement data ){
-        memNoteElementSource.delete(data);
+    public ResponseValue<Void> delete(int position ){
+        memNoteElementSource.delete(position);
+        return new ResponseValue<>();
     }
 
-    public void resetChecked(){
-        List<NoteElement> datas = memNoteElementSource.getElements();
-        for(NoteElement e:datas){
-            e.isSelected=false;
-        }
-    }
+
 }

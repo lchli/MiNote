@@ -52,6 +52,8 @@
         android:background="#fff"
         android:padding="@dimen/image_edit_text_padding"
         android:textSize="14dp"
+        android:dividerHeight="0dp"
+        android:divider="@android:color/transparent"
         android:text="" />
 
     <LinearLayout

@@ -11,18 +11,22 @@ import java.util.List;
 
 public class MemNoteElementSource {
 
-    private List<NoteElement> datas=new ArrayList<>();
+    private List<NoteElement> datas = new ArrayList<>();
 
-    public void save(NoteElement e){
-        datas.add(e);
+    public void save(NoteElement e, int position) {
+        if (position >= 0) {
+            datas.add(position, e);
+        } else {
+            datas.add(e);
+        }
     }
 
-    public void delete(NoteElement e){
-        datas.remove(e);
+    public void delete(int position) {
+        datas.remove(position);
     }
 
 
-    public List<NoteElement> getElements(){
+    public List<NoteElement> getElements() {
         return datas;
     }
 }
