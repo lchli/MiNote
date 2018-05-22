@@ -29,4 +29,8 @@ public class MemNoteElementSource {
     public List<NoteElement> getElements() {
         return datas;
     }
+
+    public void setElements(List<NoteElement> datas) {
+        this.datas = datas;
+    }
 }

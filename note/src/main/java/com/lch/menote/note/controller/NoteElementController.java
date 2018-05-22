@@ -27,6 +27,7 @@ public class NoteElementController {
     public ResponseValue<Void> insertImg(String path,int position) {
         NoteElement noteElement = new NoteElement();
         noteElement.type = NoteElement.TYPE_IMG;
+        noteElement.path=path;
 
         memNoteElementSource.save(noteElement,position);
 
@@ -44,5 +45,8 @@ public class NoteElementController {
         return new ResponseValue<>();
     }
 
-
+    public ResponseValue<Void> setElements(List<NoteElement> datas) {
+        memNoteElementSource.setElements(datas);
+        return new ResponseValue<>();
+    }
 }

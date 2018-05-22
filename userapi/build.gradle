@@ -30,6 +30,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 
 
-    implementation "com.android.support:appcompat-v7:${rootProject.ext.android_support_version}"
+    api "com.android.support:appcompat-v7:${rootProject.ext.android_support_version}"
 
 }

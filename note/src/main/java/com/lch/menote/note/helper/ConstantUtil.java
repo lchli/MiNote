@@ -8,9 +8,9 @@ import android.os.Environment;
 
 public class ConstantUtil {
     public static final String SD_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
-    public static final String STUDY_APP_ROOT_DIR = "$SD_PATH/StudyApp";
+    public static final String STUDY_APP_ROOT_DIR = String.format("%s/StudyApp",SD_PATH);
     public static final String NOTE_DB = "note.db";
-    public static final String DB_DIR = "$STUDY_APP_ROOT_DIR/database";
+    public static final String DB_DIR = String.format("%s/database",STUDY_APP_ROOT_DIR);
 
     public static final int VIEW_TYPE_HEADER = 0;
     public static final int VIEW_TYPE_ITEM = 1;

@@ -121,7 +121,7 @@ public class LocalNoteUi extends BaseFragment {
                 }
 
             }
-        }, null, null, true, null, getActivity()));
+        }, null, null, true, "", getActivity()));
 
     }
 }

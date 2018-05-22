@@ -85,7 +85,7 @@ public class CloudNoteUi extends BaseFragment {
                 }
 
             }
-        }, null, null, true, null, getActivity()));
+        }, null, null, true, "", getActivity()));
 
     }
 }

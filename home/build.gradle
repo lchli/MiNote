@@ -30,15 +30,15 @@ dependencies {
     testImplementation "junit:junit:$junit_version"
 
 
-    compile "com.android.support:design:${rootProject.ext.android_support_version}"
-    compile "com.android.support:appcompat-v7:${rootProject.ext.android_support_version}"
-    compile "com.android.support.constraint:constraint-layout:${rootProject.ext.constraint_layout_version}"
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_version"
-    compile "com.github.lchli:router:$router_version"
+    api "com.android.support:design:${rootProject.ext.android_support_version}"
+    api "com.android.support:appcompat-v7:${rootProject.ext.android_support_version}"
+    api "com.android.support.constraint:constraint-layout:${rootProject.ext.constraint_layout_version}"
+    api "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_version"
+    api "com.github.lchli:router:$router_version"
 
-    compile project(":common")
-    compile project(":homeapi")
-    compile project(":userapi")
-    compile project(":noteapi")
+    api project(":common")
+    api project(":homeapi")
+    api project(":userapi")
+    api project(":noteapi")
 }

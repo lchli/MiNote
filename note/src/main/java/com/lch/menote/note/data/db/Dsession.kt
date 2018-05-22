@@ -17,7 +17,7 @@ object Dsession {
 
     private fun daoSession(context: Context): DaoSession {
         if (noteDaoSession == null) {
-            val helper = AppDbOpenHelper(context, ConstantUtil.NOTE_DB, isSdcardDatabase = true)
+            val helper = AppDbOpenHelper(context, ConstantUtil.NOTE_DB, isSdcardDatabase = false)
             val pwd = (RouteEngine.getModule(UserRouteApi.MODULE_NAME) as? UserRouteApi)?.getLockPwd(null)
             noteDaoSession = DaoMaster(helper.getEncryptedWritableDb(pwd!!)).newSession()
         }

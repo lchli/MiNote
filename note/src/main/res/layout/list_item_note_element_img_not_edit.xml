@@ -13,13 +13,4 @@
         android:layout_centerHorizontal="true"
         android:src="@drawable/add_portrait" />
 
-
-    <Button
-        android:id="@+id/note_radioButton"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_alignParentRight="true"
-        android:background="#425cb7fa"
-        android:textColor="@android:color/white"
-        android:text="操作" />
 </RelativeLayout>

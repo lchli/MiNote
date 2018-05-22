@@ -33,7 +33,8 @@ android {
 configurations.all {
     resolutionStrategy {
         force "com.android.support:appcompat-v7:$android_support_version",
-                "com.android.support:design:$android_support_version"
+                "com.android.support:design:$android_support_version",
+                "com.android.support.constraint:constraint-layout:$constraint_layout_version"
     }
 }
 
@@ -41,9 +42,9 @@ configurations.all {
 dependencies {
     testImplementation "junit:junit:$junit_version"
 
-    compile project(":common")
+    api project(":common")
 
-    compile project(":home")
-    compile project(":note")
-    compile project(":user")
+    api project(":home")
+    api project(":note")
+    api project(":user")
 }

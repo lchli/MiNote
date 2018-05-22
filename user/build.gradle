@@ -30,37 +30,37 @@ dependencies {
     testImplementation "junit:junit:$junit_version"
 
 
-    compile "com.android.support:design:${rootProject.ext.android_support_version}"
-    compile "com.android.support:appcompat-v7:${rootProject.ext.android_support_version}"
-    compile "com.android.support.constraint:constraint-layout:${rootProject.ext.constraint_layout_version}"
+    api "com.android.support:design:${rootProject.ext.android_support_version}"
+    api "com.android.support:appcompat-v7:${rootProject.ext.android_support_version}"
+    api "com.android.support.constraint:constraint-layout:${rootProject.ext.constraint_layout_version}"
 
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_version"
+    api "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_version"
 
-    compile "com.github.lchli:router:$router_version"
-    compile "com.github.lchli:AndroidPinnedRecyclerView:$AndroidPinnedRecyclerView_version"
-    compile "org.greenrobot:eventbus:$eventbus_version"
-    compile "com.apkfuns.logutils:library:$logutils_version"
-    compile "org.apache.commons:commons-lang3:$commons_lang_version"
-    compile "commons-io:commons-io:$commons_io_version"
-    compile "org.greenrobot:greendao:$greendao_version"
-    compile "net.zetetic:android-database-sqlcipher:$sqlcipher_version@aar"
-    compile "com.google.code.gson:gson:$gson_version"
-    compile 'cn.finalteam:galleryfinal:1.4.8.7'
-    compile "com.github.bumptech.glide:glide:$glide_version"
-    compile "com.bigkoo:convenientbanner:$convenientbanner_version"
-    compile "com.orhanobut:dialogplus:$dialogplus_version@aar"
-    compile "com.blankj:utilcode:$utilcode_version"
+    api "com.github.lchli:router:$router_version"
+    api "com.github.lchli:AndroidPinnedRecyclerView:$AndroidPinnedRecyclerView_version"
+    api "org.greenrobot:eventbus:$eventbus_version"
+    api "com.apkfuns.logutils:library:$logutils_version"
+    api "org.apache.commons:commons-lang3:$commons_lang_version"
+    api "commons-io:commons-io:$commons_io_version"
+    api "org.greenrobot:greendao:$greendao_version"
+    api "net.zetetic:android-database-sqlcipher:$sqlcipher_version@aar"
+    api "com.google.code.gson:gson:$gson_version"
+    api 'cn.finalteam:galleryfinal:1.4.8.7'
+    api "com.github.bumptech.glide:glide:$glide_version"
+    api "com.bigkoo:convenientbanner:$convenientbanner_version"
+    api "com.orhanobut:dialogplus:$dialogplus_version@aar"
+    api "com.blankj:utilcode:$utilcode_version"
 
-    compile "com.andrognito.patternlockview:patternlockview:$patternlockview_version"
-    compile "com.squareup.okhttp3:okhttp:$okhttp_version"
-    compile "com.squareup.retrofit2:retrofit:$retrofit2_version"
-    compile "com.squareup.retrofit2:converter-gson:$retrofit2_version"
+    api "com.andrognito.patternlockview:patternlockview:$patternlockview_version"
+    api "com.squareup.okhttp3:okhttp:$okhttp_version"
+    api "com.squareup.retrofit2:retrofit:$retrofit2_version"
+    api "com.squareup.retrofit2:converter-gson:$retrofit2_version"
 
 
 
-    compile project(":common")
-    compile project(":userapi")
-    compile project(":noteapi")
-    compile project(":homeapi")
+    api project(":common")
+    api project(":userapi")
+    api project(":noteapi")
+    api project(":homeapi")
 }
