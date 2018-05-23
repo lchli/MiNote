@@ -11,7 +11,7 @@ ext {
     greendao_version = '3.2.2'
 
     android_support_version="25.1.1"
-    netkit_version="1.0.8"
+    netkit_version="1.1.0"
     router_version="1.0.5"
     constraint_layout_version="1.0.2"
     utilcode_version="1.9.1"
