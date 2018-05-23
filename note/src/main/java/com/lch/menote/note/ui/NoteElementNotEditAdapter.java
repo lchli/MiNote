@@ -25,10 +25,10 @@ public class NoteElementNotEditAdapter extends BsListAdapter<NoteElement> {
     private static final int ITEM_IMG = 1;
     private final Activity activity;
 
-
     public NoteElementNotEditAdapter(Activity activity) {
         this.activity = activity;
     }
+
 
     @NotNull
     @Override
@@ -79,7 +79,6 @@ public class NoteElementNotEditAdapter extends BsListAdapter<NoteElement> {
             }
             break;
 
-
         }
 
 
@@ -123,4 +122,5 @@ public class NoteElementNotEditAdapter extends BsListAdapter<NoteElement> {
 
         }
     }
+
 }

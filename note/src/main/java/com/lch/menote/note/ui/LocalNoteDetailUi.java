@@ -3,18 +3,25 @@ package com.lch.menote.note.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 
+import com.lch.menote.common.base.BaseAppCompatActivity;
 import com.lch.menote.common.util.AliJsonHelper;
+import com.lch.menote.common.util.ListUtils;
 import com.lch.menote.note.R;
 import com.lch.menote.note.domain.Note;
 import com.lch.menote.note.domain.NoteElement;
-import com.lch.netkit.common.base.BaseCompatActivity;
 import com.lch.netkit.common.tool.VF;
 
-public class LocalNoteDetailUi extends BaseCompatActivity {
+import java.util.List;
+
+public class LocalNoteDetailUi extends BaseAppCompatActivity {
 
     private ListView imageEditText_content;
+    private Note note;
 
     public static void launch(Context context, Note note) {
         Intent it = new Intent(context, LocalNoteDetailUi.class);
@@ -26,16 +33,51 @@ public class LocalNoteDetailUi extends BaseCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        note = (Note) getIntent().getSerializableExtra("note");
+
         setContentView(R.layout.activity_local_note_detail_ui);
-        imageEditText_content = VF.f(this, R.id.imageEditText_content);
-
-        Note note = (Note) getIntent().getSerializableExtra("note");
-        if (note != null) {
-            NoteElementNotEditAdapter adapter = new NoteElementNotEditAdapter(this);
-            adapter.refresh(AliJsonHelper.parseArray(note.content, NoteElement.class));
-
-            imageEditText_content.setAdapter(adapter);
+        Toolbar toolbar = VF.f(this, R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            if (note != null) {
+                getSupportActionBar().setTitle(note.title);
+            }
         }
 
+        imageEditText_content = VF.f(this, R.id.imageEditText_content);
+
+        if (note != null) {
+            List<NoteElement> datas = AliJsonHelper.parseArray(note.content, NoteElement.class);
+            if (!ListUtils.isEmpty(datas)) {
+                NoteElementNotEditAdapter adapter = new NoteElementNotEditAdapter(this);
+                adapter.refresh(datas);
+                imageEditText_content.setAdapter(adapter);
+            }
+        }
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.local_note_detail_toolbar_actions, menu);
+        String type = note.type;
+        int maxTypeLen = 5;
+        if (type.length() >= maxTypeLen) {
+            type = type.substring(0, maxTypeLen) + "...";
+        }
+        menu.findItem(R.id.action_note_type).setTitle(String.format("[%s]", type));
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_edit_note) {
+            EditNoteUi.launch(this, note);
+            finish();
+        } else if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

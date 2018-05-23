@@ -24,6 +24,7 @@
             android:textSize="12dp"
             android:layout_marginLeft="10dp"
             android:gravity="center_vertical"
+            android:textColor="#fff"
             android:text="默认" />
 
         <EditText

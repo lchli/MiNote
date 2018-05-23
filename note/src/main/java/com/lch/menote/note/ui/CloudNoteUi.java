@@ -12,9 +12,8 @@ import android.view.ViewGroup;
 import com.lch.menote.common.base.BaseFragment;
 import com.lch.menote.common.util.EventBusUtils;
 import com.lch.menote.note.R;
-import com.lch.menote.note.TaskExecutor;
+import com.lch.menote.note.controller.NoteController;
 import com.lch.menote.note.domain.CloudNoteListChangedEvent;
-import com.lch.menote.note.usercase.GetCloudNotesWithCatCase;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.VF;
@@ -32,6 +31,7 @@ public class CloudNoteUi extends BaseFragment {
 
     private CloudNoteAdapter notesAdp;
     private RecyclerView moduleListRecyclerView;
+    private NoteController noteController;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,6 +39,7 @@ public class CloudNoteUi extends BaseFragment {
         EventBusUtils.register(this);
 
         notesAdp = new CloudNoteAdapter(getActivity());
+        noteController = new NoteController(getActivity());
     }
 
     @Override
@@ -75,17 +76,11 @@ public class CloudNoteUi extends BaseFragment {
 
 
     private void queryNotesAsync() {
-        TaskExecutor.execute(new GetCloudNotesWithCatCase(new ControllerCallback<List<Object>>() {
+        noteController.getCloudNotesWithCat(null, null, true, "", new ControllerCallback<List<Object>>() {
             @Override
             public void onComplete(@NonNull ResponseValue<List<Object>> responseValue) {
-                if (responseValue.hasError()) {
-                    com.blankj.utilcode.util.ToastUtils.showShort(responseValue.errMsg());
-                } else {
-                    // notesAdp.refresh(responseValue.data);
-                }
 
             }
-        }, null, null, true, "", getActivity()));
-
+        });
     }
 }

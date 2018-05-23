@@ -15,9 +15,8 @@ import com.lch.menote.common.util.EventBusUtils;
 import com.lch.menote.common.util.Navigator;
 import com.lch.menote.common.widget.CommonEmptyView;
 import com.lch.menote.note.R;
-import com.lch.menote.note.TaskExecutor;
+import com.lch.menote.note.controller.NoteController;
 import com.lch.menote.note.domain.LocalNoteListChangedEvent;
-import com.lch.menote.note.usercase.GetLocalNotesWithCatCase;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.VF;
@@ -41,11 +40,13 @@ public class LocalNoteUi extends BaseFragment {
     private CommonEmptyView empty_widget;
     private PinnedRecyclerView moduleListRecyclerView;
     private FloatingActionButton fab;
+    private NoteController noteController;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBusUtils.register(this);
+        noteController = new NoteController(getActivity());
     }
 
     @Override
@@ -111,7 +112,7 @@ public class LocalNoteUi extends BaseFragment {
 
 
     private void queryNotesAsync() {
-        TaskExecutor.execute(new GetLocalNotesWithCatCase(new ControllerCallback<List<Object>>() {
+        noteController.getLocalNotesWithCat(null, null, true, "", new ControllerCallback<List<Object>>() {
             @Override
             public void onComplete(@NonNull ResponseValue<List<Object>> responseValue) {
                 if (responseValue.hasError()) {
@@ -119,9 +120,8 @@ public class LocalNoteUi extends BaseFragment {
                 } else {
                     notesAdp.refresh(responseValue.data);
                 }
-
             }
-        }, null, null, true, "", getActivity()));
+        });
 
     }
 }

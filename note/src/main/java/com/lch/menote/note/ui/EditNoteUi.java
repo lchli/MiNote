@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -16,19 +15,17 @@ import android.widget.TextView;
 import com.blankj.utilcode.util.ToastUtils;
 import com.lch.menote.common.util.AliJsonHelper;
 import com.lch.menote.common.util.DialogUtils;
+import com.lch.menote.common.util.EventBusUtils;
 import com.lch.menote.common.util.ListUtils;
 import com.lch.menote.common.util.TimeUtils;
 import com.lch.menote.common.util.UUIDUtils;
 import com.lch.menote.note.R;
 import com.lch.menote.note.controller.NoteController;
 import com.lch.menote.note.controller.NoteElementController;
+import com.lch.menote.note.domain.LocalNoteListChangedEvent;
 import com.lch.menote.note.domain.Note;
 import com.lch.menote.note.domain.NoteElement;
 import com.lch.menote.note.helper.NoteUtils;
-import com.lch.menote.note.usercase.DeleteNoteElementCase;
-import com.lch.menote.note.usercase.GetNoteElementsCase;
-import com.lch.menote.note.usercase.InsertImgNoteCase;
-import com.lch.menote.note.usercase.InsertTextNoteCase;
 import com.lch.netkit.common.base.BaseCompatActivity;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
@@ -37,7 +34,6 @@ import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.OnItemClickListener;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +53,7 @@ public class EditNoteUi extends BaseCompatActivity {
     private TextView tv_note_category;
     private EditText et_note_title;
     private NoteElementAdapter noteElementAdapter;
-    private NoteElementController controller = new NoteElementController();
+    private NoteElementController noteElementController = new NoteElementController();
     private NoteController noteController;
     private Note oldNote;
     private String courseUUID;
@@ -81,7 +77,7 @@ public class EditNoteUi extends BaseCompatActivity {
         et_note_title = VF.f(this, R.id.et_note_title);
 
         noteController = new NoteController(this);
-        noteElementAdapter = new NoteElementAdapter(controller, new NoteElementAdapter.Callback() {
+        noteElementAdapter = new NoteElementAdapter(noteElementController, new NoteElementAdapter.Callback() {
             @Override
             public void showOperation(int position) {
                 operation(position, true);
@@ -99,7 +95,7 @@ public class EditNoteUi extends BaseCompatActivity {
             et_note_title.setText(oldNote.title);
             List<NoteElement> oldElements = AliJsonHelper.parseArray(oldNote.content, NoteElement.class);
             if (oldElements != null) {
-                controller.setElements(oldElements);
+                noteElementController.setElements(oldElements);
                 noteElementAdapter.refresh(oldElements);
             }
         } else {
@@ -123,13 +119,13 @@ public class EditNoteUi extends BaseCompatActivity {
                     ToastUtils.showShort(R.string.note_title_cannot_empty);
                     return;
                 }
-                List<NoteElement> content = controller.getElements().data;
+                List<NoteElement> content = noteElementController.getElements().data;
                 if (ListUtils.isEmpty(content)) {
                     ToastUtils.showShort(R.string.note_content_cannot_empty);
                     return;
                 }
 
-                Note note = new Note();
+                final Note note = new Note();
                 note.uid = courseUUID;
                 note.imagesDir = courseDir;
                 note.type = tv_note_category.getText().toString();
@@ -137,13 +133,14 @@ public class EditNoteUi extends BaseCompatActivity {
                 note.lastModifyTime = TimeUtils.getTime(System.currentTimeMillis());
                 note.content = AliJsonHelper.toJSONString(content);
 
-                noteController.saveNote(note, new ControllerCallback<Void>() {
+                noteController.saveLocalNote(note, new ControllerCallback<Void>() {
                     @Override
                     public void onComplete(@NonNull ResponseValue<Void> responseValue) {
                         if (responseValue.hasError()) {
                             ToastUtils.showShort(responseValue.errMsg());
                             return;
                         }
+                        EventBusUtils.post(new LocalNoteListChangedEvent());
 
                         finish();
                     }
@@ -215,59 +212,22 @@ public class EditNoteUi extends BaseCompatActivity {
     }
 
     private void insertTextNoteCase(int position) {
-        new InsertTextNoteCase(new ControllerCallback<Void>() {
-            @Override
-            public void onComplete(@NonNull ResponseValue<Void> responseValue) {
-                if (responseValue.hasError()) {
-                    ToastUtils.showShort(responseValue.errMsg());
-                    return;
-                }
+        noteElementController.insertText(position);
 
-                getNoteElementsCase();
-            }
-        }, position).run();
-
+        noteElementAdapter.refresh(noteElementController.getElements().data);
     }
 
     private void insertImgNoteCase(int position, String imgPath) {
-        new InsertImgNoteCase(new ControllerCallback<Void>() {
-            @Override
-            public void onComplete(@NonNull ResponseValue<Void> responseValue) {
-                if (responseValue.hasError()) {
-                    ToastUtils.showShort(responseValue.errMsg());
-                    return;
-                }
+        noteElementController.insertImg(imgPath, position);
 
-                getNoteElementsCase();
-            }
-        }, imgPath, position).run();
+        noteElementAdapter.refresh(noteElementController.getElements().data);
     }
 
-    private void getNoteElementsCase() {
-        new GetNoteElementsCase(new ControllerCallback<List<NoteElement>>() {
-            @Override
-            public void onComplete(@NonNull ResponseValue<List<NoteElement>> responseValue) {
-                if (responseValue.hasError()) {
-                    ToastUtils.showShort(responseValue.errMsg());
-                    return;
-                }
-                noteElementAdapter.refresh(responseValue.data);
-            }
-        }).run();
-    }
 
     private void deleteNoteElementCase(int position) {
-        new DeleteNoteElementCase(new ControllerCallback<Void>() {
-            @Override
-            public void onComplete(@NonNull ResponseValue<Void> responseValue) {
-                if (responseValue.hasError()) {
-                    ToastUtils.showShort(responseValue.errMsg());
-                    return;
-                }
-                getNoteElementsCase();
-            }
-        }, position).run();
+        noteElementController.delete(position);
 
+        noteElementAdapter.refresh(noteElementController.getElements().data);
     }
 
 }

@@ -19,6 +19,7 @@ import com.lch.menote.note.R
 import com.lch.menote.note.data.DataSources
 import com.lch.menote.note.domain.*
 import com.lch.menote.note.helper.ConstantUtil
+import com.lch.menote.note.helper.NoteConvert
 import com.lch.menote.note.helper.UrlConst
 import com.lch.menote.note.route.RouteCall
 import com.lch.netkit.file.helper.FileOptions
@@ -165,9 +166,9 @@ class LocalNoteListAdapter : PinnedRecyclerAdapter() {
             if (data.category == Note.CAT_MUSIC) {
                 MusicActivity.launch(context, data)
             } else {
-                //LocalNoteDetailActivity.startSelf(context, data)
-                //EditNoteUi.launch(context,data)
-                LocalNoteDetailUi.launch(context,data)
+                LocalNoteDetailUi.launch(context, data)
+//                data.content=NoteConvert.convertNoteContentToHtml(data.content)
+//                CloudNoteDetailActivity.startSelf(context,data)
             }
         }
 

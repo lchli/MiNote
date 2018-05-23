@@ -17,7 +17,7 @@
         <activity android:name=".ui.MusicActivity" />
         <activity android:name=".ui.CloudNoteDetailActivity" />
         <activity android:name=".ui.EditNoteUi" />
-        <activity android:name=".ui.LocalNoteDetailUi"></activity>
+        <activity android:name=".ui.LocalNoteDetailUi"/>
     </application>
 
 </manifest>

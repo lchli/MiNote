@@ -12,35 +12,35 @@ import java.util.List;
 
 public class NoteElementController {
 
-    private static MemNoteElementSource memNoteElementSource = new MemNoteElementSource();
+    private MemNoteElementSource memNoteElementSource = new MemNoteElementSource();
 
 
     public ResponseValue<Void> insertText(int position) {
         NoteElement noteElement = new NoteElement();
         noteElement.type = NoteElement.TYPE_TEXT;
 
-        memNoteElementSource.save(noteElement,position);
+        memNoteElementSource.save(noteElement, position);
 
         return new ResponseValue<>();
     }
 
-    public ResponseValue<Void> insertImg(String path,int position) {
+    public ResponseValue<Void> insertImg(String path, int position) {
         NoteElement noteElement = new NoteElement();
         noteElement.type = NoteElement.TYPE_IMG;
-        noteElement.path=path;
+        noteElement.path = path;
 
-        memNoteElementSource.save(noteElement,position);
+        memNoteElementSource.save(noteElement, position);
 
         return new ResponseValue<>();
     }
 
-    public ResponseValue<List<NoteElement>> getElements(){
-        ResponseValue<List<NoteElement>> res=new ResponseValue<>();
-        res.data= memNoteElementSource.getElements();
+    public ResponseValue<List<NoteElement>> getElements() {
+        ResponseValue<List<NoteElement>> res = new ResponseValue<>();
+        res.data = memNoteElementSource.getElements();
         return res;
     }
 
-    public ResponseValue<Void> delete(int position ){
+    public ResponseValue<Void> delete(int position) {
         memNoteElementSource.delete(position);
         return new ResponseValue<>();
     }

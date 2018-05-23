@@ -56,7 +56,8 @@ class CloudNoteDetailActivity : BaseAppCompatActivity() {
         web.setWebViewClient(WebClient())
 
 
-        web.loadUrl(note!!.ShareUrl)
+       // web.loadUrl(note!!.ShareUrl)
+        web.loadData(note!!.content,"text/html","utf-8")
 
     }
 
