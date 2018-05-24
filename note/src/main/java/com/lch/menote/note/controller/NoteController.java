@@ -1,6 +1,7 @@
 package com.lch.menote.note.controller;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.lch.menote.common.util.AliJsonHelper;
 import com.lch.menote.common.util.ListUtils;
@@ -19,9 +20,8 @@ import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.MvcError;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.file.helper.FileOptions;
-import com.lch.netkit.file.helper.FileResponse;
-import com.lch.netkit.file.helper.FileTransferListener;
 import com.lch.netkit.file.helper.UploadFileParams;
+import com.lch.netkit.string.Parser;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -178,45 +178,79 @@ public class NoteController {
     }
 
     public void uploadNote(final Note note, final ControllerCallback<Void> cb) {
+        final ResponseValue<Void> ret = new ResponseValue<>();
+
         if (note == null) {
+            ret.setErrMsg("note is null.");
+            UiHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (cb != null) {
+                        cb.onComplete(ret);
+                    }
+                }
+            });
             return;
-        }
-        List<NoteElement> elms = AliJsonHelper.parseArray(note.content, NoteElement.class);
-        if (ListUtils.isEmpty(elms)) {
-            return;
-        }
-        for (NoteElement e : elms) {
-            if (!e.type.equals(NoteElement.TYPE_TEXT)) {
-                UploadFileParams param = UploadFileParams.newInstance().addFile(new FileOptions().setFileKey("file").setFilePath(e.path));
-                NetKit.fileRequest().uploadFile(param, new FileTransferListener() {
-                    @Override
-                    public void onResponse(FileResponse fileResponse) {
-
-                    }
-
-                    @Override
-                    public void onError(MvcError mvcError) {
-
-                    }
-
-                    @Override
-                    public void onProgress(double v) {
-
-                    }
-                });
-            }
         }
 
         TaskExecutor.execute(new Runnable() {
             @Override
             public void run() {
+                final List<NoteElement> elms = AliJsonHelper.parseArray(note.content, NoteElement.class);
+                if (ListUtils.isEmpty(elms)) {
+                    ret.setErrMsg("note content is empty.");
+                    UiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (cb != null) {
+                                cb.onComplete(ret);
+                            }
+                        }
+                    });
+                    return;
+                }
+
+
+                boolean isHasFile = false;
+
+                for (NoteElement e : elms) {
+                    if (!e.type.equals(NoteElement.TYPE_TEXT)) {
+                        UploadFileParams param = UploadFileParams.newInstance().addFile(new FileOptions().setFileKey("file").setFilePath(e.path));
+                        ResponseValue<String> res = NetKit.fileRequest().uploadFileSync(param, new Parser<String>() {
+                            @Override
+                            public String parse(String s) {
+                                return null;
+                            }
+                        });
+
+                        if (res.hasError() || TextUtils.isEmpty(res.data)) {
+                            ret.setErrMsg(res.errMsg());
+                            UiHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (cb != null) {
+                                        cb.onComplete(ret);
+                                    }
+                                }
+                            });
+                            return;
+                        }
+
+                        e.path = res.data;
+                        isHasFile = true;
+                    }
+                }//for
+
+                if (isHasFile) {
+                    note.content = AliJsonHelper.toJSONString(elms);
+                }
                 netNoteSource.save(note);
 
                 UiHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         if (cb != null) {
-                            cb.onComplete(new ResponseValue<Void>());
+                            cb.onComplete(ret);
                         }
                     }
                 });

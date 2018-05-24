@@ -23,8 +23,6 @@ import com.lch.menote.note.helper.NoteConvert
 import com.lch.menote.note.helper.UrlConst
 import com.lch.menote.note.route.RouteCall
 import com.lch.netkit.file.helper.FileOptions
-import com.lch.netkit.file.helper.FileResponse
-import com.lch.netkit.file.helper.FileTransferListener
 import com.lch.netkit.file.helper.UploadFileParams
 import com.lchli.pinedrecyclerlistview.library.ListSectionData
 import com.lchli.pinedrecyclerlistview.library.pinnedRecyclerView.PinnedRecyclerAdapter
