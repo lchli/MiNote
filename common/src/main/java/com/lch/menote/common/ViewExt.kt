@@ -7,8 +7,8 @@ import android.net.Uri
 import android.os.Environment
 import android.view.View
 import android.view.ViewGroup
+import com.blankj.utilcode.util.ToastUtils
 import com.lch.menote.common.util.BitmapScaleUtil
-import com.lch.menote.common.util.ToastUtils
 import com.lch.menote.common.util.UUIDUtils
 import com.lch.route.noaop.Android
 import kotlinx.coroutines.experimental.CommonPool
@@ -45,9 +45,9 @@ fun View.saveViewBmpToSdcard() {
 
         val isSuccess = job.await()
         if (!isSuccess) {
-            ToastUtils.systemToast("图片保存失败")
+            ToastUtils.showShort("图片保存失败")
         } else {
-            ToastUtils.systemToast("图片已保存")
+            ToastUtils.showShort("图片已保存")
 
             val scanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
             scanIntent.data = Uri.fromFile(destFile)
@@ -81,9 +81,9 @@ fun View.saveViewBmpToSdcard2() {
 
         val isSuccess = job.await()
         if (!isSuccess) {
-            ToastUtils.systemToast("图片保存失败")
+            ToastUtils.showShort("图片保存失败")
         } else {
-            ToastUtils.systemToast("图片已保存")
+            ToastUtils.showShort("图片已保存")
 
             val scanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
             scanIntent.data = Uri.fromFile(destFile)

@@ -77,7 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/course_upload_button_bg"
-            android:text="图片" />
+            android:text="操作" />
 
     </LinearLayout>
 </LinearLayout>

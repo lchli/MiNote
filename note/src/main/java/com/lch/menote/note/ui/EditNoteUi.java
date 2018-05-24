@@ -1,7 +1,7 @@
 package com.lch.menote.note.ui;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +12,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bilibili.boxing.Boxing;
+import com.bilibili.boxing.model.config.BoxingConfig;
+import com.bilibili.boxing.model.entity.BaseMedia;
+import com.bilibili.boxing_impl.ui.BoxingActivity;
 import com.blankj.utilcode.util.ToastUtils;
 import com.lch.menote.common.util.AliJsonHelper;
 import com.lch.menote.common.util.DialogUtils;
@@ -37,8 +41,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.finalteam.galleryfinal.GalleryFinal;
-import cn.finalteam.galleryfinal.model.PhotoInfo;
 import cn.finalteam.toolsfinal.io.FileUtils;
 
 /**
@@ -46,6 +48,9 @@ import cn.finalteam.toolsfinal.io.FileUtils;
  */
 
 public class EditNoteUi extends BaseCompatActivity {
+    private static final int SELECT_IMG_RQUEST = 1;
+    private static final int SELECT_VIDEO_RQUEST = 2;
+    private static final int SELECT_AUDIO_RQUEST = 3;
 
     private ListView imageEditText_content;
     private View bt_more;
@@ -58,6 +63,7 @@ public class EditNoteUi extends BaseCompatActivity {
     private Note oldNote;
     private String courseUUID;
     private String courseDir;
+    private int mPositionToModify = 0;
 
     public static void launch(Context context, Note note) {
         Intent it = new Intent(context, EditNoteUi.class);
@@ -174,6 +180,12 @@ public class EditNoteUi extends BaseCompatActivity {
                     case 1:
                         showImgSourceDialog(positionToModify);
                         break;
+                    case 2:
+                        showAudioSourceDialog(positionToModify);
+                        break;
+                    case 3:
+                        showVideoSourceDialog(positionToModify);
+                        break;
                     case 4:
                         deleteNoteElementCase(positionToModify);
                         break;
@@ -184,31 +196,48 @@ public class EditNoteUi extends BaseCompatActivity {
     }
 
     private void showImgSourceDialog(final int positionToModify) {
-        DialogUtils.showTextListDialog(this, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
-                        GalleryFinal.openGallerySingle(0, new GalleryFinal.OnHanlderResultCallback() {
-                            @Override
-                            public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
-                                if (!ListUtils.isEmpty(resultList)) {
-                                    insertImgNoteCase(positionToModify, resultList.get(0).getPhotoPath());
-                                }
-                            }
+        mPositionToModify = positionToModify;
 
-                            @Override
-                            public void onHanlderFailure(int requestCode, String errorMsg) {
-                                ToastUtils.showShort(errorMsg);
-                            }
-                        });
-                        break;
-                    case 1:
-                        break;
-                }
+        BoxingConfig config = new BoxingConfig(BoxingConfig.Mode.SINGLE_IMG); // Mode：Mode.SINGLE_IMG, Mode.MULTI_IMG, Mode.VIDEO
+        config.needCamera(R.drawable.ic_camera).needGif(); // camera, gif support, set selected images count
 
+        Boxing.of(config).withIntent(EditNoteUi.this, BoxingActivity.class).start(EditNoteUi.this, SELECT_IMG_RQUEST);
+    }
+
+    private void showVideoSourceDialog(final int positionToModify) {
+        mPositionToModify = positionToModify;
+
+        BoxingConfig config = new BoxingConfig(BoxingConfig.Mode.VIDEO); // Mode：Mode.SINGLE_IMG, Mode.MULTI_IMG, Mode.VIDEO
+
+        Boxing.of(config).withIntent(EditNoteUi.this, BoxingActivity.class).start(EditNoteUi.this, SELECT_VIDEO_RQUEST);
+    }
+
+    private void showAudioSourceDialog(final int positionToModify) {
+        mPositionToModify = positionToModify;
+
+        BoxingConfig config = new BoxingConfig(BoxingConfig.Mode.AUDIO); // Mode：Mode.SINGLE_IMG, Mode.MULTI_IMG, Mode.VIDEO
+
+        Boxing.of(config).withIntent(EditNoteUi.this, BoxingActivity.class).start(EditNoteUi.this, SELECT_AUDIO_RQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == SELECT_IMG_RQUEST && resultCode == Activity.RESULT_OK) {
+            List<BaseMedia> medias = Boxing.getResult(data);
+            if (!ListUtils.isEmpty(medias)) {
+                insertImgNoteCase(mPositionToModify, medias.get(0).getPath());
             }
-        }, "相册", "照相机");
+        } else if (requestCode == SELECT_VIDEO_RQUEST && resultCode == Activity.RESULT_OK) {
+            List<BaseMedia> medias = Boxing.getResult(data);
+            if (!ListUtils.isEmpty(medias)) {
+                ToastUtils.showShort(medias.get(0).getPath());// TODO: 2018/5/24  
+            }
+        }else if (requestCode == SELECT_AUDIO_RQUEST && resultCode == Activity.RESULT_OK) {
+            List<BaseMedia> medias = Boxing.getResult(data);
+            if (!ListUtils.isEmpty(medias)) {
+                ToastUtils.showShort(medias.get(0).getPath());// TODO: 2018/5/24
+            }
+        }
     }
 
     private void insertTextNoteCase(int position) {
