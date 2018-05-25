@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.babytree.baf.audio.AudioPlayer;
+import com.babytree.baf.audio.BAFAudioPlayer;
 import com.bilibili.boxing.Boxing;
 import com.bilibili.boxing.model.config.BoxingConfig;
 import com.bilibili.boxing.model.entity.BaseMedia;
@@ -52,7 +54,7 @@ public class EditNoteUi extends BaseCompatActivity {
     private static final int SELECT_VIDEO_RQUEST = 2;
     private static final int SELECT_AUDIO_RQUEST = 3;
 
-    private ListView imageEditText_content;
+    private ListView noteElementListView;
     private View bt_more;
     private View bt_save;
     private TextView tv_note_category;
@@ -64,6 +66,8 @@ public class EditNoteUi extends BaseCompatActivity {
     private String courseUUID;
     private String courseDir;
     private int mPositionToModify = 0;
+    private AudioPlayer audioPlayer = BAFAudioPlayer.newAudioPlayer();
+    private Object videoPlayer;
 
     public static void launch(Context context, Note note) {
         Intent it = new Intent(context, EditNoteUi.class);
@@ -75,21 +79,24 @@ public class EditNoteUi extends BaseCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //videoPlayer = BAFVideoPlayer.newPlayer(getApplicationContext());
+
         setContentView(R.layout.activity_edit_note);
-        imageEditText_content = VF.f(this, R.id.imageEditText_content);
+        noteElementListView = VF.f(this, R.id.imageEditText_content);
         bt_more = VF.f(this, R.id.bt_more);
         bt_save = VF.f(this, R.id.bt_save);
         tv_note_category = VF.f(this, R.id.tv_note_category);
         et_note_title = VF.f(this, R.id.et_note_title);
 
         noteController = new NoteController(this);
-        noteElementAdapter = new NoteElementAdapter(noteElementController, new NoteElementAdapter.Callback() {
+        noteElementAdapter = new NoteElementAdapter(new NoteElementAdapter.Callback() {
             @Override
             public void showOperation(int position) {
                 operation(position, true);
             }
-        }, this);
-        imageEditText_content.setAdapter(noteElementAdapter);
+        }, this, audioPlayer, videoPlayer);
+
+        noteElementListView.setAdapter(noteElementAdapter);
 
         oldNote = (Note) getIntent().getSerializableExtra("note");
 
@@ -154,6 +161,7 @@ public class EditNoteUi extends BaseCompatActivity {
 
             }
         });
+
     }
 
 
@@ -232,12 +240,22 @@ public class EditNoteUi extends BaseCompatActivity {
             if (!ListUtils.isEmpty(medias)) {
                 ToastUtils.showShort(medias.get(0).getPath());// TODO: 2018/5/24  
             }
-        }else if (requestCode == SELECT_AUDIO_RQUEST && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == SELECT_AUDIO_RQUEST && resultCode == Activity.RESULT_OK) {
             List<BaseMedia> medias = Boxing.getResult(data);
             if (!ListUtils.isEmpty(medias)) {
-                ToastUtils.showShort(medias.get(0).getPath());// TODO: 2018/5/24
+                noteElementController.insertAudio(medias.get(0).getPath(), mPositionToModify);
+
+                noteElementAdapter.refresh(noteElementController.getElements().data);
             }
         }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        audioPlayer.release();
+      //  videoPlayer.release();
     }
 
     private void insertTextNoteCase(int position) {

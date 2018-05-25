@@ -1,6 +1,7 @@
 package com.lch.menote.note.ui;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -8,13 +9,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 
+import com.babytree.baf.audio.AudioPlayer;
 import com.blankj.utilcode.util.ScreenUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.lch.menote.common.base.BsListAdapter;
 import com.lch.menote.note.R;
-import com.lch.menote.note.controller.NoteElementController;
 import com.lch.menote.note.domain.NoteElement;
 import com.lch.netkit.common.tool.VF;
 
@@ -27,18 +30,22 @@ import org.jetbrains.annotations.NotNull;
 public class NoteElementAdapter extends BsListAdapter<NoteElement> {
     private static final int ITEM_TEXT = 0;
     private static final int ITEM_IMG = 1;
+    private static final int ITEM_AUDIO = 2;
     private final Activity activity;
-    private NoteElementController controller;
+    private final AudioPlayer audioPlayer;
+    private final Object videoPlayer;
     private Callback callback;
 
     public interface Callback {
         void showOperation(int position);
     }
 
-    public NoteElementAdapter(NoteElementController controller, Callback cb, Activity activity) {
-        this.controller = controller;
+    public NoteElementAdapter(Callback cb, Activity activity, AudioPlayer audioPlayer, Object videoPlayer) {
         callback = cb;
         this.activity = activity;
+        this.audioPlayer = audioPlayer;
+        this.videoPlayer = videoPlayer;
+
     }
 
     @NotNull
@@ -53,6 +60,9 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
             case ITEM_IMG:
                 item = View.inflate(parent.getContext(), R.layout.list_item_note_element_img, null);
                 return new HImg(item, viewType);
+            case ITEM_AUDIO:
+                item = View.inflate(parent.getContext(), R.layout.list_item_note_element_audio, null);
+                return new HAudio(item, viewType);
             default:
                 item = View.inflate(parent.getContext(), R.layout.list_item_note_element_text, null);
                 return new HText(item, viewType);
@@ -123,6 +133,128 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
                 });
             }
             break;
+            case ITEM_AUDIO: {
+                final HAudio h = (HAudio) holder;
+                final AudioPlayer ap = (AudioPlayer) h.getItemView().getTag(R.id.adapter_item_tag_player);
+                if (ap != null) {
+                    if (ap.isPlaying()) {
+                        h.ivPlayPause.setImageResource(android.R.drawable.ic_media_play);
+                    } else {
+                        h.ivPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+                    }
+                    float f = ((float) ap.getCurrentPosition()) / ap.getDuration();
+                    h.seekBar.setProgress((int) (h.seekBar.getMax() * f));
+
+                    ap.setStateListener(new AudioPlayer.StateListener() {
+
+                        @Override
+                        public void onError(int what, int extra) {
+                            ToastUtils.showLong("播放失败！");
+                        }
+
+                        @Override
+                        public void onCompletion() {
+                            super.onCompletion();
+                            h.ivPlayPause.setImageResource(android.R.drawable.ic_media_play);
+                        }
+
+                        @Override
+                        public void onProgress(long currentPositionMillsecs, long totalMillsecs) {
+                            super.onProgress(currentPositionMillsecs, totalMillsecs);
+
+                            float f = ((float) currentPositionMillsecs) / totalMillsecs;
+                            h.seekBar.setProgress((int) (h.seekBar.getMax() * f));
+                        }
+
+                        @Override
+                        public void onPrepared() {
+                            audioPlayer.start();
+                            h.ivPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+                        }
+
+                    });
+
+                } else {
+                    h.ivPlayPause.setImageResource(android.R.drawable.ic_media_play);
+                    h.seekBar.setProgress(0);
+                }
+
+                h.ivPlayPause.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (ap == null) {
+                            audioPlayer.reset();
+                            audioPlayer.setDataSource(activity, Uri.parse(data.path));
+                            h.getItemView().setTag(R.id.adapter_item_tag_player, audioPlayer);
+                            audioPlayer.setStateListener(new AudioPlayer.StateListener() {
+
+                                @Override
+                                public void onError(int what, int extra) {
+                                    ToastUtils.showLong("播放失败！");
+                                }
+
+                                @Override
+                                public void onCompletion() {
+                                    super.onCompletion();
+                                    h.ivPlayPause.setImageResource(android.R.drawable.ic_media_play);
+                                }
+
+                                @Override
+                                public void onProgress(long currentPositionMillsecs, long totalMillsecs) {
+                                    super.onProgress(currentPositionMillsecs, totalMillsecs);
+
+                                    float f = ((float) currentPositionMillsecs) / totalMillsecs;
+                                    h.seekBar.setProgress((int) (h.seekBar.getMax() * f));
+                                }
+
+                                @Override
+                                public void onPrepared() {
+                                    audioPlayer.start();
+                                    h.ivPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+                                }
+
+                            });
+                            audioPlayer.prepareAsync();
+                        } else {
+                            if (ap.isPlaying()) {
+                                ap.pause();
+                                h.ivPlayPause.setImageResource(android.R.drawable.ic_media_play);
+                            } else if (ap.isPrepared()) {
+                                ap.start();
+                                h.ivPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+                            } else {
+                                ap.prepareAsync();
+                            }
+                        }
+                    }
+                });
+
+                h.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+
+                    }
+                });
+
+
+                h.note_radioButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        callback.showOperation(position);
+                    }
+                });
+            }
+            break;
 
 
         }
@@ -144,6 +276,8 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
                 return ITEM_TEXT;
             case NoteElement.TYPE_IMG:
                 return ITEM_IMG;
+            case NoteElement.TYPE_AUDIO:
+                return ITEM_AUDIO;
             default:
                 return def;
         }
@@ -170,6 +304,20 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
             super(itemView, viewType);
             note_imageview = VF.f(itemView, R.id.note_imageview);
             note_radioButton = VF.f(itemView, R.id.note_radioButton);
+
+        }
+    }
+
+    private class HAudio extends AbsViewHolder {
+        private ImageView ivPlayPause;
+        private Button note_radioButton;
+        private SeekBar seekBar;
+
+        public HAudio(@NotNull View itemView, int viewType) {
+            super(itemView, viewType);
+            ivPlayPause = VF.f(itemView, R.id.ivPlayPause);
+            note_radioButton = VF.f(itemView, R.id.note_radioButton);
+            seekBar = VF.f(itemView, R.id.seekBar);
 
         }
     }
