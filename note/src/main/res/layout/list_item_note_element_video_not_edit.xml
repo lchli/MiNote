@@ -5,7 +5,7 @@
     android:padding="5dp"
     android:orientation="horizontal">
 
-    <com.babytree.baf.videoplayer.ui.BAFVideoView2
+    <com.lch.video_player.ui.SimpleVideoView
         android:id="@+id/videoView"
         android:layout_width="match_parent"
         android:layout_height="200dp"

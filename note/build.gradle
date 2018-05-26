@@ -19,6 +19,10 @@ android {
 
         resourcePrefix("note_")
 
+        ndk {
+            abiFilters "armeabi-v7a"
+        }
+
     }
     buildTypes {
         release {
@@ -66,13 +70,9 @@ dependencies {
     api "com.squareup.retrofit2:retrofit:$retrofit2_version"
     api "com.squareup.retrofit2:converter-gson:$retrofit2_version"
     api "com.github.lchli:NetKit:$rootProject.ext.netkit_version"
-
-    api 'com.github.babytree:boxing:1.0.4'
-
-    api 'com.babytree.baf:BAFVideoPlayer:1.0.7-SNAPSHOT'
-
-    api 'com.babytree.baf:BAFAudioPlayer:1.0.2-SNAPSHOT'
-
+    api "com.github.lchli:LchAudioPlayer:$rootProject.ext.lch_audioPlayer_version"
+    api "com.github.lchli:LchVideoPlayer:$rootProject.ext.lch_videoPlayer_version"
+    api "com.github.lchli:boxing:$rootProject.ext.boxing_version"
 
 
     api project(":common")

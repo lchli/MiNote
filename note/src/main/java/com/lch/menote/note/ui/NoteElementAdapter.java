@@ -14,25 +14,27 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
-import com.babytree.baf.audio.AudioPlayer;
-import com.babytree.baf.videoplayer.VideoPlayer;
-import com.babytree.baf.videoplayer.helper.VideoHelper;
-import com.babytree.baf.videoplayer.model.BAFTimedText;
-import com.babytree.baf.videoplayer.ui.BAFVideoView2;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.lch.audio_player.AudioPlayer;
+import com.lch.audio_player.ui.SimpleAudioView;
 import com.lch.menote.common.base.BsListAdapter;
 import com.lch.menote.note.R;
 import com.lch.menote.note.domain.NoteElement;
 import com.lch.netkit.common.tool.VF;
+import com.lch.video_player.VideoPlayer;
+import com.lch.video_player.helper.VideoHelper;
+import com.lch.video_player.model.BAFTimedText;
+import com.lch.video_player.ui.SimpleVideoView;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
 import tv.danmaku.ijk.media.player.IMediaPlayer;
+
 
 /**
  * Created by lichenghang on 2018/5/20.
@@ -279,28 +281,28 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
                 if (currentPlayingAudioPosition == position) {
 
                     if (mAudioPlayer.isPlaying()) {
-                        h.ivPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+                        h.simpleAudioView.ivPlayPause.setImageResource(android.R.drawable.ic_media_pause);
                     } else {
-                        h.ivPlayPause.setImageResource(android.R.drawable.ic_media_play);
+                        h.simpleAudioView.ivPlayPause.setImageResource(android.R.drawable.ic_media_play);
                     }
                     float f = ((float) mAudioPlayer.getCurrentPosition()) / mAudioPlayer.getDuration();
-                    h.seekBar.setProgress((int) (h.seekBar.getMax() * f));
+                    h.simpleAudioView.seekBar.setProgress((int) (h.simpleAudioView.seekBar.getMax() * f));
                 } else {
-                    h.ivPlayPause.setImageResource(android.R.drawable.ic_media_play);
-                    h.seekBar.setProgress(0);
+                    h.simpleAudioView.ivPlayPause.setImageResource(android.R.drawable.ic_media_play);
+                    h.simpleAudioView.seekBar.setProgress(0);
                 }
 
-                h.ivPlayPause.setOnClickListener(new View.OnClickListener() {
+                h.simpleAudioView.ivPlayPause.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
                         if (currentPlayingAudioPosition == position) {
                             if (mAudioPlayer.isPlaying()) {
                                 mAudioPlayer.pause();
-                                h.ivPlayPause.setImageResource(android.R.drawable.ic_media_play);
+                                h.simpleAudioView.ivPlayPause.setImageResource(android.R.drawable.ic_media_play);
                             } else if (mAudioPlayer.isPrepared()) {
                                 mAudioPlayer.start();
-                                h.ivPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+                                h.simpleAudioView.ivPlayPause.setImageResource(android.R.drawable.ic_media_pause);
                             } else {
                                 mAudioPlayer.prepareAsync();
                             }
@@ -317,9 +319,9 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
                     }
                 });
 
-                h.seekBar.setEnabled(currentPlayingAudioPosition == position);
+                h.simpleAudioView.seekBar.setEnabled(currentPlayingAudioPosition == position);
 
-                h.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                h.simpleAudioView.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
@@ -555,15 +557,14 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
     }
 
     private class HAudio extends AbsViewHolder {
-        private ImageView ivPlayPause;
+
+        private SimpleAudioView simpleAudioView;
         private Button operationButton;
-        private SeekBar seekBar;
 
         public HAudio(@NotNull View itemView, int viewType) {
             super(itemView, viewType);
-            ivPlayPause = VF.f(itemView, R.id.ivPlayPause);
+            simpleAudioView = VF.f(itemView, R.id.simpleAudioView);
             operationButton = VF.f(itemView, R.id.note_radioButton);
-            seekBar = VF.f(itemView, R.id.seekBar);
 
         }
 
@@ -571,7 +572,7 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
 
     private class HVideo extends AbsViewHolder {
         private Button operationButton;
-        private BAFVideoView2 videoView;
+        private SimpleVideoView videoView;
 
         public HVideo(@NotNull View itemView, int viewType) {
             super(itemView, viewType);

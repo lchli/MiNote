@@ -12,15 +12,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.babytree.baf.audio.AudioPlayer;
-import com.babytree.baf.audio.BAFAudioPlayer;
-import com.babytree.baf.videoplayer.BAFVideoPlayer;
-import com.babytree.baf.videoplayer.VideoPlayer;
 import com.bilibili.boxing.Boxing;
 import com.bilibili.boxing.model.config.BoxingConfig;
 import com.bilibili.boxing.model.entity.BaseMedia;
 import com.bilibili.boxing_impl.ui.BoxingActivity;
 import com.blankj.utilcode.util.ToastUtils;
+import com.lch.audio_player.AudioPlayer;
+import com.lch.audio_player.LchAudioPlayer;
 import com.lch.menote.common.util.AliJsonHelper;
 import com.lch.menote.common.util.DialogUtils;
 import com.lch.menote.common.util.EventBusUtils;
@@ -38,6 +36,8 @@ import com.lch.netkit.common.base.BaseCompatActivity;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.VF;
+import com.lch.video_player.LchVideoPlayer;
+import com.lch.video_player.VideoPlayer;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.OnItemClickListener;
 
@@ -68,7 +68,7 @@ public class EditNoteUi extends BaseCompatActivity {
     private String courseUUID;
     private String courseDir;
     private int mPositionToModify = 0;
-    private AudioPlayer audioPlayer = BAFAudioPlayer.newAudioPlayer();
+    private AudioPlayer audioPlayer = LchAudioPlayer.newAudioPlayer();
     private VideoPlayer videoPlayer;
 
     public static void launch(Context context, Note note) {
@@ -81,7 +81,7 @@ public class EditNoteUi extends BaseCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        videoPlayer = BAFVideoPlayer.newPlayer(getApplicationContext());
+        videoPlayer = LchVideoPlayer.newPlayer(getApplicationContext());
 
         setContentView(R.layout.activity_edit_note);
         noteElementListView = VF.f(this, R.id.imageEditText_content);

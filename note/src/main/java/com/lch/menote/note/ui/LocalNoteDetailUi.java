@@ -8,10 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
-import com.babytree.baf.audio.AudioPlayer;
-import com.babytree.baf.audio.BAFAudioPlayer;
-import com.babytree.baf.videoplayer.BAFVideoPlayer;
-import com.babytree.baf.videoplayer.VideoPlayer;
+import com.lch.audio_player.AudioPlayer;
+import com.lch.audio_player.LchAudioPlayer;
 import com.lch.menote.common.base.BaseAppCompatActivity;
 import com.lch.menote.common.util.AliJsonHelper;
 import com.lch.menote.common.util.ListUtils;
@@ -19,6 +17,8 @@ import com.lch.menote.note.R;
 import com.lch.menote.note.domain.Note;
 import com.lch.menote.note.domain.NoteElement;
 import com.lch.netkit.common.tool.VF;
+import com.lch.video_player.LchVideoPlayer;
+import com.lch.video_player.VideoPlayer;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class LocalNoteDetailUi extends BaseAppCompatActivity {
 
     private ListView imageEditText_content;
     private Note note;
-    private AudioPlayer audioPlayer = BAFAudioPlayer.newAudioPlayer();
+    private AudioPlayer audioPlayer = LchAudioPlayer.newAudioPlayer();
     private VideoPlayer videoPlayer;
 
     public static void launch(Context context, Note note) {
@@ -39,7 +39,7 @@ public class LocalNoteDetailUi extends BaseAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        videoPlayer = BAFVideoPlayer.newPlayer(getApplicationContext());
+        videoPlayer = LchVideoPlayer.newPlayer(getApplicationContext());
         note = (Note) getIntent().getSerializableExtra("note");
 
         setContentView(R.layout.activity_local_note_detail_ui);
