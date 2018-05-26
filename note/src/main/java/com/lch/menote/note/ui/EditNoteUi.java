@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.babytree.baf.audio.AudioPlayer;
 import com.babytree.baf.audio.BAFAudioPlayer;
+import com.babytree.baf.videoplayer.BAFVideoPlayer;
+import com.babytree.baf.videoplayer.VideoPlayer;
 import com.bilibili.boxing.Boxing;
 import com.bilibili.boxing.model.config.BoxingConfig;
 import com.bilibili.boxing.model.entity.BaseMedia;
@@ -67,7 +69,7 @@ public class EditNoteUi extends BaseCompatActivity {
     private String courseDir;
     private int mPositionToModify = 0;
     private AudioPlayer audioPlayer = BAFAudioPlayer.newAudioPlayer();
-    private Object videoPlayer;
+    private VideoPlayer videoPlayer;
 
     public static void launch(Context context, Note note) {
         Intent it = new Intent(context, EditNoteUi.class);
@@ -79,7 +81,7 @@ public class EditNoteUi extends BaseCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //videoPlayer = BAFVideoPlayer.newPlayer(getApplicationContext());
+        videoPlayer = BAFVideoPlayer.newPlayer(getApplicationContext());
 
         setContentView(R.layout.activity_edit_note);
         noteElementListView = VF.f(this, R.id.imageEditText_content);
@@ -91,8 +93,8 @@ public class EditNoteUi extends BaseCompatActivity {
         noteController = new NoteController(this);
         noteElementAdapter = new NoteElementAdapter(new NoteElementAdapter.Callback() {
             @Override
-            public void showOperation(int position) {
-                operation(position, true);
+            public void showOperation(int position, boolean isPlayingVideo, boolean isPlayingAudio) {
+                operation(position, true, isPlayingVideo, isPlayingAudio);
             }
         }, this, audioPlayer, videoPlayer);
 
@@ -121,7 +123,7 @@ public class EditNoteUi extends BaseCompatActivity {
         bt_more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                operation(-1, false);
+                operation(-1, false,false,false);
             }
         });
         bt_save.setOnClickListener(new View.OnClickListener() {
@@ -165,7 +167,7 @@ public class EditNoteUi extends BaseCompatActivity {
     }
 
 
-    private void operation(final int positionToModify, boolean isShowDelete) {
+    private void operation(final int positionToModify, boolean isShowDelete, final boolean isPlayingVideo, final boolean isPlayingAudio) {
 
         List<String> ops = new ArrayList<>();
         ops.add("插入文本");
@@ -195,7 +197,7 @@ public class EditNoteUi extends BaseCompatActivity {
                         showVideoSourceDialog(positionToModify);
                         break;
                     case 4:
-                        deleteNoteElementCase(positionToModify);
+                        deleteNoteElementCase(positionToModify, isPlayingVideo, isPlayingAudio);
                         break;
                 }
             }
@@ -238,7 +240,9 @@ public class EditNoteUi extends BaseCompatActivity {
         } else if (requestCode == SELECT_VIDEO_RQUEST && resultCode == Activity.RESULT_OK) {
             List<BaseMedia> medias = Boxing.getResult(data);
             if (!ListUtils.isEmpty(medias)) {
-                ToastUtils.showShort(medias.get(0).getPath());// TODO: 2018/5/24  
+                noteElementController.insertVideo(medias.get(0).getPath(), mPositionToModify);
+
+                noteElementAdapter.refresh(noteElementController.getElements().data);
             }
         } else if (requestCode == SELECT_AUDIO_RQUEST && resultCode == Activity.RESULT_OK) {
             List<BaseMedia> medias = Boxing.getResult(data);
@@ -255,7 +259,7 @@ public class EditNoteUi extends BaseCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         audioPlayer.release();
-      //  videoPlayer.release();
+        videoPlayer.release();
     }
 
     private void insertTextNoteCase(int position) {
@@ -271,7 +275,14 @@ public class EditNoteUi extends BaseCompatActivity {
     }
 
 
-    private void deleteNoteElementCase(int position) {
+    private void deleteNoteElementCase(int position, boolean isPlayingVideo, boolean isPlayingAudio) {
+        if (isPlayingVideo) {
+            videoPlayer.reset();
+        }
+        if (isPlayingAudio) {
+            audioPlayer.reset();
+        }
+
         noteElementController.delete(position);
 
         noteElementAdapter.refresh(noteElementController.getElements().data);

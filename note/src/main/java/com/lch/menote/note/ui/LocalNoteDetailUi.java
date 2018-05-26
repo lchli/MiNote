@@ -8,6 +8,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import com.babytree.baf.audio.AudioPlayer;
+import com.babytree.baf.audio.BAFAudioPlayer;
+import com.babytree.baf.videoplayer.BAFVideoPlayer;
+import com.babytree.baf.videoplayer.VideoPlayer;
 import com.lch.menote.common.base.BaseAppCompatActivity;
 import com.lch.menote.common.util.AliJsonHelper;
 import com.lch.menote.common.util.ListUtils;
@@ -22,6 +26,8 @@ public class LocalNoteDetailUi extends BaseAppCompatActivity {
 
     private ListView imageEditText_content;
     private Note note;
+    private AudioPlayer audioPlayer = BAFAudioPlayer.newAudioPlayer();
+    private VideoPlayer videoPlayer;
 
     public static void launch(Context context, Note note) {
         Intent it = new Intent(context, LocalNoteDetailUi.class);
@@ -33,6 +39,7 @@ public class LocalNoteDetailUi extends BaseAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        videoPlayer = BAFVideoPlayer.newPlayer(getApplicationContext());
         note = (Note) getIntent().getSerializableExtra("note");
 
         setContentView(R.layout.activity_local_note_detail_ui);
@@ -50,7 +57,7 @@ public class LocalNoteDetailUi extends BaseAppCompatActivity {
         if (note != null) {
             List<NoteElement> datas = AliJsonHelper.parseArray(note.content, NoteElement.class);
             if (!ListUtils.isEmpty(datas)) {
-                NoteElementNotEditAdapter adapter = new NoteElementNotEditAdapter(this);
+                NoteElementNotEditAdapter adapter = new NoteElementNotEditAdapter(this, audioPlayer, videoPlayer);
                 adapter.refresh(datas);
                 imageEditText_content.setAdapter(adapter);
             }
@@ -79,5 +86,12 @@ public class LocalNoteDetailUi extends BaseAppCompatActivity {
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        audioPlayer.release();
+        videoPlayer.release();
     }
 }

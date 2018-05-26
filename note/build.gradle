@@ -68,16 +68,10 @@ dependencies {
     api "com.github.lchli:NetKit:$rootProject.ext.netkit_version"
 
     api 'com.github.babytree:boxing:1.0.4'
-//    compile 'com.shuyu:gsyVideoPlayer-java:5.0.0-beta'
-//    compile 'com.shuyu:gsyVideoPlayer-armv7a:5.0.0-beta'
-//    compile 'com.shuyu:gsyVideoPlayer-ex_so:5.0.0-beta'
 
-//    api ('com.babytree.baf:BAFVideoPlayer:1.0.1-SNAPSHOT',{
-//        exclude(module:'com.babytree.baf:BAFVideoPlayer-fullSo-v7:1.0.0-SNAPSHOT')
-//    }
-//    )
-    api 'com.babytree.baf:BAFAudioPlayer:1.0.1-SNAPSHOT'
+    api 'com.babytree.baf:BAFVideoPlayer:1.0.7-SNAPSHOT'
 
+    api 'com.babytree.baf:BAFAudioPlayer:1.0.2-SNAPSHOT'
 
 
 

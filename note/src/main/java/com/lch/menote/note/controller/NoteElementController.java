@@ -44,6 +44,15 @@ public class NoteElementController {
         return new ResponseValue<>();
     }
 
+    public ResponseValue<Void> insertVideo(String path, int position) {
+        NoteElement noteElement = new NoteElement();
+        noteElement.type = NoteElement.TYPE_VIDEO;
+        noteElement.path = path;
+
+        memNoteElementSource.save(noteElement, position);
+
+        return new ResponseValue<>();
+    }
 
     public ResponseValue<List<NoteElement>> getElements() {
         ResponseValue<List<NoteElement>> res = new ResponseValue<>();

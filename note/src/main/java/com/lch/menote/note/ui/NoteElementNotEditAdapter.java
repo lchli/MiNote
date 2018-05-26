@@ -1,12 +1,23 @@
 package com.lch.menote.note.ui;
 
 import android.app.Activity;
+import android.graphics.SurfaceTexture;
+import android.net.Uri;
+import android.view.Surface;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.babytree.baf.audio.AudioPlayer;
+import com.babytree.baf.videoplayer.VideoPlayer;
+import com.babytree.baf.videoplayer.helper.VideoHelper;
+import com.babytree.baf.videoplayer.model.BAFTimedText;
+import com.babytree.baf.videoplayer.ui.BAFVideoView2;
 import com.blankj.utilcode.util.ScreenUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.lch.menote.common.base.BsListAdapter;
@@ -16,6 +27,10 @@ import com.lch.netkit.common.tool.VF;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+
+import tv.danmaku.ijk.media.player.IMediaPlayer;
+
 /**
  * Created by lichenghang on 2018/5/20.
  */
@@ -23,12 +38,144 @@ import org.jetbrains.annotations.NotNull;
 public class NoteElementNotEditAdapter extends BsListAdapter<NoteElement> {
     private static final int ITEM_TEXT = 0;
     private static final int ITEM_IMG = 1;
+    private static final int ITEM_AUDIO = 2;
+    private static final int ITEM_VIDEO = 3;
     private final Activity activity;
+    private final AudioPlayer mAudioPlayer;
+    private final VideoPlayer mVideoPlayer;
+    private int currentPlayingAudioPosition = -1;
+    private int currentPlayingVideoPosition = -1;
 
-    public NoteElementNotEditAdapter(Activity activity) {
+    private boolean isShowLoading = false;
+    private boolean isVideoSizeChanged = false;
+    private boolean isVideoRotationChanged = false;
+
+    private int videoRotation = -1;
+    private HashMap<Integer, SurfaceTexture> textureSparseArray = new HashMap<>();
+
+
+    public NoteElementNotEditAdapter(final Activity activity, AudioPlayer audioPlayer, VideoPlayer videoPlayer) {
         this.activity = activity;
-    }
+        this.mAudioPlayer = audioPlayer;
+        this.mVideoPlayer = videoPlayer;
 
+        audioPlayer.setStateListener(new AudioPlayer.StateListener() {
+
+            @Override
+            public void onError(int what, int extra) {
+                ToastUtils.showLong("播放失败！");
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCompletion() {
+                super.onCompletion();
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onProgress(long currentPositionMillsecs, long totalMillsecs) {
+                super.onProgress(currentPositionMillsecs, totalMillsecs);
+
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onPrepared() {
+                mAudioPlayer.start();
+
+                notifyDataSetChanged();
+            }
+
+        });
+
+        videoPlayer.setStateListener(new VideoPlayer.StateListener() {
+            @Override
+            public void onError(int what, int extra) {
+                isShowLoading = false;
+
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCompletion() {
+                VideoHelper.releaseAudioFocus(activity);
+
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onBufferingUpdate(int percent) {
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onProgress(long currentPositionMillsecs, long totalMillsecs) {
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onVideoSizeChanged(int width, int height) {
+
+                isVideoSizeChanged = true;
+
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onTimedText(BAFTimedText text) {
+
+            }
+
+            @Override
+            public void onPrepared() {
+                isShowLoading = false;
+                isVideoSizeChanged = true;
+
+                VideoHelper.requestAudioFocus(activity);
+
+                mVideoPlayer.start();
+
+                notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onInfo(int what, int extra) {
+
+                switch (what) {
+                    case IMediaPlayer.MEDIA_INFO_VIDEO_ROTATION_CHANGED:
+                        videoRotation = extra;
+                        isVideoRotationChanged = true;
+
+                        notifyDataSetChanged();
+
+                        break;
+                    case IMediaPlayer.MEDIA_INFO_BUFFERING_START:
+                        isShowLoading = true;
+
+                        notifyDataSetChanged();
+                        break;
+
+                    case IMediaPlayer.MEDIA_INFO_BUFFERING_END:
+                        isShowLoading = false;
+
+                        notifyDataSetChanged();
+                        break;
+                }
+
+
+            }
+
+            @Override
+            public void onSeekComplete() {
+
+                notifyDataSetChanged();
+            }
+        });
+
+
+    }
 
     @NotNull
     @Override
@@ -42,6 +189,12 @@ public class NoteElementNotEditAdapter extends BsListAdapter<NoteElement> {
             case ITEM_IMG:
                 item = View.inflate(parent.getContext(), R.layout.list_item_note_element_img_not_edit, null);
                 return new HImg(item, viewType);
+            case ITEM_AUDIO:
+                item = View.inflate(parent.getContext(), R.layout.list_item_note_element_audio_not_edit, null);
+                return new HAudio(item, viewType);
+            case ITEM_VIDEO:
+                item = View.inflate(parent.getContext(), R.layout.list_item_note_element_video_not_edit, null);
+                return new HVideo(item, viewType);
             default:
                 item = View.inflate(parent.getContext(), R.layout.list_item_note_element_text_not_edit, null);
                 return new HText(item, viewType);
@@ -78,6 +231,219 @@ public class NoteElementNotEditAdapter extends BsListAdapter<NoteElement> {
 
             }
             break;
+            case ITEM_AUDIO: {
+                final HAudio h = (HAudio) holder;
+
+                if (currentPlayingAudioPosition == position) {
+
+                    if (mAudioPlayer.isPlaying()) {
+                        h.ivPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+                    } else {
+                        h.ivPlayPause.setImageResource(android.R.drawable.ic_media_play);
+                    }
+                    float f = ((float) mAudioPlayer.getCurrentPosition()) / mAudioPlayer.getDuration();
+                    h.seekBar.setProgress((int) (h.seekBar.getMax() * f));
+                } else {
+                    h.ivPlayPause.setImageResource(android.R.drawable.ic_media_play);
+                    h.seekBar.setProgress(0);
+                }
+
+                h.ivPlayPause.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        if (currentPlayingAudioPosition == position) {
+                            if (mAudioPlayer.isPlaying()) {
+                                mAudioPlayer.pause();
+                                h.ivPlayPause.setImageResource(android.R.drawable.ic_media_play);
+                            } else if (mAudioPlayer.isPrepared()) {
+                                mAudioPlayer.start();
+                                h.ivPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+                            } else {
+                                mAudioPlayer.prepareAsync();
+                            }
+
+                        } else {
+                            mAudioPlayer.reset();
+                            mAudioPlayer.setDataSource(activity, Uri.parse(data.path));
+
+                            currentPlayingAudioPosition = position;
+
+                            mAudioPlayer.prepareAsync();
+                        }
+
+                    }
+                });
+
+                h.seekBar.setEnabled(currentPlayingAudioPosition == position);
+
+                h.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        if (seekBar.isEnabled()) {
+                            float f = ((float) seekBar.getProgress()) / seekBar.getMax();
+                            mAudioPlayer.seekTo((int) (f * mAudioPlayer.getDuration()));
+                        }
+
+                    }
+                });
+
+            }
+            break;
+
+            case ITEM_VIDEO: {
+                final HVideo h = (HVideo) holder;
+
+                h.videoView.getPlayerController().seekBar.setEnabled(currentPlayingVideoPosition == position);
+
+                h.videoView.getPlayerController().seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        if (seekBar.isEnabled()) {
+                            float f = ((float) seekBar.getProgress()) / seekBar.getMax();
+                            mVideoPlayer.seekTo((int) (f * mVideoPlayer.getDuration()));
+                        }
+
+                    }
+                });
+
+                h.videoView.getRenderView().setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+                    @Override
+                    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+                        textureSparseArray.put(position, surface);
+
+                        if (position == currentPlayingVideoPosition) {
+                            mVideoPlayer.setSurface(new Surface(surface));
+                            isVideoSizeChanged = true;
+                            isVideoRotationChanged = true;
+
+                            notifyDataSetChanged();
+                        }
+
+                    }
+
+                    @Override
+                    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+
+                    }
+
+                    @Override
+                    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+                        textureSparseArray.remove(position);
+                        if (position == currentPlayingVideoPosition) {
+                            mVideoPlayer.setSurface(null);
+                        }
+
+                        return false;
+                    }
+
+                    @Override
+                    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
+                    }
+                });
+
+
+                if (position == currentPlayingVideoPosition) {
+
+                    if (mVideoPlayer.isPlaying()) {
+                        h.videoView.getPlayerController().ivPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+                    } else {
+                        h.videoView.getPlayerController().ivPlayPause.setImageResource(android.R.drawable.ic_media_play);
+                    }
+
+                    float f = ((float) mVideoPlayer.getCurrentPosition()) / mVideoPlayer.getDuration();
+                    int p = (int) (h.videoView.getPlayerController().getMaxProgress() * f);
+                    h.videoView.getPlayerController().setProgress(p);
+                    h.videoView.getPlayerController().setCurrentTime(VideoHelper.formatVideoTime((int) mVideoPlayer.getCurrentPosition()));
+
+                    if (isShowLoading) {
+                        isShowLoading = false;
+                        h.videoView.showLoading();
+                    } else {
+                        h.videoView.hideLoading();
+                    }
+
+                    float per = ((float) mVideoPlayer.getBufferPercent()) / 100;
+                    h.videoView.getPlayerController().setSecondProgress((int) (h.videoView.getPlayerController().getMaxProgress() * per));
+
+                    if (isVideoSizeChanged) {
+                        isVideoSizeChanged = false;
+                        if (VideoHelper.isAcceptVideoSize(mVideoPlayer.getVideoWidth(), mVideoPlayer.getVideoHeight())) {
+                            h.videoView.setVideoSize(mVideoPlayer.getVideoWidth(), mVideoPlayer.getVideoHeight());
+                        }
+                    }
+
+
+                    if (isVideoRotationChanged) {
+                        isVideoRotationChanged = false;
+                        h.videoView.setVideoRotation(videoRotation);
+                    }
+
+                    h.videoView.getPlayerController().setTotalTime(VideoHelper.formatVideoTime((int) mVideoPlayer.getDuration()));
+
+
+                } else {
+                    h.videoView.getPlayerController().resetUI();
+                }
+
+
+                h.videoView.getPlayerController().ivPlayPause.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (position == currentPlayingVideoPosition) {
+                            if (mVideoPlayer.isPlaying()) {
+                                mVideoPlayer.pause();
+                                h.videoView.getPlayerController().ivPlayPause.setImageResource(android.R.drawable.ic_media_play);
+                            } else if (mVideoPlayer.isPrepared()) {
+                                mVideoPlayer.start();
+                                h.videoView.getPlayerController().ivPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+                            } else {
+                                mVideoPlayer.prepareAsync();
+                            }
+                        } else {
+                            SurfaceTexture texture = textureSparseArray.get(position);
+                            if (texture == null) {
+                                ToastUtils.showShort("texture未准备好！");
+                                return;
+                            }
+
+                            mVideoPlayer.reset();
+                            mVideoPlayer.setDataSource(activity, Uri.parse(data.path));
+
+                            currentPlayingVideoPosition = position;
+
+
+                            mVideoPlayer.setSurface(new Surface(texture));
+
+                            mVideoPlayer.prepareAsync();
+
+                        }
+
+                    }
+                });
+            }
+
 
         }
 
@@ -98,6 +464,10 @@ public class NoteElementNotEditAdapter extends BsListAdapter<NoteElement> {
                 return ITEM_TEXT;
             case NoteElement.TYPE_IMG:
                 return ITEM_IMG;
+            case NoteElement.TYPE_AUDIO:
+                return ITEM_AUDIO;
+            case NoteElement.TYPE_VIDEO:
+                return ITEM_VIDEO;
             default:
                 return def;
         }
@@ -110,6 +480,7 @@ public class NoteElementNotEditAdapter extends BsListAdapter<NoteElement> {
         public HText(@NotNull View itemView, int viewType) {
             super(itemView, viewType);
             note_edittext = VF.f(itemView, R.id.note_edittext);
+
         }
     }
 
@@ -123,4 +494,29 @@ public class NoteElementNotEditAdapter extends BsListAdapter<NoteElement> {
         }
     }
 
+    private class HAudio extends AbsViewHolder {
+        private ImageView ivPlayPause;
+        private SeekBar seekBar;
+
+        public HAudio(@NotNull View itemView, int viewType) {
+            super(itemView, viewType);
+            ivPlayPause = VF.f(itemView, R.id.ivPlayPause);
+            seekBar = VF.f(itemView, R.id.seekBar);
+
+        }
+
+    }
+
+    private class HVideo extends AbsViewHolder {
+        private BAFVideoView2 videoView;
+
+        public HVideo(@NotNull View itemView, int viewType) {
+            super(itemView, viewType);
+            videoView = VF.f(itemView, R.id.videoView);
+            videoView.getPlayerController().ivNext.setVisibility(View.GONE);
+            videoView.getPlayerController().ivPre.setVisibility(View.GONE);
+
+        }
+
+    }
 }
