@@ -7,7 +7,13 @@ import java.io.Serializable;
  */
 
 public class User implements Serializable{
-    public String userName;
-    public String password;
-    public String userId;
+//    @S
+//    public String userName;
+//    public String password;
+//    public String userId;
+
+    public String uid;
+    public String name;
+    public String pwd;
+    public String token;
 }

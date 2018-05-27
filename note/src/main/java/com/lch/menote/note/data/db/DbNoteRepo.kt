@@ -6,7 +6,10 @@ import android.widget.Toast
 import com.lch.menote.common.toast
 import com.lch.menote.note.data.NoteSource
 import com.lch.menote.note.data.db.gen.NoteDao
+import com.lch.menote.note.domain.Mapper
 import com.lch.menote.note.domain.Note
+import com.lch.menote.note.domain.NoteModel
+import com.lch.menote.note.domain.QueryNoteResponse
 import com.lch.netkit.common.mvc.MvcError
 import com.lch.netkit.common.mvc.ResponseValue
 
@@ -15,8 +18,8 @@ import com.lch.netkit.common.mvc.ResponseValue
  */
 class DbNoteRepo(private val context: Context) : NoteSource {
 
-    override fun queryNotes(tag: String?, title: String?, sortTimeAsc: Boolean,useId:String): ResponseValue<List<Note>> {
-        val res=ResponseValue<List<Note>>()
+    override fun queryNotes(tag: String?, title: String?, sortTimeAsc: Boolean,useId:String): ResponseValue<QueryNoteResponse> {
+        val res=ResponseValue<QueryNoteResponse>()
 
         try {
 
@@ -35,7 +38,19 @@ class DbNoteRepo(private val context: Context) : NoteSource {
                 builder.orderAsc(NoteDao.Properties.Type).orderDesc(NoteDao.Properties.LastModifyTime);
             }
 
-            res.data= builder.list()
+            var r= QueryNoteResponse()
+            var models= mutableListOf<NoteModel>()
+
+           var notes= builder.list()
+            if(notes!=null){
+                for( n in notes){
+                    models.add(Mapper.from(n))
+                }
+            }
+
+            r.data=models
+
+            res.data= r
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -46,13 +61,19 @@ class DbNoteRepo(private val context: Context) : NoteSource {
         return res
     }
 
-    override fun save(note: Note) {
+    override fun save(note: NoteModel):ResponseValue<Void> {
+        var ret=ResponseValue<Void>()
+
         try {
-            Dsession.noteDao(context).insertOrReplace(note)
+
+            Dsession.noteDao(context).insertOrReplace(Mapper.from(note))
         } catch (e: Exception) {
             e.printStackTrace()
             detectLockError(e)
+            ret.setErrMsg(e.message)
         }
+
+        return ret
     }
 
     override fun delete(note: Note) {

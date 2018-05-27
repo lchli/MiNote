@@ -36,7 +36,7 @@ import java.util.List;
 
 public class LocalNoteUi extends BaseFragment {
 
-    private LocalNoteListAdapter notesAdp = new LocalNoteListAdapter();
+    private LocalNoteListAdp notesAdp;
     private CommonEmptyView empty_widget;
     private PinnedRecyclerView moduleListRecyclerView;
     private FloatingActionButton fab;
@@ -47,6 +47,7 @@ public class LocalNoteUi extends BaseFragment {
         super.onCreate(savedInstanceState);
         EventBusUtils.register(this);
         noteController = new NoteController(getActivity());
+        notesAdp = new LocalNoteListAdp(getActivity(),noteController);
     }
 
     @Override

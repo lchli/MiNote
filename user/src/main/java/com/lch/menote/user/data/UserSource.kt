@@ -8,10 +8,10 @@ import com.lch.menote.userapi.User
  */
 interface UserSource {
 
-    fun getUser(name: String, pwd: String): User?
+    fun getUser(userName: String, userPwd: String): User?
     fun getUser(): User?
     fun getUser(userId:String): User?
-    fun addUser(name: String, pwd: String): User?
+    fun addUser(userName: String, userPwd: String): User?
     fun addUser(user: User)
     fun removeCurrentUser()
 

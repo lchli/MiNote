@@ -62,7 +62,7 @@ import java.util.Map;
     @Override
     public User queryUser(String userId) {
         try {
-            return DI.provideNetSource().getUser(userId);
+            return null;//DI.provideNetSource().getUser(userId);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

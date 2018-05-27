@@ -1,6 +1,8 @@
 package com.lch.menote.note.data
 
 import com.lch.menote.note.domain.Note
+import com.lch.menote.note.domain.NoteModel
+import com.lch.menote.note.domain.QueryNoteResponse
 import com.lch.netkit.common.mvc.ResponseValue
 
 /**
@@ -8,9 +10,9 @@ import com.lch.netkit.common.mvc.ResponseValue
  */
 interface NoteSource {
 
-    fun queryNotes(tag: String?=null, title: String?=null, sortTimeAsc: Boolean=true,useId:String=""): ResponseValue<List<Note>>
+    fun queryNotes(tag: String?=null, title: String?=null, sortTimeAsc: Boolean=true,useId:String=""): ResponseValue<QueryNoteResponse>
 
-    fun save(note: Note)
+    fun save(note: NoteModel): ResponseValue<Void>
 
     fun delete(note: Note)
 

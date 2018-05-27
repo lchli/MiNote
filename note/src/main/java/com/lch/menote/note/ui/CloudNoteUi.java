@@ -9,11 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.lch.menote.common.base.BaseFragment;
 import com.lch.menote.common.util.EventBusUtils;
 import com.lch.menote.note.R;
 import com.lch.menote.note.controller.NoteController;
 import com.lch.menote.note.domain.CloudNoteListChangedEvent;
+import com.lch.menote.note.domain.NoteModel;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.VF;
@@ -76,9 +78,16 @@ public class CloudNoteUi extends BaseFragment {
 
 
     private void queryNotesAsync() {
-        noteController.getCloudNotesWithCat(null, null, true, "", new ControllerCallback<List<Object>>() {
+        noteController.getCloudNotes(null, null, true, "", new ControllerCallback<List<NoteModel>>() {
             @Override
-            public void onComplete(@NonNull ResponseValue<List<Object>> responseValue) {
+            public void onComplete(@NonNull ResponseValue<List<NoteModel>> responseValue) {
+                if (responseValue.hasError()) {
+                    ToastUtils.showShort(responseValue.errMsg());
+                    return;
+                }
+
+                notesAdp.refresh(responseValue.data);
+
 
             }
         });

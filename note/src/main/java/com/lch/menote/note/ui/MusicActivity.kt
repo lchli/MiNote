@@ -17,10 +17,7 @@ import com.lch.menote.common.util.TimeUtils
 import com.lch.menote.common.util.UUIDUtils
 import com.lch.menote.note.R
 import com.lch.menote.note.data.DataSources
-import com.lch.menote.note.domain.LinkData
-import com.lch.menote.note.domain.LocalNoteListChangedEvent
-import com.lch.menote.note.domain.MusicData
-import com.lch.menote.note.domain.Note
+import com.lch.menote.note.domain.*
 import com.lch.menote.note.helper.JsonHelper
 import kotlinx.android.synthetic.main.activity_edit_music.*
 
@@ -35,7 +32,7 @@ class MusicActivity : AppCompatActivity() {
 
         private const val EXTRA_NOTE = "EXTRA_NOTE"
 
-        fun launch(context: Context, note: Note? = null) {
+        fun launch(context: Context, note: NoteModel? = null) {
             val it = Intent(context, MusicActivity::class.java)
             if (note != null) {
                 it.putExtra(EXTRA_NOTE, note)
@@ -178,7 +175,7 @@ class MusicActivity : AppCompatActivity() {
     fun saveDraft(v: View) {
         val content = Gson().toJson(datas)
 
-        val note = Note()
+        val note = NoteModel()
         note.type = tv_note_category.text.toString()
         note.title = et_note_title.text.toString()
         note.uid = courseUUID

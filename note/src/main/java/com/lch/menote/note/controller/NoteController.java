@@ -1,7 +1,6 @@
 package com.lch.menote.note.controller;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.lch.menote.common.util.AliJsonHelper;
 import com.lch.menote.common.util.ListUtils;
@@ -11,13 +10,17 @@ import com.lch.menote.note.data.NoteSource;
 import com.lch.menote.note.data.db.DbNoteRepo;
 import com.lch.menote.note.data.net.NetNoteRepo;
 import com.lch.menote.note.domain.HeadData;
+import com.lch.menote.note.domain.Mapper;
 import com.lch.menote.note.domain.Note;
 import com.lch.menote.note.domain.NoteElement;
+import com.lch.menote.note.domain.NoteModel;
 import com.lch.menote.note.domain.NotePinedData;
+import com.lch.menote.note.domain.QueryNoteResponse;
+import com.lch.menote.note.domain.UploadFileResponse;
 import com.lch.menote.note.helper.ConstantUtil;
+import com.lch.menote.note.helper.ServerRequestCode;
 import com.lch.netkit.NetKit;
 import com.lch.netkit.common.mvc.ControllerCallback;
-import com.lch.netkit.common.mvc.MvcError;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.file.helper.FileOptions;
 import com.lch.netkit.file.helper.UploadFileParams;
@@ -67,13 +70,13 @@ public class NoteController {
     private ResponseValue<List<Object>> getNotesWithCatImpl(String tag, String title, boolean sortTimeAsc, String useId, NoteSource source) {
         ResponseValue<List<Object>> res = new ResponseValue<>();
 
-        ResponseValue<List<Note>> notesRes = source.queryNotes(tag, title, sortTimeAsc, useId);
-        if (notesRes.hasError()) {
+        ResponseValue<QueryNoteResponse> notesRes = source.queryNotes(tag, title, sortTimeAsc, useId);
+        if (notesRes.hasError() || notesRes.data == null) {
             res.err = notesRes.err;
             return res;
         }
 
-        List<Note> notes = notesRes.data;
+        List<NoteModel> notes = notesRes.data.data;
         if (notes == null || notes.isEmpty()) {
             return res;
         }
@@ -86,7 +89,7 @@ public class NoteController {
 
         String preType = "";
 
-        for (Note note : notes) {
+        for (NoteModel note : notes) {
             String currentType = note.type;
             if (!preType.equals(currentType)) {
                 all.add(new NotePinedData(ConstantUtil.VIEW_TYPE_PINED, currentType));
@@ -99,16 +102,23 @@ public class NoteController {
         return res;
     }
 
-    public void getLocalNotes(final String tag, final String title, final boolean sortTimeAsc, final String useId, final ControllerCallback<List<Note>> cb) {
+    public void getLocalNotes(final String tag, final String title, final boolean sortTimeAsc, final String useId, final ControllerCallback<List<NoteModel>> cb) {
         TaskExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                final ResponseValue<List<Note>> r = localNoteSource.queryNotes(tag, title, sortTimeAsc, useId);
+                final ResponseValue<QueryNoteResponse> r = localNoteSource.queryNotes(tag, title, sortTimeAsc, useId);
+                final ResponseValue<List<NoteModel>> ret = new ResponseValue<>();
+                if (r.hasError() || r.data == null) {
+                    ret.err = r.err;
+                } else {
+                    ret.data = r.data.data;
+                }
+
                 UiHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         if (cb != null) {
-                            cb.onComplete(r);
+                            cb.onComplete(ret);
                         }
                     }
                 });
@@ -118,16 +128,25 @@ public class NoteController {
 
     }
 
-    public void getCloudNotes(final String tag, final String title, final boolean sortTimeAsc, final String useId, final ControllerCallback<List<Note>> cb) {
+    public void getCloudNotes(final String tag, final String title, final boolean sortTimeAsc, final String useId, final ControllerCallback<List<NoteModel>> cb) {
         TaskExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                final ResponseValue<List<Note>> r = netNoteSource.queryNotes(tag, title, sortTimeAsc, useId);
+                final ResponseValue<QueryNoteResponse> r = netNoteSource.queryNotes(tag, title, sortTimeAsc, useId);
+
+                final ResponseValue<List<NoteModel>> ret = new ResponseValue<>();
+                if (r.hasError() || r.data == null) {
+                    ret.err = r.err;
+                } else {
+                    ret.data = r.data.data;
+                }
+
+
                 UiHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         if (cb != null) {
-                            cb.onComplete(r);
+                            cb.onComplete(ret);
                         }
                     }
                 });
@@ -156,13 +175,13 @@ public class NoteController {
     }
 
 
-    public void saveLocalNote(final Note note, final ControllerCallback<Void> cb) {
+    public void saveLocalNote(final NoteModel note, final ControllerCallback<Void> cb) {
 
         TaskExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 localNoteSource.save(note);
-                deleteUnusedImages(note);
+                //deleteUnusedImages(note);
 
                 UiHandler.post(new Runnable() {
                     @Override
@@ -177,7 +196,38 @@ public class NoteController {
 
     }
 
-    public void uploadNote(final Note note, final ControllerCallback<Void> cb) {
+    public void deleteLocalNote(final NoteModel note, final ControllerCallback<Void> cb) {
+
+        TaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                localNoteSource.delete(Mapper.from(note));
+
+                UiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (cb != null) {
+                            cb.onComplete(new ResponseValue<Void>());
+                        }
+                    }
+                });
+            }
+        });
+
+    }
+
+    public void updateNetNote(final NoteModel note, final ControllerCallback<Void> cb) {
+        saveNoteToNetImpl(note, cb);
+    }
+
+    public void saveNoteToNet(final NoteModel note, final ControllerCallback<Void> cb) {
+        note.uid = null;//server will generate uid.
+        saveNoteToNetImpl(note, cb);
+    }
+
+
+    private void saveNoteToNetImpl(final NoteModel note, final ControllerCallback<Void> cb) {
+
         final ResponseValue<Void> ret = new ResponseValue<>();
 
         if (note == null) {
@@ -215,15 +265,17 @@ public class NoteController {
 
                 for (NoteElement e : elms) {
                     if (!e.type.equals(NoteElement.TYPE_TEXT)) {
-                        UploadFileParams param = UploadFileParams.newInstance().addFile(new FileOptions().setFileKey("file").setFilePath(e.path));
-                        ResponseValue<String> res = NetKit.fileRequest().uploadFileSync(param, new Parser<String>() {
+                        UploadFileParams param = UploadFileParams.newInstance()
+                                .setUrl(ServerRequestCode.UPLOAD_FILE)
+                                .addFile(new FileOptions().setFileKey("file").setFilePath(e.path));
+                        ResponseValue<UploadFileResponse> res = NetKit.fileRequest().uploadFileSync(param, new Parser<UploadFileResponse>() {
                             @Override
-                            public String parse(String s) {
-                                return null;
+                            public UploadFileResponse parse(String s) {
+                                return AliJsonHelper.parseObject(s,UploadFileResponse.class);
                             }
                         });
 
-                        if (res.hasError() || TextUtils.isEmpty(res.data)) {
+                        if (res.hasError()) {
                             ret.setErrMsg(res.errMsg());
                             UiHandler.post(new Runnable() {
                                 @Override
@@ -236,7 +288,33 @@ public class NoteController {
                             return;
                         }
 
-                        e.path = res.data;
+                        if(res.data==null){
+                            ret.setErrMsg("res data is null");
+                            UiHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (cb != null) {
+                                        cb.onComplete(ret);
+                                    }
+                                }
+                            });
+                            return;
+                        }
+
+                        if(res.data.status!=ServerRequestCode.RESPCODE_SUCCESS){
+                            ret.setErrMsg(res.data.message);
+                            UiHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (cb != null) {
+                                        cb.onComplete(ret);
+                                    }
+                                }
+                            });
+                            return;
+                        }
+
+                        e.path = res.data.data;
                         isHasFile = true;
                     }
                 }//for
@@ -244,13 +322,14 @@ public class NoteController {
                 if (isHasFile) {
                     note.content = AliJsonHelper.toJSONString(elms);
                 }
-                netNoteSource.save(note);
+
+                final ResponseValue<Void> resSave = netNoteSource.save(note);
 
                 UiHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         if (cb != null) {
-                            cb.onComplete(ret);
+                            cb.onComplete(resSave);
                         }
                     }
                 });

@@ -579,6 +579,8 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
             videoView = VF.f(itemView, R.id.videoView);
             videoView.getPlayerController().ivNext.setVisibility(View.GONE);
             videoView.getPlayerController().ivPre.setVisibility(View.GONE);
+            videoView.getPlayerController().ivBackward.setVisibility(View.GONE);
+            videoView.getPlayerController().ivForward.setVisibility(View.GONE);
             operationButton = VF.f(itemView, R.id.note_radioButton);
 
         }

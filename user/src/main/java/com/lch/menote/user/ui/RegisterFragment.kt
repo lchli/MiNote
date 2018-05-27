@@ -4,22 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.blankj.utilcode.util.ToastUtils
 import com.lch.menote.common.base.BaseFragment
-import com.lch.menote.common.toast
 import com.lch.menote.user.R
-import com.lch.menote.user.data.DI
+import com.lch.menote.user.controller.UserController
 import com.lch.menote.user.route.RouteCall
-import com.lch.route.noaop.Android
+import com.lch.menote.userapi.User
+import com.lch.netkit.common.mvc.ControllerCallback
+import com.lch.netkit.common.mvc.ResponseValue
 import kotlinx.android.synthetic.main.fragment_register.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
 
 /**
  * Created by lchli on 2016/8/10.
  */
 class RegisterFragment : BaseFragment() {
 
+    val userController = UserController()
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater!!.inflate(R.layout.fragment_register, container, false)
@@ -41,41 +41,26 @@ class RegisterFragment : BaseFragment() {
 
 
     private fun registerAsync() {
-        val job = async(CommonPool) {
-            try {
-                val username = user_account_edit.text.toString()
-                val pwd = user_pwd_edit.text.toString()
+        val username = user_account_edit.text.toString()
+        val pwd = user_pwd_edit.text.toString()
 
-                val user = DI.provideNetSource().addUser(username, pwd)
-                if (user != null) {
-                    DI.provideSpSource().addUser(user)
+        userController.register(username, pwd, object : ControllerCallback<User> {
 
-                } else {
-                    Exception("register fail")
+            override fun onComplete(res: ResponseValue<User>) {
+                if (res.hasError() || res.data == null) {
+                    ToastUtils.showLong(res.errMsg())
+                    return
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                e
-            }
 
-        }
-
-        launch(Android) {
-            val e = job.await()
-
-            if (e is Exception) {
-                getContext().toast(e.message)
-
-            } else {
                 val mod = RouteCall.getNoteModule()
                 mod?.onUserLogin(null)
 
                 val userFragmentContainer = parentFragment as UserFragmentContainer
                 userFragmentContainer.toUserCenter(false)
+
             }
+        })
 
-
-        }
     }
 
 }

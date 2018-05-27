@@ -13,27 +13,21 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.apkfuns.logutils.LogUtils
 import com.lch.menote.common.base.BaseAppCompatActivity
-import com.lch.menote.common.toast
 import com.lch.menote.note.R
 import com.lch.menote.note.domain.Note
-import com.lch.menote.note.route.RouteCall
-import com.lch.menote.userapi.User
-import com.lch.route.noaop.Android
+import com.lch.menote.note.domain.NoteModel
 import kotlinx.android.synthetic.main.activity_cloud_note_detail.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
 
 class CloudNoteDetailActivity : BaseAppCompatActivity() {
 
-    private var note: Note? = null
+    private var note: NoteModel? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
 
-        note = intent.getSerializableExtra("note") as Note
+        note = intent.getSerializableExtra("note") as NoteModel
 
         setContentView(R.layout.activity_cloud_note_detail)
 
@@ -46,6 +40,7 @@ class CloudNoteDetailActivity : BaseAppCompatActivity() {
 
 
         LogUtils.e("note.content:" + note!!.content)
+        LogUtils.e("note.content:" + note!!.ShareUrl)
 
         loadUserAsync()
 
@@ -56,40 +51,42 @@ class CloudNoteDetailActivity : BaseAppCompatActivity() {
         web.setWebViewClient(WebClient())
 
 
-       // web.loadUrl(note!!.ShareUrl)
-        web.loadData(note!!.content,"text/html","utf-8")
+       web.loadUrl(note!!.ShareUrl)
+       // web.loadData(note!!.content,"text/html","utf-8")
 
     }
 
 
     private fun loadUserAsync() {
 
-        val job = async(CommonPool) {
-            try {
-                val mod = RouteCall.getUserModule()?: throw Exception("can not find user module")
-
-                mod.queryUser(note!!.userId) ?: throw Exception("userId not found")
-
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-                e
-            }
-
-        }
-
-        launch(Android) {
-            val e = job.await()
-
-            if (e is Exception) {
-                applicationContext.toast(e.message)
-
-            } else {
-                userNick.text = (e as User).userName
-            }
-
-
-        }
+//        UserController.
+//
+//        val job = async(CommonPool) {
+//            try {
+//                val mod = RouteCall.getUserModule()?: throw Exception("can not find user module")
+//
+//                mod.queryUser(note!!.userId) ?: throw Exception("userId not found")
+//
+//
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//                e
+//            }
+//
+//        }
+//
+//        launch(Android) {
+//            val e = job.await()
+//
+//            if (e is Exception) {
+//                applicationContext.toast(e.message)
+//
+//            } else {
+//                userNick.text = (e as User).userName
+//            }
+//
+//
+//        }
     }
 
 
@@ -167,7 +164,7 @@ class CloudNoteDetailActivity : BaseAppCompatActivity() {
     companion object {
 
 
-        fun startSelf(context: Context, note: Note) {
+        fun startSelf(context: Context, note: NoteModel) {
 
             val it = Intent(context, CloudNoteDetailActivity::class.java)
 

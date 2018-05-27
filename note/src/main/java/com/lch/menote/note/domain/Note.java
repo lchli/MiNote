@@ -1,11 +1,8 @@
 package com.lch.menote.note.domain;
 
-import com.google.gson.annotations.SerializedName;
-
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
 
@@ -19,41 +16,29 @@ public class Note implements Serializable {
     public static final int CAT_MUSIC = 2;
 
     private static final long serialVersionUID = -5367845055852303764L;
-    @SerializedName("imageDir")
     public String imagesDir = "";
 
-    @SerializedName("content")
     public String content = "";
 
-    @SerializedName("lastModifyTime")
     public String lastModifyTime;
 
-    @SerializedName("title")
     public String title = "";
 
-    @SerializedName("type")
     public String type = "";
 
-    @SerializedName("thumbnail")
     public String thumbNail = "";
 
-    @SerializedName("noteId")
     @Id
     public String uid;
 
-    @SerializedName("userId")
     public String userId;
-
-    @Transient
-    @SerializedName("shareUrl")
-    public String ShareUrl = "";
 
     public int category = CAT_NOTE;
 
     @Generated(hash = 1156300408)
     public Note(String imagesDir, String content, String lastModifyTime,
-            String title, String type, String thumbNail, String uid, String userId,
-            int category) {
+                String title, String type, String thumbNail, String uid, String userId,
+                int category) {
         this.imagesDir = imagesDir;
         this.content = content;
         this.lastModifyTime = lastModifyTime;
@@ -152,7 +137,6 @@ public class Note implements Serializable {
                 ", thumbNail='" + thumbNail + '\'' +
                 ", uid='" + uid + '\'' +
                 ", userId='" + userId + '\'' +
-                ", ShareUrl='" + ShareUrl + '\'' +
                 ", category=" + category +
                 '}';
     }

@@ -14,8 +14,8 @@ import com.lch.menote.common.base.BaseAppCompatActivity;
 import com.lch.menote.common.util.AliJsonHelper;
 import com.lch.menote.common.util.ListUtils;
 import com.lch.menote.note.R;
-import com.lch.menote.note.domain.Note;
 import com.lch.menote.note.domain.NoteElement;
+import com.lch.menote.note.domain.NoteModel;
 import com.lch.netkit.common.tool.VF;
 import com.lch.video_player.LchVideoPlayer;
 import com.lch.video_player.VideoPlayer;
@@ -25,11 +25,11 @@ import java.util.List;
 public class LocalNoteDetailUi extends BaseAppCompatActivity {
 
     private ListView imageEditText_content;
-    private Note note;
+    private NoteModel note;
     private AudioPlayer audioPlayer = LchAudioPlayer.newAudioPlayer();
     private VideoPlayer videoPlayer;
 
-    public static void launch(Context context, Note note) {
+    public static void launch(Context context, NoteModel note) {
         Intent it = new Intent(context, LocalNoteDetailUi.class);
         it.putExtra("note", note);
         it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -40,7 +40,7 @@ public class LocalNoteDetailUi extends BaseAppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         videoPlayer = LchVideoPlayer.newPlayer(getApplicationContext());
-        note = (Note) getIntent().getSerializableExtra("note");
+        note = (NoteModel) getIntent().getSerializableExtra("note");
 
         setContentView(R.layout.activity_local_note_detail_ui);
         Toolbar toolbar = VF.f(this, R.id.toolbar);

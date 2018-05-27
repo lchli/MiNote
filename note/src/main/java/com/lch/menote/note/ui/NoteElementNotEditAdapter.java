@@ -207,6 +207,7 @@ public class NoteElementNotEditAdapter extends BsListAdapter<NoteElement> {
     @Override
     public void onBindViewHolder(@NotNull AbsViewHolder holder, final int position) {
         int viewType = getItemViewType(position);
+
         final NoteElement data = getItem(position);
         if (data == null) {
             return;
@@ -514,6 +515,8 @@ public class NoteElementNotEditAdapter extends BsListAdapter<NoteElement> {
             videoView = VF.f(itemView, R.id.videoView);
             videoView.getPlayerController().ivNext.setVisibility(View.GONE);
             videoView.getPlayerController().ivPre.setVisibility(View.GONE);
+            videoView.getPlayerController().ivBackward.setVisibility(View.GONE);
+            videoView.getPlayerController().ivForward.setVisibility(View.GONE);
 
         }
 

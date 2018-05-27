@@ -37,7 +37,7 @@ class UserFragment : BaseFragment() {
         val session = DI.provideSpSource().getUser()
 
         if (session != null) {
-            user_nick.text = session.userName
+            user_nick.text = session.name
         }
     }
 }

@@ -46,6 +46,7 @@ class LockPwdActivity : AppCompatActivity() {
             }
 
             override fun onStarted() {
+                inputPwd=""
             }
 
             override fun onProgress(progressPattern: MutableList<PatternLockView.Dot>?) {

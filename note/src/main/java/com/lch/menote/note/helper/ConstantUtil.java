@@ -17,4 +17,6 @@ public class ConstantUtil {
     public static final int VIEW_TYPE_PINED = 2;
     public static final long BITMAP_MAX_MEMORY = 5 * 1024 * 1024L;
 
+    public static final int SERVER_REQUEST_SUCCESS= 0;
+
 }

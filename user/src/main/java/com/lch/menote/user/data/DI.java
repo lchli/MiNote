@@ -1,7 +1,6 @@
 package com.lch.menote.user.data;
 
 import com.lch.menote.user.data.mem.UserMemSource;
-import com.lch.menote.user.data.net.UserNetSource;
 import com.lch.menote.user.data.sp.UserSpSource;
 
 /**
@@ -10,9 +9,6 @@ import com.lch.menote.user.data.sp.UserSpSource;
 
 public final class DI {
 
-    public static UserSource provideNetSource(){
-        return  UserNetSource.INSTANCE;
-    }
 
     public static UserSource provideSpSource(){
         return  UserSpSource.INSTANCE;

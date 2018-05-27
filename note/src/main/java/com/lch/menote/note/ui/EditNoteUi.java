@@ -29,8 +29,8 @@ import com.lch.menote.note.R;
 import com.lch.menote.note.controller.NoteController;
 import com.lch.menote.note.controller.NoteElementController;
 import com.lch.menote.note.domain.LocalNoteListChangedEvent;
-import com.lch.menote.note.domain.Note;
 import com.lch.menote.note.domain.NoteElement;
+import com.lch.menote.note.domain.NoteModel;
 import com.lch.menote.note.helper.NoteUtils;
 import com.lch.netkit.common.base.BaseCompatActivity;
 import com.lch.netkit.common.mvc.ControllerCallback;
@@ -64,14 +64,14 @@ public class EditNoteUi extends BaseCompatActivity {
     private NoteElementAdapter noteElementAdapter;
     private NoteElementController noteElementController = new NoteElementController();
     private NoteController noteController;
-    private Note oldNote;
+    private NoteModel oldNote;
     private String courseUUID;
     private String courseDir;
     private int mPositionToModify = 0;
     private AudioPlayer audioPlayer = LchAudioPlayer.newAudioPlayer();
     private VideoPlayer videoPlayer;
 
-    public static void launch(Context context, Note note) {
+    public static void launch(Context context, NoteModel note) {
         Intent it = new Intent(context, EditNoteUi.class);
         it.putExtra("note", note);
         it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -100,11 +100,11 @@ public class EditNoteUi extends BaseCompatActivity {
 
         noteElementListView.setAdapter(noteElementAdapter);
 
-        oldNote = (Note) getIntent().getSerializableExtra("note");
+        oldNote = (NoteModel) getIntent().getSerializableExtra("note");
 
         if (oldNote != null) {
-            courseUUID = oldNote.getUid();
-            courseDir = oldNote.getImagesDir();
+            courseUUID = oldNote.uid;
+            courseDir = oldNote.imagesDir;
 
             tv_note_category.setText(oldNote.type);
             et_note_title.setText(oldNote.title);
@@ -140,7 +140,7 @@ public class EditNoteUi extends BaseCompatActivity {
                     return;
                 }
 
-                final Note note = new Note();
+                final NoteModel note = new NoteModel();
                 note.uid = courseUUID;
                 note.imagesDir = courseDir;
                 note.type = tv_note_category.getText().toString();
