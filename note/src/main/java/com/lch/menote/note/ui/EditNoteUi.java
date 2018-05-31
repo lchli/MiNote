@@ -1,6 +1,7 @@
 package com.lch.menote.note.ui;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,6 +30,7 @@ import com.lch.menote.common.util.UUIDUtils;
 import com.lch.menote.note.R;
 import com.lch.menote.note.controller.NoteController;
 import com.lch.menote.note.controller.NoteElementController;
+import com.lch.menote.note.controller.NoteTagController;
 import com.lch.menote.note.domain.LocalNoteListChangedEvent;
 import com.lch.menote.note.domain.NoteElement;
 import com.lch.menote.note.domain.NoteModel;
@@ -70,6 +73,8 @@ public class EditNoteUi extends BaseCompatActivity {
     private int mPositionToModify = 0;
     private AudioPlayer audioPlayer = LchAudioPlayer.newAudioPlayer();
     private VideoPlayer videoPlayer;
+    private String currentTag = "默认";
+    private NoteTagController mNoteTagController = new NoteTagController();
 
     public static void launch(Context context, NoteModel note) {
         Intent it = new Intent(context, EditNoteUi.class);
@@ -123,7 +128,7 @@ public class EditNoteUi extends BaseCompatActivity {
         bt_more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                operation(-1, false,false,false);
+                operation(-1, false, false, false);
             }
         });
         bt_save.setOnClickListener(new View.OnClickListener() {
@@ -143,7 +148,7 @@ public class EditNoteUi extends BaseCompatActivity {
                 final NoteModel note = new NoteModel();
                 note.uid = courseUUID;
                 note.imagesDir = courseDir;
-                note.type = tv_note_category.getText().toString();
+                note.type = currentTag;
                 note.title = title;
                 note.lastModifyTime = TimeUtils.getTime(System.currentTimeMillis());
                 note.content = AliJsonHelper.toJSONString(content);
@@ -164,6 +169,75 @@ public class EditNoteUi extends BaseCompatActivity {
             }
         });
 
+        tv_note_category.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mNoteTagController.getAllTag(new ControllerCallback<List<String>>() {
+                    @Override
+                    public void onComplete(@NonNull ResponseValue<List<String>> responseValue) {
+                        if (responseValue.hasError()) {
+                            ToastUtils.showShort(responseValue.errMsg());
+                            return;
+                        }
+
+                        final List<String> datas = new ArrayList<>();
+                        datas.add("添加新标签");
+                        if (responseValue.data != null) {
+                            datas.addAll(responseValue.data);
+                        }
+
+                        DialogUtils.showTextListDialogPlus(EditNoteUi.this, new OnItemClickListener() {
+                            @Override
+                            public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
+                                dialog.dismiss();
+
+                                if (position != 0) {
+                                    currentTag = datas.get(position);
+                                    tv_note_category.setText(currentTag);
+                                } else {
+                                    showAddTagDialog();
+                                }
+
+                            }
+                        }, datas);
+                    }
+                });
+
+            }
+        });
+
+    }
+
+    private void showAddTagDialog() {
+        final Dialog d = new Dialog(this);
+        d.setContentView(R.layout.add_new_note_tag_dialog);
+        final EditText note_edittext = VF.f(d, R.id.note_edittext);
+        Button note_button = VF.f(d, R.id.note_button);
+
+        note_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newtag = note_edittext.getText().toString();
+                if (TextUtils.isEmpty(newtag)) {
+                    return;
+                }
+                mNoteTagController.addTag(newtag, new ControllerCallback<Void>() {
+                    @Override
+                    public void onComplete(@NonNull ResponseValue<Void> responseValue) {
+                        if (responseValue.hasError()) {
+                            ToastUtils.showShort(responseValue.errMsg());
+                        } else {
+                            d.dismiss();
+                            ToastUtils.showShort("添加成功");
+                        }
+
+                    }
+                });
+
+            }
+        });
+
+        d.show();
     }
 
 

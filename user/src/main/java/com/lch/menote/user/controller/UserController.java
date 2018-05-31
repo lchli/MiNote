@@ -3,8 +3,9 @@ package com.lch.menote.user.controller;
 import com.lch.menote.common.util.TaskExecutor;
 import com.lch.menote.common.util.UiHandler;
 import com.lch.menote.user.ServerRequestCode;
-import com.lch.menote.user.data.DI;
+import com.lch.menote.user.data.mem.MemUserRepo;
 import com.lch.menote.user.data.net.NetUserRepo;
+import com.lch.menote.user.data.sp.SpUserRepo;
 import com.lch.menote.user.domain.LoginResponse;
 import com.lch.menote.userapi.User;
 import com.lch.netkit.common.mvc.ControllerCallback;
@@ -17,6 +18,8 @@ import com.lch.netkit.common.mvc.ResponseValue;
 public class UserController {
 
     private NetUserRepo netUserRepo = new NetUserRepo();
+    private MemUserRepo mMemUserRepo = new MemUserRepo();
+    private SpUserRepo mSpUserRepo = new SpUserRepo();
 
     public void register(final String userName, final String userPwd, final ControllerCallback<User> cb) {
         final ResponseValue<User> ret = new ResponseValue<>();
@@ -47,7 +50,7 @@ public class UserController {
                     return;
                 }
 
-                DI.provideSpSource().addUser(res.data.getData());
+                mSpUserRepo.saveUser(res.data.getData());
 
                 ret.data = res.data.getData();
 
@@ -94,7 +97,7 @@ public class UserController {
                     return;
                 }
 
-                DI.provideSpSource().addUser(res.data.getData());
+                mSpUserRepo.saveUser(res.data.getData());
 
                 ret.data = res.data.getData();
 
@@ -106,6 +109,88 @@ public class UserController {
                     }
                 });
 
+            }
+        });
+    }
+
+    public void saveLockPwd(final String pwd, final ControllerCallback<Void> cb) {
+
+        TaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final ResponseValue<Void> res = mMemUserRepo.saveLockPwd(pwd);
+
+                UiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        cb.onComplete(res);
+                    }
+                });
+            }
+        });
+    }
+
+    public void getLockPwd(final ControllerCallback<String> cb) {
+
+        TaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final ResponseValue<String> res = mMemUserRepo.getLockPwd();
+
+                UiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        cb.onComplete(res);
+                    }
+                });
+            }
+        });
+    }
+
+    public void getUserSession(final ControllerCallback<User> cb) {
+        TaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final ResponseValue<User> res = mSpUserRepo.getUser();
+
+                UiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        cb.onComplete(res);
+                    }
+                });
+            }
+        });
+    }
+
+    public void saveUserSession(final User user, final ControllerCallback<Void> cb) {
+        TaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final ResponseValue<Void> res = mSpUserRepo.saveUser(user);
+
+                UiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        cb.onComplete(res);
+                    }
+                });
+            }
+        });
+    }
+
+    public void clearUserSession(final ControllerCallback<Void> cb) {
+        TaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final ResponseValue<Void> res = mSpUserRepo.removeCurrentUser();
+
+                UiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        cb.onComplete(res);
+                    }
+                });
             }
         });
     }

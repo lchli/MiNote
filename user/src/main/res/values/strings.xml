@@ -11,8 +11,8 @@
     </style>
 
     <declare-styleable name="UserCenterListItem">
-        <attr name="UserCenterListItem_text" format="string|reference"/>
-        <attr name="UserCenterListItem_icon" format="reference"/>
+        <attr name="UserCenterListItem_text" format="string|reference" />
+        <attr name="UserCenterListItem_icon" format="reference" />
     </declare-styleable>
 
     <style name="UserCenterListLayout">
@@ -27,4 +27,9 @@
 
     </style>
 
+
+    <string name="user_login_text">登录</string>
+    <string name="user_goto_login_text">去登录</string>
+    <string name="user_goto_register_text">去注册</string>
+    <string name="user_register_text">注册</string>
 </resources>

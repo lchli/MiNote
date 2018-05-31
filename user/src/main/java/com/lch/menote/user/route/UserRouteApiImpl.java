@@ -3,9 +3,12 @@ package com.lch.menote.user.route;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.lch.menote.common.util.Navigator;
 import com.lch.menote.user.LockPwdActivity;
-import com.lch.menote.user.data.DI;
+import com.lch.menote.user.data.mem.MemUserRepo;
+import com.lch.menote.user.data.sp.SpUserRepo;
 import com.lch.menote.user.ui.UserFragmentContainer;
 import com.lch.menote.userapi.User;
 import com.lch.menote.userapi.UserRouteApi;
@@ -24,6 +27,8 @@ import java.util.Map;
     public static final String SP = "user-sp";
 
     private Context mContext;
+    private MemUserRepo mMemUserRepo = new MemUserRepo();
+    private SpUserRepo mSpUserRepo = new SpUserRepo();
 
     @Override
     public void init(Context context) {
@@ -46,17 +51,18 @@ import java.util.Map;
     @RouteMethod(UserRouteApi.GET_LOCK_PWD)
     @Override
     public String getLockPwd(Map<String, String> params) {
-        return DI.provideMemSource().getLockPwd();
+
+        return mMemUserRepo.getLockPwd().data;
     }
 
     @Override
     public void onAppBackground(Map<String, String> params) {
-        DI.provideMemSource().clearLockPwd();
+        mMemUserRepo.clearLockPwd();
     }
 
     @Override
     public User userSession() {
-        return DI.provideSpSource().getUser();
+        return mSpUserRepo.getUser().data;
     }
 
     @Override

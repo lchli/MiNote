@@ -68,12 +68,6 @@ public class LocalNoteDetailUi extends BaseAppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.local_note_detail_toolbar_actions, menu);
-        String type = note.type;
-        int maxTypeLen = 5;
-        if (type.length() >= maxTypeLen) {
-            type = type.substring(0, maxTypeLen) + "...";
-        }
-        menu.findItem(R.id.action_note_type).setTitle(String.format("[%s]", type));
         return true;
     }
 

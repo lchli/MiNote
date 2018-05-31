@@ -27,12 +27,12 @@ class RegisterFragment : BaseFragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        common_title.addRightText("login", {
+        common_title.addRightText(getString(R.string.user_goto_login_text), {
             val userFragmentContainer = parentFragment as UserFragmentContainer
             userFragmentContainer.toLogin(true)
         })
 
-        common_title.setCenterText("register", null)
+        common_title.setCenterText("", null)
 
         register_widget.setOnClickListener {
             registerAsync()

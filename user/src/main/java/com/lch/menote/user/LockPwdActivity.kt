@@ -5,17 +5,20 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.andrognito.patternlockview.PatternLockView
 import com.andrognito.patternlockview.listener.PatternLockViewListener
+import com.blankj.utilcode.util.ToastUtils
 import com.lch.menote.common.logIfDebug
 import com.lch.menote.common.showListDialog
 import com.lch.menote.common.toast
-import com.lch.menote.user.data.DI
+import com.lch.menote.user.controller.UserController
 import com.lch.menote.user.route.RouteCall
+import com.lch.netkit.common.mvc.ControllerCallback
 import com.orhanobut.dialogplus.OnItemClickListener
 import kotlinx.android.synthetic.main.activity_pwd.*
 
 class LockPwdActivity : AppCompatActivity() {
 
     private var inputPwd = ""
+    private var mUserController = UserController()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +49,7 @@ class LockPwdActivity : AppCompatActivity() {
             }
 
             override fun onStarted() {
-                inputPwd=""
+                inputPwd = ""
             }
 
             override fun onProgress(progressPattern: MutableList<PatternLockView.Dot>?) {
@@ -64,9 +67,16 @@ class LockPwdActivity : AppCompatActivity() {
             return
         }
 
-        DI.provideMemSource().saveLockPwd(inputPwd)
-        RouteCall.getHomeModule()?.launchHome(null)
-        finish()
+        mUserController.saveLockPwd(inputPwd, {
+            if (!it.hasError()) {
+                RouteCall.getHomeModule()?.launchHome(null)
+                finish()
+            } else {
+                ToastUtils.showLong(it.errMsg())
+            }
+
+        })
+
     }
 
 

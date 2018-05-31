@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.blankj.utilcode.util.ToastUtils
 import com.lch.menote.common.base.BaseFragment
 import com.lch.menote.user.R
-import com.lch.menote.user.data.DI
+import com.lch.menote.user.controller.UserController
 import com.lch.menote.userapi.User
 
 /**
@@ -15,7 +16,7 @@ import com.lch.menote.userapi.User
  */
 class UserFragmentContainer : BaseFragment() {
 
-
+    private var mUserController = UserController()
     internal lateinit var userFragmentContainer: FrameLayout
 
     fun toRegister() {
@@ -55,19 +56,16 @@ class UserFragmentContainer : BaseFragment() {
     }
 
     override fun initLoadData() {
-        var session: User? = null
+        mUserController.getUserSession({
+            if(it.hasError()){
+                ToastUtils.showLong(it.errMsg())
+            }else if(it.data==null){
+                toLogin(false)
+            }else{
+                toUserCenter(false)
+            }
+        })
 
-        try {
-            session = DI.provideSpSource().getUser()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        if (session == null) {
-            toLogin(false)
-        } else {
-            toUserCenter(false)
-        }
     }
 
     override fun onDestroyView() {

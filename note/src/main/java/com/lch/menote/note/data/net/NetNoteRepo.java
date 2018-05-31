@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 public class NetNoteRepo implements NoteSource {
 
     @NonNull
-    @Override
     public ResponseValue<QueryNoteResponse> queryNotes(@Nullable String tag, @Nullable String title, boolean sortTimeAsc, @NotNull String useId) {
         StringRequestParams param = new StringRequestParams()
                 .setUrl(ServerRequestCode.QUERY_NOTE)
@@ -43,7 +42,6 @@ public class NetNoteRepo implements NoteSource {
         return ret;
     }
 
-    @Override
     public ResponseValue<Void> save(@NotNull NoteModel note) {
         ResponseValue<Void> ret = new ResponseValue<>();
 
@@ -68,12 +66,12 @@ public class NetNoteRepo implements NoteSource {
             return ret;
         }
 
-        if(res.data==null){
+        if (res.data == null) {
             ret.setErrMsg("ret data is null");
             return ret;
         }
 
-        if (res.data.status!= ConstantUtil.SERVER_REQUEST_SUCCESS) {
+        if (res.data.status != ConstantUtil.SERVER_REQUEST_SUCCESS) {
             ret.setErrMsg(res.data.message);
             return ret;
         }
@@ -82,8 +80,8 @@ public class NetNoteRepo implements NoteSource {
 
     }
 
-    @Override
-    public void delete(@NotNull Note note) {
+    public ResponseValue<Void> delete(@NotNull Note note) {
 
+        return null;
     }
 }

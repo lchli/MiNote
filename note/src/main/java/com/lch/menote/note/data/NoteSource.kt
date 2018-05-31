@@ -14,6 +14,6 @@ interface NoteSource {
 
     fun save(note: NoteModel): ResponseValue<Void>
 
-    fun delete(note: Note)
+    fun delete(note: Note):ResponseValue<Void>
 
 }

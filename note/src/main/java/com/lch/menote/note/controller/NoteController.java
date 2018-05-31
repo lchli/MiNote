@@ -7,7 +7,7 @@ import com.lch.menote.common.util.ListUtils;
 import com.lch.menote.common.util.UiHandler;
 import com.lch.menote.note.TaskExecutor;
 import com.lch.menote.note.data.NoteSource;
-import com.lch.menote.note.data.db.DbNoteRepo;
+import com.lch.menote.note.data.db.DatabseNoteRepo;
 import com.lch.menote.note.data.net.NetNoteRepo;
 import com.lch.menote.note.domain.HeadData;
 import com.lch.menote.note.domain.Mapper;
@@ -40,11 +40,11 @@ import java.util.List;
 public class NoteController {
 
 
-    private NoteSource localNoteSource;
-    private NoteSource netNoteSource;
+    private DatabseNoteRepo localNoteSource;
+    private NetNoteRepo netNoteSource;
 
     public NoteController(Context context) {
-        localNoteSource = new DbNoteRepo(context);
+        localNoteSource = new DatabseNoteRepo(context);
         netNoteSource = new NetNoteRepo();
     }
 
@@ -271,7 +271,7 @@ public class NoteController {
                         ResponseValue<UploadFileResponse> res = NetKit.fileRequest().uploadFileSync(param, new Parser<UploadFileResponse>() {
                             @Override
                             public UploadFileResponse parse(String s) {
-                                return AliJsonHelper.parseObject(s,UploadFileResponse.class);
+                                return AliJsonHelper.parseObject(s, UploadFileResponse.class);
                             }
                         });
 
@@ -288,7 +288,7 @@ public class NoteController {
                             return;
                         }
 
-                        if(res.data==null){
+                        if (res.data == null) {
                             ret.setErrMsg("res data is null");
                             UiHandler.post(new Runnable() {
                                 @Override
@@ -301,7 +301,7 @@ public class NoteController {
                             return;
                         }
 
-                        if(res.data.status!=ServerRequestCode.RESPCODE_SUCCESS){
+                        if (res.data.status != ServerRequestCode.RESPCODE_SUCCESS) {
                             ret.setErrMsg(res.data.message);
                             UiHandler.post(new Runnable() {
                                 @Override

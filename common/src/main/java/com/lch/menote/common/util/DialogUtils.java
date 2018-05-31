@@ -40,4 +40,5 @@ public final class DialogUtils {
     public static void showTextListDialog(Activity activity, DialogInterface.OnClickListener lsn, CharSequence... items) {
         new AlertDialog.Builder(activity).setItems(items, lsn).show();
     }
+
 }

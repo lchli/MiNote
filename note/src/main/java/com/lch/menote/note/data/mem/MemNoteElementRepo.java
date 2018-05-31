@@ -9,7 +9,7 @@ import java.util.List;
  * Created by lichenghang on 2018/5/20.
  */
 
-public class MemNoteElementSource {
+public class MemNoteElementRepo {
 
     private List<NoteElement> datas = new ArrayList<>();
 

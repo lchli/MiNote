@@ -25,7 +25,7 @@
             android:layout_marginLeft="10dp"
             android:gravity="center_vertical"
             android:textColor="#fff"
-            android:text="默认" />
+            android:text="标签" />
 
         <EditText
             android:id="@+id/et_note_title"

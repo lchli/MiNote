@@ -1,6 +1,6 @@
 package com.lch.menote.note.controller;
 
-import com.lch.menote.note.data.mem.MemNoteElementSource;
+import com.lch.menote.note.data.mem.MemNoteElementRepo;
 import com.lch.menote.note.domain.NoteElement;
 import com.lch.netkit.common.mvc.ResponseValue;
 
@@ -12,7 +12,7 @@ import java.util.List;
 
 public class NoteElementController {
 
-    private MemNoteElementSource memNoteElementSource = new MemNoteElementSource();
+    private MemNoteElementRepo memNoteElementSource = new MemNoteElementRepo();
 
 
     public ResponseValue<Void> insertText(int position) {

@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.view.View
 import com.blankj.utilcode.util.SizeUtils
+import com.blankj.utilcode.util.ToastUtils
 import com.google.gson.Gson
 import com.lch.menote.common.launchActivity
 import com.lch.menote.common.log
@@ -16,7 +17,7 @@ import com.lch.menote.common.util.EventBusUtils
 import com.lch.menote.common.util.TimeUtils
 import com.lch.menote.common.util.UUIDUtils
 import com.lch.menote.note.R
-import com.lch.menote.note.data.DataSources
+import com.lch.menote.note.controller.NoteController
 import com.lch.menote.note.domain.*
 import com.lch.menote.note.helper.JsonHelper
 import kotlinx.android.synthetic.main.activity_edit_music.*
@@ -24,6 +25,7 @@ import kotlinx.android.synthetic.main.activity_edit_music.*
 class MusicActivity : AppCompatActivity() {
 
     private lateinit var mMusicAdapter: MusicAdapter
+    private lateinit var mNoteController: NoteController
     private val datas = mutableListOf<MusicData>()
     private var controllViewTotalHeight = -1
     private var courseUUID: String? = null
@@ -45,6 +47,8 @@ class MusicActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mNoteController = NoteController(applicationContext)
+
         setContentView(R.layout.activity_edit_music)
 
         musicGrid.setHasFixedSize(true)
@@ -54,7 +58,7 @@ class MusicActivity : AppCompatActivity() {
         mMusicAdapter = MusicAdapter(this)
         musicGrid.adapter = mMusicAdapter
 
-        val note = intent.getSerializableExtra(EXTRA_NOTE) as? Note
+        val note = intent.getSerializableExtra(EXTRA_NOTE) as? NoteModel
         if (note != null) {
             val oldDatas: List<MusicData>? = Gson().fromJson(note.content, JsonHelper.getMusicListTypeToken())
             if (oldDatas != null) {
@@ -183,10 +187,16 @@ class MusicActivity : AppCompatActivity() {
         note.content = content
         note.category = Note.CAT_MUSIC
 
-        DataSources.localNote.save(note)
-        EventBusUtils.post(LocalNoteListChangedEvent())
+        mNoteController.saveLocalNote(note, {
+            if (it.hasError()) {
+                ToastUtils.showLong(it.errMsg())
+            } else {
+                EventBusUtils.post(LocalNoteListChangedEvent())
 
-        finish()
+                finish()
+            }
+        })
+
     }
 
     private fun refresh() {

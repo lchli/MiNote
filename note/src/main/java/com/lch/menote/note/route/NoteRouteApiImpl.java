@@ -4,8 +4,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 
 import com.lch.menote.common.util.EventBusUtils;
-import com.lch.menote.note.data.DataSources;
-import com.lch.menote.note.data.db.Dsession;
+import com.lch.menote.note.data.db.DaoSessionManager;
 import com.lch.menote.note.domain.CloudNoteListChangedEvent;
 import com.lch.menote.note.helper.ConstantUtil;
 import com.lch.menote.note.helper.GlideImageLoader;
@@ -30,11 +29,10 @@ import cn.finalteam.galleryfinal.ThemeConfig;
  */
 @RouteService(NoteRouteApi.MODULE_NAME)
 public class NoteRouteApiImpl implements NoteRouteApi, Router {
+    public static final String SP = "note-sp";
 
     @Override
     public void init(Context context) {
-
-        DataSources.INSTANCE.init(context);
 
         FunctionConfig functionConfig = new FunctionConfig.Builder()
                 .setEnableCamera(true)
@@ -73,7 +71,7 @@ public class NoteRouteApiImpl implements NoteRouteApi, Router {
 
     @Override
     public void onAppBackground(Map<String, String> params) {
-        Dsession.INSTANCE.destroy();
+        DaoSessionManager.destroy();
     }
 
     @Override

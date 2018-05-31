@@ -7,7 +7,15 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_note_type"
-        android:title="[type]"
-        app:showAsAction="always" />
+        android:id="@+id/action_like_note"
+        android:icon="@drawable/pencil"
+        android:title="点赞"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_share_note"
+        android:icon="@drawable/pencil"
+        android:title="分享"
+        app:showAsAction="ifRoom" />
+
 </menu>
