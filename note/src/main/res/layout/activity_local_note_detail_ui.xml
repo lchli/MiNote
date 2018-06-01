@@ -6,33 +6,32 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/title_view_height"
         android:background="@color/titleView_bgColor"
-        app:titleTextColor="#fff"
-        app:subtitleTextColor="#fff"
+        android:theme="@style/toolbar_theme"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-         />
+        app:subtitleTextColor="#fff"
+        app:titleTextAppearance="@dimen/title_view_textsize"
+        app:titleTextColor="#fff" />
 
 
-
-        <ListView
-            android:id="@+id/imageEditText_content"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="top|left"
-            android:scrollbars="none"
-            android:dividerHeight="0dp"
-            android:listSelector="@android:color/transparent"
-            android:divider="@android:color/transparent"
-            android:text="Name" />
+    <ListView
+        android:id="@+id/imageEditText_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:gravity="top|left"
+        android:listSelector="@android:color/transparent"
+        android:scrollbars="none"
+        android:text="Name" />
 
 
 </LinearLayout>

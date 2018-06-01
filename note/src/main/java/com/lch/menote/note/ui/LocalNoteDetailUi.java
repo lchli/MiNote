@@ -2,12 +2,14 @@ package com.lch.menote.note.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.lch.audio_player.AudioPlayer;
 import com.lch.audio_player.LchAudioPlayer;
 import com.lch.menote.common.base.BaseAppCompatActivity;
@@ -78,6 +80,17 @@ public class LocalNoteDetailUi extends BaseAppCompatActivity {
             finish();
         } else if (item.getItemId() == android.R.id.home) {
             finish();
+        } else if (item.getItemId() == R.id.action_share_note) {
+            try {
+                String path = note.ShareUrl;
+                Intent imageIntent = new Intent(Intent.ACTION_SEND);
+                imageIntent.setType("text/plain");
+                imageIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(""));
+                startActivity(Intent.createChooser(imageIntent, "分享"));
+            }catch (Throwable e){
+                e.printStackTrace();
+                ToastUtils.showShort(e.getLocalizedMessage());
+            }
         }
         return super.onOptionsItemSelected(item);
     }

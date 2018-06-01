@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -62,6 +63,7 @@ public class EditNoteUi extends BaseCompatActivity {
     private ListView noteElementListView;
     private View bt_more;
     private View bt_save;
+    private ImageView ivBackward;
     private TextView tv_note_category;
     private EditText et_note_title;
     private NoteElementAdapter noteElementAdapter;
@@ -94,6 +96,14 @@ public class EditNoteUi extends BaseCompatActivity {
         bt_save = VF.f(this, R.id.bt_save);
         tv_note_category = VF.f(this, R.id.tv_note_category);
         et_note_title = VF.f(this, R.id.et_note_title);
+        ivBackward = VF.f(this, R.id.ivBackward);
+
+        ivBackward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         noteController = new NoteController(this);
         noteElementAdapter = new NoteElementAdapter(new NoteElementAdapter.Callback() {

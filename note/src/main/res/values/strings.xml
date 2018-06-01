@@ -35,4 +35,10 @@
     <string name="patch_restart_process_dialog">已成功应用补丁，需要重启应用程序，现在重启？</string>
     <item name="adapter_item_tag_key" type="id" />
     <item name="adapter_item_tag_player" type="id" />
+
+    <style name="toolbar_theme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textSize">@dimen/title_view_textsize</item>
+    </style>
+
+
 </resources>
