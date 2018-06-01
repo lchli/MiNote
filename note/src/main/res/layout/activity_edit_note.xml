@@ -17,7 +17,7 @@
             android:id="@+id/tv_note_category"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/note_type_expand"
+            android:drawableLeft="@drawable/chevron_down"
             android:drawablePadding="2dp"
             android:ellipsize="end"
             android:singleLine="true"

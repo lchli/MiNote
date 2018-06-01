@@ -21,7 +21,7 @@ class UserFragmentContainer : BaseFragment() {
 
     fun toRegister() {
         val trans = childFragmentManager.beginTransaction()
-        trans.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+        trans.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
 
         trans.replace(R.id.user_fragment_container, RegisterFragment())
         trans.commitAllowingStateLoss()
@@ -30,7 +30,7 @@ class UserFragmentContainer : BaseFragment() {
     fun toLogin(isNeedAnim: Boolean) {
         val trans = childFragmentManager.beginTransaction()
         if (isNeedAnim) {
-            trans.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+            trans.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
         }
         trans.replace(R.id.user_fragment_container, LoginFragment())
         trans.commitAllowingStateLoss()
@@ -39,7 +39,7 @@ class UserFragmentContainer : BaseFragment() {
     fun toUserCenter(isNeedAnim: Boolean) {
         val trans = childFragmentManager.beginTransaction()
         if (isNeedAnim) {
-            trans.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+            trans.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
         }
         trans.replace(R.id.user_fragment_container, UserFragment())
         trans.commitAllowingStateLoss()

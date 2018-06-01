@@ -20,7 +20,7 @@ android {
         resourcePrefix("note_")
 
         ndk {
-            abiFilters "armeabi-v7a"
+            abiFilters "armeabi-v7a" 
         }
 
     }

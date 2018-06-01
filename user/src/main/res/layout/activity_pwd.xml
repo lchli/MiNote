@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/titleView_bgColor"
+        android:textSize="@dimen/title_view_textsize"
         android:gravity="center_horizontal"
         android:padding="10dp"
         android:text="输入解锁密码"

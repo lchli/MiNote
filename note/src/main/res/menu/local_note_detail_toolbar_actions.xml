@@ -2,19 +2,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_edit_note"
-        android:icon="@drawable/pencil"
+        android:icon="@drawable/edit_note_pencil"
         android:title="edit"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_like_note"
-        android:icon="@drawable/pencil"
+        android:icon="@drawable/like_thumb_up"
         android:title="点赞"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_share_note"
-        android:icon="@drawable/pencil"
+        android:icon="@drawable/share_note"
         android:title="分享"
         app:showAsAction="ifRoom" />
 
