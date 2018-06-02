@@ -1,4 +1,46 @@
 <resources>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/titleView_bgColor</item>
+        <item name="colorPrimaryDark">@color/titleView_bgColor</item>
+        <item name="colorAccent">@color/titleView_bgColor</item>
 
+    </style>
+
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="LoginInputLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_marginLeft">30dp</item>
+        <item name="android:layout_marginRight">30dp</item>
+        <item name="android:layout_marginTop">20dp</item>
+    </style>
+
+    <declare-styleable name="UserCenterListItem">
+        <attr name="UserCenterListItem_text" format="string|reference" />
+        <attr name="UserCenterListItem_icon" format="reference" />
+    </declare-styleable>
+
+    <style name="UserCenterListLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:background">@drawable/list_item_bg</item>
+
+    </style>
+
+
+    <string name="user_login_text">登录</string>
+    <string name="user_goto_login_text">去登录</string>
+    <string name="user_goto_register_text">去注册</string>
+    <string name="user_register_text">注册</string>
 
 </resources>

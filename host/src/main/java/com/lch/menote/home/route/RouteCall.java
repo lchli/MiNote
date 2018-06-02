@@ -1,7 +1,8 @@
-package com.lch.menote;
+package com.lch.menote.home.route;
 
 import android.support.annotation.Nullable;
 
+import com.lch.menote.note.route.NoteRouteApi;
 import com.lch.menote.user.route.UserRouteApi;
 import com.lch.route.noaop.lib.RouteEngine;
 
@@ -15,5 +16,11 @@ public final class RouteCall {
     public static UserRouteApi getUserModule(){
 
        return (UserRouteApi) RouteEngine.INSTANCE.getModule(UserRouteApi.MODULE_NAME);
+    }
+
+    @Nullable
+    public static NoteRouteApi getNoteModule(){
+
+        return (NoteRouteApi) RouteEngine.INSTANCE.getModule(NoteRouteApi.MODULE_NAME);
     }
 }

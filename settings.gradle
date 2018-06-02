@@ -1,1 +1,1 @@
-include ':host', ':home', ':common', ':note', ':user',  ':userapi', ':noteapi', ':homeapi'
+include ':host'

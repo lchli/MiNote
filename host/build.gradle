@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply from:"$rootProject.rootDir/depend.gradle"
+apply plugin: 'org.greenrobot.greendao'
 
 
 android {
@@ -47,13 +49,9 @@ configurations.all {
 }
 
 
-dependencies {
-    testImplementation "junit:junit:$junit_version"
 
-    api project(":common")
-
-    api project(":home")
-    api project(":note")
-    api project(":user")
+greendao {
+    schemaVersion 2
+    daoPackage 'com.lch.menote.note.data.db.gen'
+    targetGenDir 'src/main/java'
 }
-

@@ -1,4 +1,4 @@
-package com.lch.menote;
+package com.lch.menote.note.route;
 
 import android.support.annotation.Nullable;
 
