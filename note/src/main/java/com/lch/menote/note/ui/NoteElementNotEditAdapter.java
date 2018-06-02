@@ -245,6 +245,10 @@ public class NoteElementNotEditAdapter extends BsListAdapter<NoteElement> {
                     }
                     float f = ((float) mAudioPlayer.getCurrentPosition()) / mAudioPlayer.getDuration();
                     h.simpleAudioView.seekBar.setProgress((int) (h.simpleAudioView.seekBar.getMax() * f));
+
+                    h.simpleAudioView.endText.setText(VideoHelper.formatVideoTime((int) mAudioPlayer.getDuration()));
+                    h.simpleAudioView.startText.setText(VideoHelper.formatVideoTime((int) mAudioPlayer.getCurrentPosition()));
+
                 } else {
                     h.simpleAudioView.ivPlayPause.setImageResource(android.R.drawable.ic_media_play);
                     h.simpleAudioView.seekBar.setProgress(0);
@@ -502,6 +506,8 @@ public class NoteElementNotEditAdapter extends BsListAdapter<NoteElement> {
         public HAudio(@NotNull View itemView, int viewType) {
             super(itemView, viewType);
             simpleAudioView = VF.f(itemView, R.id.simpleAudioView);
+            simpleAudioView.prev.setVisibility(View.INVISIBLE);
+            simpleAudioView.next.setVisibility(View.INVISIBLE);
 
         }
 

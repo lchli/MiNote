@@ -3,6 +3,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -13,7 +14,6 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        resourcePrefix("common_")
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -27,6 +27,8 @@ android {
 }
 
 dependencies{
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     testImplementation "junit:junit:$junit_version"
 
 
@@ -47,3 +49,4 @@ dependencies{
 
     api "com.alibaba:fastjson:${fastjson_version}.android"
 }
+

@@ -1,8 +1,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_edit_note"
+        android:icon="@drawable/edit_note_pencil"
+        android:title="edit"
+        app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_note_type"
-        android:title="[type]"
-        app:showAsAction="always" />
+        android:id="@+id/action_like_note"
+        android:icon="@drawable/like_thumb_up"
+        android:title="点赞"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_share_note"
+        android:icon="@drawable/share_note"
+        android:title="分享"
+        app:showAsAction="ifRoom" />
+
 </menu>

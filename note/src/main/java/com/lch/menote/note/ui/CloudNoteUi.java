@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +18,7 @@ import com.lch.menote.note.domain.NoteModel;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.VF;
+import com.lchli.pinedrecyclerlistview.library.pinnedRecyclerView.PinnedRecyclerView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -31,8 +31,8 @@ import java.util.List;
 
 public class CloudNoteUi extends BaseFragment {
 
-    private CloudNoteAdapter notesAdp;
-    private RecyclerView moduleListRecyclerView;
+    private CloudNoteListAdapter notesAdp;
+    private PinnedRecyclerView moduleListRecyclerView;
     private NoteController noteController;
 
     @Override
@@ -40,7 +40,7 @@ public class CloudNoteUi extends BaseFragment {
         super.onCreate(savedInstanceState);
         EventBusUtils.register(this);
 
-        notesAdp = new CloudNoteAdapter(getActivity());
+        notesAdp = new CloudNoteListAdapter();
         noteController = new NoteController(getActivity());
     }
 
@@ -64,7 +64,7 @@ public class CloudNoteUi extends BaseFragment {
         moduleListRecyclerView.setHasFixedSize(true);
         moduleListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         moduleListRecyclerView.addItemDecoration(new GridDividerDecoration(getActivity(), GridDividerDecoration.VERTICAL_LIST));
-        moduleListRecyclerView.setAdapter(notesAdp);
+        moduleListRecyclerView.setPinnedAdapter(notesAdp);
 
         queryNotesAsync();
 

@@ -60,7 +60,7 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
     private HashMap<Integer, SurfaceTexture> textureSparseArray = new HashMap<>();
 
     public interface Callback {
-        void showOperation(int position,boolean isPlayingVideo,boolean isPlayingAudio);
+        void showOperation(int position, boolean isPlayingVideo, boolean isPlayingAudio);
     }
 
     public NoteElementAdapter(Callback cb, final Activity activity, AudioPlayer audioPlayer, VideoPlayer videoPlayer) {
@@ -230,7 +230,7 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
                 h.operationButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        callback.showOperation(position,false,false);
+                        callback.showOperation(position, false, false);
 
                     }
                 });
@@ -270,7 +270,7 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
                 h.operationButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        callback.showOperation(position,false,false);
+                        callback.showOperation(position, false, false);
                     }
                 });
             }
@@ -287,6 +287,10 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
                     }
                     float f = ((float) mAudioPlayer.getCurrentPosition()) / mAudioPlayer.getDuration();
                     h.simpleAudioView.seekBar.setProgress((int) (h.simpleAudioView.seekBar.getMax() * f));
+
+                    h.simpleAudioView.endText.setText(VideoHelper.formatVideoTime((int) mAudioPlayer.getDuration()));
+                    h.simpleAudioView.startText.setText(VideoHelper.formatVideoTime((int) mAudioPlayer.getCurrentPosition()));
+
                 } else {
                     h.simpleAudioView.ivPlayPause.setImageResource(android.R.drawable.ic_media_play);
                     h.simpleAudioView.seekBar.setProgress(0);
@@ -346,7 +350,7 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
                 h.operationButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        callback.showOperation(position,false,position==currentPlayingAudioPosition);
+                        callback.showOperation(position, false, position == currentPlayingAudioPosition);
                     }
                 });
             }
@@ -358,7 +362,7 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
                 h.operationButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        callback.showOperation(position,position==currentPlayingVideoPosition,false);
+                        callback.showOperation(position, position == currentPlayingVideoPosition, false);
                     }
                 });
 
@@ -565,7 +569,8 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
             super(itemView, viewType);
             simpleAudioView = VF.f(itemView, R.id.simpleAudioView);
             operationButton = VF.f(itemView, R.id.note_radioButton);
-
+            simpleAudioView.prev.setVisibility(View.INVISIBLE);
+            simpleAudioView.next.setVisibility(View.INVISIBLE);
         }
 
     }

@@ -68,7 +68,7 @@ class LocalNoteDetailActivity : BaseAppCompatActivity() {
         if (type.length >= maxTypeLen) {
             type = type.substring(0, maxTypeLen) + "..."
         }
-        menu.findItem(R.id.action_note_type).title = String.format("[%s]", type)
+       // menu.findItem(R.id.action_note_type).title = String.format("[%s]", type)
         return true
     }
 

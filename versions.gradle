@@ -1,7 +1,7 @@
 
 ext {
 
-    minSdkVersion = 15
+    minSdkVersion = 16
     compileSdkVersion = 25
     buildToolsVersion = "27.0.3"
     targetSdkVersion = 25
@@ -30,7 +30,7 @@ ext {
     retrofit2_version="2.3.0"
     junit_version="4.12"
     fastjson_version="1.1.65"
-    lch_audioPlayer_version="1.0.5"
+    lch_audioPlayer_version="1.0.6"
     lch_videoPlayer_version="1.0.1"
     boxing_version="1.0.5"
 

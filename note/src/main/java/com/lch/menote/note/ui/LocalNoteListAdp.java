@@ -143,7 +143,7 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter {
                 if (data.category == Note.CAT_MUSIC) {
                     MusicActivity.Companion.launch(context, data);
                 } else {
-                    LocalNoteDetailUi.launch(context, data);
+                    LocalNoteDetailUi.launchFromLocal(context, data);
                 }
             }
         });

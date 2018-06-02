@@ -16,7 +16,7 @@
             android:background="@color/titleView_bgColor"
             />
 
-        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+        <com.lchli.pinedrecyclerlistview.library.pinnedRecyclerView.PinnedRecyclerView  xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/moduleListRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"

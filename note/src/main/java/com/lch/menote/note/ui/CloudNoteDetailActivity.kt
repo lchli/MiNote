@@ -105,7 +105,7 @@ class CloudNoteDetailActivity : BaseAppCompatActivity() {
 
         }
 
-        menu.findItem(R.id.action_note_type).title = String.format("[%s]", type)
+        //menu.findItem(R.id.action_note_type).title = String.format("[%s]", type)
 
         return true
 

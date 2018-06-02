@@ -17,8 +17,6 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        resourcePrefix("note_")
-
         ndk {
             abiFilters "armeabi-v7a" 
         }
