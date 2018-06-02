@@ -294,6 +294,8 @@ public class NoteElementAdapter extends BsListAdapter<NoteElement> {
                 } else {
                     h.simpleAudioView.ivPlayPause.setImageResource(android.R.drawable.ic_media_play);
                     h.simpleAudioView.seekBar.setProgress(0);
+                    h.simpleAudioView.endText.setText("00:00");
+                    h.simpleAudioView.startText.setText("00:00");
                 }
 
                 h.simpleAudioView.ivPlayPause.setOnClickListener(new View.OnClickListener() {
