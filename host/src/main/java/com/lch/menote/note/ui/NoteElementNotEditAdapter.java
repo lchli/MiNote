@@ -431,9 +431,18 @@ public class NoteElementNotEditAdapter extends AbsAdapter<NoteElement> {
                                 ToastUtils.showShort("texture未准备好！");
                                 return;
                             }
+                            if (data.path == null) {
+                                ToastUtils.showShort("播放地址为空！");
+                                return;
+                            }
+
+                            boolean useCache = false;
+                            if (data.path.startsWith("http://") || data.path.startsWith("https://")) {
+                                useCache = true;
+                            }
 
                             mVideoPlayer.reset();
-                            mVideoPlayer.setDataSource(activity, Uri.parse(data.path));
+                            mVideoPlayer.setDataSource(activity, Uri.parse(data.path),useCache);
 
                             currentPlayingVideoPosition = position;
 
