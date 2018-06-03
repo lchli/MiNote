@@ -16,12 +16,14 @@
     <string name="course_type_pattern">[%1$s]</string>
     <string name="register">注册</string>
     <string name="login">登录</string>
-    <string name="app_version_pattern">版本:%1$s(作者:%2$s)</string>
+    <string name="app_version_pattern">版本:%1$s</string>
     <string name="account_cannot_null">账号不能为空！</string>
     <string name="pwd_cannot_null">密码不能为空！</string>
     <string name="app_no_update">版本已经最新！</string>
     <string name="update_portrait_success">头像更新成功！</string>
     <string name="not_login">请先登录！</string>
+    <string name="click_to_login">点击登录</string>
+    <string name="logout">退出登录</string>
     <string name="empty_data">暂无数据！</string>
     <string name="note_content_cannot_empty">笔记内容不能为空！</string>
     <string name="note_title_cannot_empty">标题不能为空！</string>

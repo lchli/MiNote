@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.lch.menote.note.data.NoteSource;
 import com.lch.menote.note.data.db.gen.NoteDao;
-import com.lch.menote.note.domain.Mapper;
+import com.lch.menote.note.helper.ModelMapper;
 import com.lch.menote.note.domain.Note;
 import com.lch.menote.note.domain.NoteModel;
 import com.lch.menote.note.domain.QueryNoteResponse;
@@ -52,7 +52,7 @@ public class DatabseNoteRepo implements NoteSource {
             List<Note> notes = builder.list();
             if (notes != null) {
                 for (Note n : notes) {
-                    models.add(Mapper.from(n));
+                    models.add(ModelMapper.from(n));
                 }
             }
 
@@ -74,7 +74,7 @@ public class DatabseNoteRepo implements NoteSource {
 
         try {
 
-            DaoSessionManager.noteDao(context).insertOrReplace(Mapper.from(note));
+            DaoSessionManager.noteDao(context).insertOrReplace(ModelMapper.from(note));
         } catch (Exception e) {
             e.printStackTrace();
             detectLockError(e);

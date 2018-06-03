@@ -1,10 +1,13 @@
-package com.lch.menote.note.domain;
+package com.lch.menote.note.helper;
+
+import com.lch.menote.note.domain.Note;
+import com.lch.menote.note.domain.NoteModel;
 
 /**
  * Created by lichenghang on 2018/5/27.
  */
 
-public class Mapper {
+public final class ModelMapper {
 
     public static NoteModel from(Note note) {
         NoteModel model = new NoteModel();

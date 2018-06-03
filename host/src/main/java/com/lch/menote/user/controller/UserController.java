@@ -1,7 +1,7 @@
 package com.lch.menote.user.controller;
 
 
-import com.lch.menote.user.ServerRequestCode;
+import com.lch.menote.ApiConstants;
 import com.lch.menote.user.data.mem.MemUserRepo;
 import com.lch.menote.user.data.net.NetUserRepo;
 import com.lch.menote.user.data.sp.SpUserRepo;
@@ -40,7 +40,7 @@ public class UserController {
                     return;
                 }
 
-                if (res.data.getStatus() != ServerRequestCode.RESPCODE_SUCCESS || res.data.getData() == null) {
+                if (res.data.getStatus() != ApiConstants.RESPCODE_SUCCESS || res.data.getData() == null) {
                     ret.setErrMsg(res.data.getMessage());
                     UiHandler.post(new Runnable() {
                         @Override
@@ -87,7 +87,7 @@ public class UserController {
                     return;
                 }
 
-                if (res.data.getStatus() != ServerRequestCode.RESPCODE_SUCCESS || res.data.getData() == null) {
+                if (res.data.getStatus() != ApiConstants.RESPCODE_SUCCESS || res.data.getData() == null) {
                     ret.setErrMsg(res.data.getMessage());
                     UiHandler.post(new Runnable() {
                         @Override

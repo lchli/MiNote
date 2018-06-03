@@ -1,10 +1,10 @@
-package com.lch.menote.note.helper;
+package com.lch.menote;
 
 /**
  * Created by lichenghang on 2018/5/27.
  */
 
-public final class ServerRequestCode {
+public final class ApiConstants {
 
     public static final int RESPCODE_SUCCESS = 1;
     public static final int RESPCODE_FAILE = 2;
@@ -13,6 +13,8 @@ public final class ServerRequestCode {
     public static final String PORT = "8088";
     public static final String HOST = "http://" + IP + ":" + PORT;
 
+    public static final String REGISTER = HOST + "/user/register";
+    public static final String LOGIN = HOST + "/user/login";
     public static final String UPLOAD_NOTE = HOST + "/note/save";
     public static final String QUERY_NOTE = HOST + "/note/get";
     public static final String UPLOAD_FILE = HOST + "/file/upload";

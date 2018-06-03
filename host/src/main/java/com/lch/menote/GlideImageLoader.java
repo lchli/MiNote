@@ -1,4 +1,4 @@
-package com.lch.menote.note.helper;
+package com.lch.menote;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
@@ -23,26 +23,9 @@ public class GlideImageLoader implements cn.finalteam.galleryfinal.ImageLoader {
                 .diskCacheStrategy(DiskCacheStrategy.NONE);
 
         Glide.with(activity)
-                .load("file://" + path)
+                .load(path)
                 .apply(opt)
                 .into(imageView);
-//
-//                .into(new ImageViewTarget<GlideDrawable>(imageView) {
-//                    @Override
-//                    protected void setResource(GlideDrawable resource) {
-//                        imageView.setImageDrawable(resource);
-//                    }
-//
-//                    @Override
-//                    public void setRequest(Request request) {
-//                        imageView.setTag(R.id.adapter_item_tag_key,request);
-//                    }
-//
-//                    @Override
-//                    public Request getRequest() {
-//                        return (Request) imageView.getTag(R.id.adapter_item_tag_key);
-//                    }
-//                });
     }
 
     @Override

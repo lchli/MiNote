@@ -1,6 +1,6 @@
 package com.lch.menote.user.data.net;
 
-import com.lch.menote.user.ServerRequestCode;
+import com.lch.menote.ApiConstants;
 import com.lch.menote.user.domain.LoginResponse;
 import com.lch.netkit.NetKit;
 import com.lch.netkit.common.mvc.ResponseValue;
@@ -17,7 +17,7 @@ public class NetUserRepo {
     public ResponseValue<LoginResponse> save(String userName, String userPwd){
 
         StringRequestParams params= new StringRequestParams();
-        params.setUrl(ServerRequestCode.REGISTER);
+        params.setUrl(ApiConstants.REGISTER);
         params.addParam("userName",userName);
         params.addParam("userPwd",userPwd);
 
@@ -34,7 +34,7 @@ public class NetUserRepo {
     public ResponseValue<LoginResponse> get(String userName, String userPwd){
 
         StringRequestParams params= new StringRequestParams();
-        params.setUrl(ServerRequestCode.LOGIN);
+        params.setUrl(ApiConstants.LOGIN);
         params.addParam("userName",userName);
         params.addParam("userPwd",userPwd);
 

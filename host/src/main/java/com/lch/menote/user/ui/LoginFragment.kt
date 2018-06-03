@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.fragment_login.*
  */
 class LoginFragment : BaseFragment() {
 
-    val userController= UserController()
+    val userController = UserController()
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater!!.inflate(R.layout.fragment_login, container, false)
@@ -34,6 +34,10 @@ class LoginFragment : BaseFragment() {
         })
 
         common_title.setCenterText("", null)
+        common_title.addLeftIcon(R.drawable.arrow_left_back, {
+            val userFragmentContainer = parentFragment as UserFragmentContainer
+            userFragmentContainer.toUserCenter(true)
+        })
 
         login_widget.setOnClickListener {
             loginAsync()
@@ -46,10 +50,10 @@ class LoginFragment : BaseFragment() {
         val pwd = user_pwd_edit.text.toString()
 
 
-        userController.login(username,pwd, object : ControllerCallback<User> {
+        userController.login(username, pwd, object : ControllerCallback<User> {
 
             override fun onComplete(res: ResponseValue<User>) {
-                if(res.hasError()||res.data==null){
+                if (res.hasError() || res.data == null) {
                     ToastUtils.showLong(res.errMsg())
                     return
                 }

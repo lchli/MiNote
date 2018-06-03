@@ -34,6 +34,11 @@ class RegisterFragment : BaseFragment() {
 
         common_title.setCenterText("", null)
 
+        common_title.addLeftIcon(R.drawable.arrow_left_back, {
+            val userFragmentContainer = parentFragment as UserFragmentContainer
+            userFragmentContainer.toUserCenter(true)
+        })
+
         register_widget.setOnClickListener {
             registerAsync()
         }

@@ -2,19 +2,18 @@ package com.lch.menote.note.controller;
 
 import android.content.Context;
 
+import com.lch.menote.ApiConstants;
 import com.lch.menote.note.data.NoteSource;
 import com.lch.menote.note.data.db.DatabseNoteRepo;
 import com.lch.menote.note.data.net.NetNoteRepo;
 import com.lch.menote.note.domain.HeadData;
-import com.lch.menote.note.domain.Mapper;
+import com.lch.menote.note.helper.ModelMapper;
 import com.lch.menote.note.domain.Note;
 import com.lch.menote.note.domain.NoteElement;
 import com.lch.menote.note.domain.NoteModel;
 import com.lch.menote.note.domain.NotePinedData;
 import com.lch.menote.note.domain.QueryNoteResponse;
 import com.lch.menote.note.domain.UploadFileResponse;
-import com.lch.menote.note.helper.ConstantUtil;
-import com.lch.menote.note.helper.ServerRequestCode;
 import com.lch.netkit.NetKit;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
@@ -92,7 +91,7 @@ public class NoteController {
         for (NoteModel note : notes) {
             String currentType = note.type;
             if (!preType.equals(currentType)) {
-                all.add(new NotePinedData(ConstantUtil.VIEW_TYPE_PINED, currentType));
+                all.add(new NotePinedData(-1, currentType));
                 preType = currentType;
             }
 
@@ -201,7 +200,7 @@ public class NoteController {
         TaskExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                localNoteSource.delete(Mapper.from(note));
+                localNoteSource.delete(ModelMapper.from(note));
 
                 UiHandler.post(new Runnable() {
                     @Override
@@ -266,7 +265,7 @@ public class NoteController {
                 for (NoteElement e : elms) {
                     if (!e.type.equals(NoteElement.TYPE_TEXT)) {
                         UploadFileParams param = UploadFileParams.newInstance()
-                                .setUrl(ServerRequestCode.UPLOAD_FILE)
+                                .setUrl(ApiConstants.UPLOAD_FILE)
                                 .addFile(new FileOptions().setFileKey("file").setFilePath(e.path));
                         ResponseValue<UploadFileResponse> res = NetKit.fileRequest().uploadFileSync(param, new Parser<UploadFileResponse>() {
                             @Override
@@ -301,7 +300,7 @@ public class NoteController {
                             return;
                         }
 
-                        if (res.data.status != ServerRequestCode.RESPCODE_SUCCESS) {
+                        if (res.data.status != ApiConstants.RESPCODE_SUCCESS) {
                             ret.setErrMsg(res.data.message);
                             UiHandler.post(new Runnable() {
                                 @Override

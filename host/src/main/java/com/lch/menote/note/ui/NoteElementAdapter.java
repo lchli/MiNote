@@ -467,6 +467,7 @@ public class NoteElementAdapter extends AbsAdapter<NoteElement> {
 
                 } else {
                     h.videoView.getPlayerController().resetUI();
+                    h.videoView.getPlayerController().setVisibility(View.VISIBLE);
                 }
 
 

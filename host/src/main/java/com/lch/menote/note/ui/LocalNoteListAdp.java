@@ -24,7 +24,6 @@ import com.lch.menote.note.domain.LocalNoteListChangedEvent;
 import com.lch.menote.note.domain.Note;
 import com.lch.menote.note.domain.NoteModel;
 import com.lch.menote.note.domain.NotePinedData;
-import com.lch.menote.note.helper.ConstantUtil;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.AppListItemAnimatorUtils;
@@ -42,6 +41,9 @@ import com.orhanobut.dialogplus.OnItemClickListener;
  */
 
 public class LocalNoteListAdp extends PinnedRecyclerAdapter {
+    private static final int VIEW_TYPE_HEADER = 0;
+    private static final int VIEW_TYPE_ITEM = 1;
+    private static final int VIEW_TYPE_PINED = 2;
 
     private final Bitmap def = BitmapFactory.decodeResource(ContextProvider.context().getResources(), R.drawable.ic_add_note);
     private Activity activity;
@@ -59,14 +61,14 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter {
 
         switch (viewType) {
 
-            case ConstantUtil.VIEW_TYPE_HEADER:
+            case VIEW_TYPE_HEADER:
                 view = LayoutInflater.from(parent.getContext())
 
                         .inflate(R.layout.local_note_list_header, parent, false);
 
                 return new HeaderViewHolder(view);
 
-            case ConstantUtil.VIEW_TYPE_PINED:
+            case VIEW_TYPE_PINED:
 
                 view = LayoutInflater.from(parent.getContext())
 
@@ -91,7 +93,7 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter {
         Object o = getItem(position);
 
 
-        if (viewtype == ConstantUtil.VIEW_TYPE_PINED) {
+        if (viewtype == VIEW_TYPE_PINED) {
 
             PinedViewHolder holder = (PinedViewHolder) h;
 
@@ -102,7 +104,7 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter {
             return;
         }
 
-        if (viewtype == ConstantUtil.VIEW_TYPE_HEADER) {
+        if (viewtype == VIEW_TYPE_HEADER) {
 
             HeaderViewHolder holder = (HeaderViewHolder) h;
             holder.imageView.setImageResource(R.drawable.ic_add_note);
@@ -208,14 +210,14 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter {
         Object data = getItem(position);
 
         if (data instanceof ListSectionData) {
-            return ((ListSectionData) data).sectionViewType;
+            return VIEW_TYPE_PINED;
         }
 
         if (data instanceof HeadData) {
-            return ConstantUtil.VIEW_TYPE_HEADER;
+            return VIEW_TYPE_HEADER;
         }
 
-        return ConstantUtil.VIEW_TYPE_ITEM;
+        return VIEW_TYPE_ITEM;
     }
 
     private class ViewHolder extends RecyclerView.ViewHolder {

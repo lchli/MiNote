@@ -5,7 +5,7 @@ import android.content.Context;
 import com.lch.menote.note.data.db.gen.DaoMaster;
 import com.lch.menote.note.data.db.gen.DaoSession;
 import com.lch.menote.note.data.db.gen.NoteDao;
-import com.lch.menote.note.helper.ConstantUtil;
+import com.lch.menote.ConstantUtil;
 import com.lch.menote.note.route.RouteCall;
 import com.lch.menote.user.route.UserRouteApi;
 

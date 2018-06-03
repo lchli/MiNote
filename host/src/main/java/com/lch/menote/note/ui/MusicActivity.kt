@@ -16,11 +16,7 @@ import com.lch.menote.kotlinext.saveViewBmpToSdcard
 
 import com.lch.menote.note.controller.NoteController
 import com.lch.menote.note.domain.*
-import com.lch.menote.note.helper.JsonHelper
-import com.lch.netkit.common.tool.AppListItemAnimatorUtils
-import com.lch.netkit.common.tool.EventBusUtils
-import com.lch.netkit.common.tool.TimeUtils
-import com.lch.netkit.common.tool.UUIDUtils
+import com.lch.netkit.common.tool.*
 import kotlinx.android.synthetic.main.activity_edit_music.*
 
 class MusicActivity : AppCompatActivity() {
@@ -61,7 +57,7 @@ class MusicActivity : AppCompatActivity() {
 
         val note = intent.getSerializableExtra(EXTRA_NOTE) as? NoteModel
         if (note != null) {
-            val oldDatas: List<MusicData>? = Gson().fromJson(note.content, JsonHelper.getMusicListTypeToken())
+            val oldDatas: List<MusicData>? = AliJsonHelper.parseArray(note.content,MusicData::class.java)
             if (oldDatas != null) {
                 datas.addAll(oldDatas)
             }

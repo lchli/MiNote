@@ -25,6 +25,7 @@ class UserCenterListItem : FrameLayout {
     private fun init(attrs: AttributeSet?) {
         View.inflate(context, R.layout.user_list_item, this)
 
+
         if (attrs != null) {
             val a = context.obtainStyledAttributes(attrs, R.styleable.UserCenterListItem)
             val text = a.getString(R.styleable.UserCenterListItem_UserCenterListItem_text)
@@ -37,5 +38,13 @@ class UserCenterListItem : FrameLayout {
                 icon_widget.setImageDrawable(icon)
             }
         }
+    }
+
+    fun setText(text: String?) {
+        text_widget.setText(text)
+    }
+
+    fun setIcon(resId: Int) {
+        icon_widget.setImageResource(resId)
     }
 }

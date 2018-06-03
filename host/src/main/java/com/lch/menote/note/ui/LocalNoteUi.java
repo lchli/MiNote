@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.lch.menote.R;
-import com.lch.menote.kotlinext.ContextExtKt;
 import com.lch.menote.note.controller.NoteController;
 import com.lch.menote.note.domain.LocalNoteListChangedEvent;
 import com.lch.netkit.common.base.BaseFragment;
@@ -21,13 +20,10 @@ import com.lch.netkit.common.tool.Navigator;
 import com.lch.netkit.common.tool.VF;
 import com.lch.netkit.common.widget.CommonEmptyView;
 import com.lchli.pinedrecyclerlistview.library.pinnedRecyclerView.PinnedRecyclerView;
-import com.orhanobut.dialogplus.DialogPlus;
-import com.orhanobut.dialogplus.OnItemClickListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -47,7 +43,7 @@ public class LocalNoteUi extends BaseFragment {
         super.onCreate(savedInstanceState);
         EventBusUtils.register(this);
         noteController = new NoteController(getActivity());
-        notesAdp = new LocalNoteListAdp(getActivity(),noteController);
+        notesAdp = new LocalNoteListAdp(getActivity(), noteController);
     }
 
     @Override
@@ -80,24 +76,26 @@ public class LocalNoteUi extends BaseFragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ContextExtKt.showListDialog(getActivity(), new OnItemClickListener() {
-                    @Override
-                    public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
-                        switch (position) {
-                            case 0:
-                                dialog.dismiss();
+                Navigator.launchActivity(getActivity(), EditNoteUi.class);
 
-                                Navigator.launchActivity(getActivity(), EditNoteUi.class);
-                                break;
-                            case 1:
-                                dialog.dismiss();
-
-                                Navigator.launchActivity(getActivity(), MusicActivity.class);
-                                break;
-                        }
-
-                    }
-                }, false, Arrays.asList("创建笔记", "创建音乐"));
+//                ContextExtKt.showListDialog(getActivity(), new OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
+//                        switch (position) {
+//                            case 0:
+//                                dialog.dismiss();
+//
+//                                Navigator.launchActivity(getActivity(), EditNoteUi.class);
+//                                break;
+//                            case 1:
+//                                dialog.dismiss();
+//
+//                                Navigator.launchActivity(getActivity(), MusicActivity.class);
+//                                break;
+//                        }
+//
+//                    }
+//                }, false, Arrays.asList("创建笔记", "创建音乐"));
             }
         });
 

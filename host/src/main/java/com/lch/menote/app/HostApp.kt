@@ -1,8 +1,9 @@
-package com.lch.menote
+package com.lch.menote.app
 
 import android.app.Application
 import com.bilibili.boxing.BoxingMediaLoader
 import com.blankj.utilcode.util.Utils
+import com.lch.menote.IBoxingMediaLoaderImpl
 import com.lch.menote.home.route.HomeRouteApiImpl
 import com.lch.menote.note.route.NoteRouteApiImpl
 import com.lch.menote.user.route.UserRouteApiImpl
@@ -23,8 +24,7 @@ class HostApp : Application() {
 
         ContextProvider.initContext(this)
         Utils.init(this)
-        BoxingMediaLoader.getInstance().init( IBoxingMediaLoaderImpl()) // a class implements IBoxingMediaLoader
-       // BoxingCrop.getInstance().init(BoxingUcrop())
+        BoxingMediaLoader.getInstance().init(IBoxingMediaLoaderImpl())
 
         RouteEngine.init(this, HomeRouteApiImpl::class.java, NoteRouteApiImpl::class.java, UserRouteApiImpl::class.java)
 

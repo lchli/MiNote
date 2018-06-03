@@ -40,7 +40,7 @@ class UserFragmentContainer : BaseFragment() {
         if (isNeedAnim) {
             trans.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
         }
-        trans.replace(R.id.user_fragment_container, UserFragment())
+        trans.replace(R.id.user_fragment_container, UserFragmentUi())
         trans.commitAllowingStateLoss()
     }
 
@@ -56,11 +56,10 @@ class UserFragmentContainer : BaseFragment() {
 
     override fun initLoadData() {
         mUserController.getUserSession({
-            if(it.hasError()){
+            if (it.hasError()) {
                 ToastUtils.showLong(it.errMsg())
-            }else if(it.data==null){
-                toLogin(false)
-            }else{
+
+            } else {
                 toUserCenter(false)
             }
         })

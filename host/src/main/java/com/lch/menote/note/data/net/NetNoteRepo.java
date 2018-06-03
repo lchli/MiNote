@@ -2,13 +2,13 @@ package com.lch.menote.note.data.net;
 
 import android.support.annotation.NonNull;
 
+import com.lch.menote.ApiConstants;
+import com.lch.menote.ConstantUtil;
 import com.lch.menote.note.data.NoteSource;
 import com.lch.menote.note.domain.BaseResponse;
 import com.lch.menote.note.domain.Note;
 import com.lch.menote.note.domain.NoteModel;
 import com.lch.menote.note.domain.QueryNoteResponse;
-import com.lch.menote.note.helper.ConstantUtil;
-import com.lch.menote.note.helper.ServerRequestCode;
 import com.lch.netkit.NetKit;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.AliJsonHelper;
@@ -27,7 +27,7 @@ public class NetNoteRepo implements NoteSource {
     @NonNull
     public ResponseValue<QueryNoteResponse> queryNotes(@Nullable String tag, @Nullable String title, boolean sortTimeAsc, @NotNull String useId) {
         StringRequestParams param = new StringRequestParams()
-                .setUrl(ServerRequestCode.QUERY_NOTE)
+                .setUrl(ApiConstants.QUERY_NOTE)
                 .addParam("UserId", useId)
                 .addParam("UserToken", "");
 
@@ -46,7 +46,7 @@ public class NetNoteRepo implements NoteSource {
         ResponseValue<Void> ret = new ResponseValue<>();
 
         StringRequestParams params = new StringRequestParams()
-                .setUrl(ServerRequestCode.UPLOAD_NOTE)
+                .setUrl(ApiConstants.UPLOAD_NOTE)
                 .addParam("content", note.content)
                 .addParam("title", note.title)
                 .addParam("type", note.type)

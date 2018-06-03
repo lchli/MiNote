@@ -1,4 +1,4 @@
-package com.lch.menote;
+package com.lch.menote.app;
 
 import android.support.annotation.Nullable;
 

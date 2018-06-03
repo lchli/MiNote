@@ -1,4 +1,4 @@
-package com.lch.menote
+package com.lch.menote.app
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
