@@ -3,6 +3,7 @@ package com.lch.menote.note.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,13 +13,18 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.lch.audio_player.AudioPlayer;
 import com.lch.audio_player.LchAudioPlayer;
 import com.lch.menote.R;
+import com.lch.menote.note.controller.CloudNoteController;
+import com.lch.menote.note.domain.CloudNoteListChangedEvent;
 import com.lch.menote.note.domain.NoteElement;
 import com.lch.menote.note.domain.NoteModel;
 import com.lch.menote.note.route.RouteCall;
 import com.lch.menote.user.route.User;
 import com.lch.menote.user.route.UserRouteApi;
 import com.lch.netkit.common.base.BaseCompatActivity;
+import com.lch.netkit.common.mvc.ControllerCallback;
+import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.AliJsonHelper;
+import com.lch.netkit.common.tool.EventBusUtils;
 import com.lch.netkit.common.tool.ListUtils;
 import com.lch.netkit.common.tool.VF;
 import com.lch.video_player.LchVideoPlayer;
@@ -35,6 +41,7 @@ public class LocalNoteDetailUi extends BaseCompatActivity {
     private AudioPlayer audioPlayer = LchAudioPlayer.newAudioPlayer();
     private VideoPlayer videoPlayer;
     private int launchFrom = LAUNCH_FROM_LOCAL_NOTE;
+    private CloudNoteController cloudNoteController;
 
     public static void launchFromLocal(Context context, NoteModel note) {
         Intent it = new Intent(context, LocalNoteDetailUi.class);
@@ -58,6 +65,7 @@ public class LocalNoteDetailUi extends BaseCompatActivity {
         videoPlayer = LchVideoPlayer.newPlayer(getApplicationContext());
         note = (NoteModel) getIntent().getSerializableExtra("note");
         launchFrom = getIntent().getIntExtra("from", LAUNCH_FROM_LOCAL_NOTE);
+        cloudNoteController = new CloudNoteController(this);
 
         setContentView(R.layout.activity_local_note_detail_ui);
         Toolbar toolbar = VF.f(this, R.id.toolbar);
@@ -85,22 +93,31 @@ public class LocalNoteDetailUi extends BaseCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.local_note_detail_toolbar_actions, menu);
+
+        UserRouteApi userMod = RouteCall.getUserModule();
+        String sessionUid = null;
+
+        if (userMod != null) {
+            User session = userMod.userSession();
+            if (session != null) {
+                sessionUid = session.uid;
+            }
+        }
+
         if (launchFrom == LAUNCH_FROM_LOCAL_NOTE) {
             menu.removeItem(R.id.action_like_note);
+        }
+
+        if (launchFrom == LAUNCH_FROM_LOCAL_NOTE) {
             menu.removeItem(R.id.action_share_note);
+        }
 
-        } else if (launchFrom == LAUNCH_FROM_CLOUD_NOTE) {
+        if (launchFrom == LAUNCH_FROM_CLOUD_NOTE && (sessionUid == null || !sessionUid.equals(note.userId))) {
+            menu.removeItem(R.id.action_edit_note);
+        }
 
-            UserRouteApi userMod = RouteCall.getUserModule();
-            if (userMod == null) {
-                menu.removeItem(R.id.action_edit_note);
-            } else {
-                User session = userMod.userSession();
-                if (session == null || session.uid == null || !session.uid.equals(note.userId)) {
-                    menu.removeItem(R.id.action_edit_note);
-                }
-            }
-
+        if (launchFrom == LAUNCH_FROM_LOCAL_NOTE || sessionUid == null || !sessionUid.equals(note.userId)||note.isPublic) {
+            menu.removeItem(R.id.action_public_note);
         }
 
         return true;
@@ -124,6 +141,27 @@ public class LocalNoteDetailUi extends BaseCompatActivity {
                 e.printStackTrace();
                 ToastUtils.showShort(e.getLocalizedMessage());
             }
+        } else if (item.getItemId() == R.id.action_public_note) {
+
+            if (note.isPublic) {
+                ToastUtils.showShort("已经公开!");
+                return super.onOptionsItemSelected(item);
+            }
+
+            note.isPublic = true;
+
+            cloudNoteController.publicNetNote(note, new ControllerCallback<Void>() {
+                @Override
+                public void onComplete(@NonNull ResponseValue<Void> responseValue) {
+                    if (responseValue.hasError()) {
+                        note.isPublic = false;
+                        ToastUtils.showShort(responseValue.errMsg());
+                    }else{
+                        EventBusUtils.post(new CloudNoteListChangedEvent());
+                    }
+
+                }
+            });
         }
         return super.onOptionsItemSelected(item);
     }

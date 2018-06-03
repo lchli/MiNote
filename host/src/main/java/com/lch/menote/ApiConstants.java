@@ -14,7 +14,9 @@ public final class ApiConstants {
     public static final String HOST = "http://" + IP + ":" + PORT;
 
     public static final String REGISTER = HOST + "/user/register";
+    public static final String USER_UPDATE = HOST + "/user/update";
     public static final String LOGIN = HOST + "/user/login";
+    public static final String USER_GET_BY_ID = HOST + "/user/findById";
     public static final String UPLOAD_NOTE = HOST + "/note/save";
     public static final String QUERY_NOTE = HOST + "/note/get";
     public static final String UPLOAD_FILE = HOST + "/file/upload";

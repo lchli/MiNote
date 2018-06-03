@@ -43,36 +43,6 @@
             android:textSize="16dp" />
     </LinearLayout>
 
-    <com.lch.menote.user.ui.UserCenterListItem
-        android:id="@+id/app_version_widget"
-        style="@style/UserCenterListLayout"
-        android:layout_marginTop="10dp"
-        app:UserCenterListItem_icon="@drawable/ic_app_version"
-        app:UserCenterListItem_text="版本号：1.0" />
 
-    <com.lch.menote.user.ui.UserCenterListItem
-        android:id="@+id/check_update_widget"
-        style="@style/UserCenterListLayout"
-        app:UserCenterListItem_icon="@drawable/ic_check_update"
-        app:UserCenterListItem_text="检查更新"
-
-        />
-
-    <com.lch.menote.user.ui.UserCenterListItem
-        android:id="@+id/about_us_widget"
-        style="@style/UserCenterListLayout"
-        app:UserCenterListItem_icon="@drawable/ic_about_us"
-        app:UserCenterListItem_text="关于我们"
-        android:visibility="gone"
-
-        />
-
-    <com.lch.menote.user.ui.UserCenterListItem
-        android:id="@+id/logout_widget"
-        style="@style/UserCenterListLayout"
-        app:UserCenterListItem_icon="@drawable/ic_logout"
-        app:UserCenterListItem_text="退出登录"
-
-        />
 
 </LinearLayout>

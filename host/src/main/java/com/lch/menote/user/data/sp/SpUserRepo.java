@@ -8,6 +8,11 @@ import com.lch.netkit.common.tool.AliJsonHelper;
 
 public class SpUserRepo {
     private static final String KEY_USER_SESSION = "KEY_USER_SESSION";
+    private static SpUserRepo INS = new SpUserRepo();
+
+    public static SpUserRepo getINS() {
+        return INS;
+    }
 
     public ResponseValue<User> getUser() {
         ResponseValue<User> res = new ResponseValue<>();

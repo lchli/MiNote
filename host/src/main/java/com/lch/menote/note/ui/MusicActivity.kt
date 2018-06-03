@@ -14,7 +14,7 @@ import com.lch.menote.kotlinext.launchActivity
 import com.lch.menote.kotlinext.log
 import com.lch.menote.kotlinext.saveViewBmpToSdcard
 
-import com.lch.menote.note.controller.NoteController
+import com.lch.menote.note.controller.LocalNoteController
 import com.lch.menote.note.domain.*
 import com.lch.netkit.common.tool.*
 import kotlinx.android.synthetic.main.activity_edit_music.*
@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.activity_edit_music.*
 class MusicActivity : AppCompatActivity() {
 
     private lateinit var mMusicAdapter: MusicAdapter
-    private lateinit var mNoteController: NoteController
+    private lateinit var mLocalNoteController: LocalNoteController
     private val datas = mutableListOf<MusicData>()
     private var controllViewTotalHeight = -1
     private var courseUUID: String? = null
@@ -44,7 +44,7 @@ class MusicActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mNoteController = NoteController(applicationContext)
+        mLocalNoteController = LocalNoteController(applicationContext)
 
         setContentView(R.layout.activity_edit_music)
 
@@ -184,7 +184,7 @@ class MusicActivity : AppCompatActivity() {
         note.content = content
         note.category = Note.CAT_MUSIC
 
-        mNoteController.saveLocalNote(note, {
+        mLocalNoteController.saveLocalNote(note, {
             if (it.hasError()) {
                 ToastUtils.showLong(it.errMsg())
             } else {

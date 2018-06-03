@@ -1,19 +1,17 @@
 package com.lch.menote.note.controller;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.lch.menote.ApiConstants;
-import com.lch.menote.note.data.NoteSource;
-import com.lch.menote.note.data.db.DatabseNoteRepo;
 import com.lch.menote.note.data.net.NetNoteRepo;
-import com.lch.menote.note.domain.HeadData;
-import com.lch.menote.note.helper.ModelMapper;
 import com.lch.menote.note.domain.Note;
 import com.lch.menote.note.domain.NoteElement;
 import com.lch.menote.note.domain.NoteModel;
-import com.lch.menote.note.domain.NotePinedData;
 import com.lch.menote.note.domain.QueryNoteResponse;
 import com.lch.menote.note.domain.UploadFileResponse;
+import com.lch.menote.note.route.RouteCall;
+import com.lch.menote.user.route.UserRouteApi;
 import com.lch.netkit.NetKit;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
@@ -36,82 +34,78 @@ import java.util.List;
  * Created by lichenghang on 2018/5/19.
  */
 
-public class NoteController {
+public class CloudNoteController {
 
 
-    private DatabseNoteRepo localNoteSource;
     private NetNoteRepo netNoteSource;
+    private int page;
+    private static final int PAGE_SIZE = 20;
+    private List<NoteModel> all = new ArrayList<>();
+    private boolean isHaveMore = false;
+    private NetNoteRepo.NetNoteQuery mQuery;
 
-    public NoteController(Context context) {
-        localNoteSource = new DatabseNoteRepo(context);
+    public CloudNoteController(Context context) {
         netNoteSource = new NetNoteRepo();
     }
 
 
-    public void getLocalNotesWithCat(final String tag, final String title, final boolean sortTimeAsc, final String useId, final ControllerCallback<List<Object>> cb) {
-        TaskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                final ResponseValue<List<Object>> r = getNotesWithCatImpl(tag, title, sortTimeAsc, useId, localNoteSource);
-                UiHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (cb != null) {
-                            cb.onComplete(r);
-                        }
+    private void getCloudNotes(final ControllerCallback<List<NoteModel>> cb) {
+        final ResponseValue<List<NoteModel>> ret = new ResponseValue<>();
+
+        String userId = null;
+
+        UserRouteApi m = RouteCall.getUserModule();
+        if (m != null && m.userSession() != null) {
+            userId = m.userSession().uid;
+        }
+
+        if (TextUtils.isEmpty(userId)) {
+            ret.setErrMsg("not login");
+            UiHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (cb != null) {
+                        cb.onComplete(ret);
                     }
-                });
-
-            }
-        });
-    }
-
-    private ResponseValue<List<Object>> getNotesWithCatImpl(String tag, String title, boolean sortTimeAsc, String useId, NoteSource source) {
-        ResponseValue<List<Object>> res = new ResponseValue<>();
-
-        ResponseValue<QueryNoteResponse> notesRes = source.queryNotes(tag, title, sortTimeAsc, useId);
-        if (notesRes.hasError() || notesRes.data == null) {
-            res.err = notesRes.err;
-            return res;
+                }
+            });
+            return;
         }
 
-        List<NoteModel> notes = notesRes.data.data;
-        if (notes == null || notes.isEmpty()) {
-            return res;
-        }
+        mQuery.setPage(page).setPageSize(PAGE_SIZE).setUseId(userId);
 
-        List<Object> all = new ArrayList<>();
-        res.data = all;
-
-        all.add(new HeadData());
-
-
-        String preType = "";
-
-        for (NoteModel note : notes) {
-            String currentType = note.type;
-            if (!preType.equals(currentType)) {
-                all.add(new NotePinedData(-1, currentType));
-                preType = currentType;
-            }
-
-            all.add(note);
-        }
-
-        return res;
-    }
-
-    public void getLocalNotes(final String tag, final String title, final boolean sortTimeAsc, final String useId, final ControllerCallback<List<NoteModel>> cb) {
         TaskExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                final ResponseValue<QueryNoteResponse> r = localNoteSource.queryNotes(tag, title, sortTimeAsc, useId);
-                final ResponseValue<List<NoteModel>> ret = new ResponseValue<>();
+
+                final ResponseValue<QueryNoteResponse> r = netNoteSource.queryNotes(mQuery);
+
                 if (r.hasError() || r.data == null) {
-                    ret.err = r.err;
-                } else {
-                    ret.data = r.data.data;
+                    ret.setErrMsg(r.errMsg());
+                    UiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (cb != null) {
+                                cb.onComplete(ret);
+                            }
+                        }
+                    });
+                    return;
                 }
+
+                List<NoteModel> notes = r.data.data;
+                if (!ListUtils.isEmpty(notes)) {
+                    all.addAll(notes);
+                }
+
+                if (ListUtils.isEmpty(notes) || notes.size() < PAGE_SIZE) {
+                    isHaveMore = false;
+                }
+
+                List<NoteModel> result = new ArrayList<>();
+                result.addAll(all);
+
+                ret.data = result;
 
                 UiHandler.post(new Runnable() {
                     @Override
@@ -127,96 +121,60 @@ public class NoteController {
 
     }
 
-    public void getCloudNotes(final String tag, final String title, final boolean sortTimeAsc, final String useId, final ControllerCallback<List<NoteModel>> cb) {
-        TaskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                final ResponseValue<QueryNoteResponse> r = netNoteSource.queryNotes(tag, title, sortTimeAsc, useId);
+    public void refresh(final NetNoteRepo.NetNoteQuery query, final ControllerCallback<List<NoteModel>> cb) {
+        isHaveMore = true;
+        all.clear();
+        page = 0;
+        mQuery = query;
 
-                final ResponseValue<List<NoteModel>> ret = new ResponseValue<>();
-                if (r.hasError() || r.data == null) {
-                    ret.err = r.err;
-                } else {
-                    ret.data = r.data.data;
+        getCloudNotes(cb);
+
+    }
+
+    public void loadMore(final ControllerCallback<List<NoteModel>> cb) {
+        final ResponseValue<List<NoteModel>> ret = new ResponseValue<>();
+
+        if (!isHaveMore) {
+            ret.setErrMsg("no more");
+            UiHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (cb != null) {
+                        cb.onComplete(ret);
+                    }
                 }
+            });
 
+            return;
+        }
 
-                UiHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (cb != null) {
-                            cb.onComplete(ret);
-                        }
-                    }
-                });
-
-            }
-        });
+        getCloudNotes(cb);
 
     }
 
-    public void getCloudNotesWithCat(final String tag, final String title, final boolean sortTimeAsc, final String useId, final ControllerCallback<List<Object>> cb) {
-        TaskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                final ResponseValue<List<Object>> r = getNotesWithCatImpl(tag, title, sortTimeAsc, useId, netNoteSource);
-                UiHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (cb != null) {
-                            cb.onComplete(r);
-                        }
-                    }
-                });
-
-            }
-        });
-    }
-
-
-    public void saveLocalNote(final NoteModel note, final ControllerCallback<Void> cb) {
-
-        TaskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                localNoteSource.save(note);
-                //deleteUnusedImages(note);
-
-                UiHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (cb != null) {
-                            cb.onComplete(new ResponseValue<Void>());
-                        }
-                    }
-                });
-            }
-        });
-
-    }
-
-    public void deleteLocalNote(final NoteModel note, final ControllerCallback<Void> cb) {
-
-        TaskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                localNoteSource.delete(ModelMapper.from(note));
-
-                UiHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (cb != null) {
-                            cb.onComplete(new ResponseValue<Void>());
-                        }
-                    }
-                });
-            }
-        });
-
-    }
 
     public void updateNetNote(final NoteModel note, final ControllerCallback<Void> cb) {
         saveNoteToNetImpl(note, cb);
+    }
+
+    public void publicNetNote(final NoteModel note, final ControllerCallback<Void> cb) {
+
+        TaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final ResponseValue<Void> resSave = netNoteSource.save(note);
+
+                UiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (cb != null) {
+                            cb.onComplete(resSave);
+                        }
+                    }
+                });
+            }
+        });
+
     }
 
     public void saveNoteToNet(final NoteModel note, final ControllerCallback<Void> cb) {
@@ -273,7 +231,6 @@ public class NoteController {
                                 return AliJsonHelper.parseObject(s, UploadFileResponse.class);
                             }
                         });
-
                         if (res.hasError()) {
                             ret.setErrMsg(res.errMsg());
                             UiHandler.post(new Runnable() {
@@ -312,6 +269,7 @@ public class NoteController {
                             });
                             return;
                         }
+
 
                         e.path = res.data.data;
                         isHasFile = true;

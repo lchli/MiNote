@@ -23,7 +23,7 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.lch.audio_player.AudioPlayer;
 import com.lch.audio_player.LchAudioPlayer;
 import com.lch.menote.R;
-import com.lch.menote.note.controller.NoteController;
+import com.lch.menote.note.controller.LocalNoteController;
 import com.lch.menote.note.controller.NoteElementController;
 import com.lch.menote.note.controller.NoteTagController;
 import com.lch.menote.note.domain.LocalNoteListChangedEvent;
@@ -68,7 +68,7 @@ public class EditNoteUi extends BaseCompatActivity {
     private EditText et_note_title;
     private NoteElementAdapter noteElementAdapter;
     private NoteElementController noteElementController = new NoteElementController();
-    private NoteController noteController;
+    private LocalNoteController noteController;
     private NoteModel oldNote;
     private String courseUUID;
     private String courseDir;
@@ -105,7 +105,7 @@ public class EditNoteUi extends BaseCompatActivity {
             }
         });
 
-        noteController = new NoteController(this);
+        noteController = new LocalNoteController(this);
         noteElementAdapter = new NoteElementAdapter(new NoteElementAdapter.Callback() {
             @Override
             public void showOperation(int position, boolean isPlayingVideo, boolean isPlayingAudio) {

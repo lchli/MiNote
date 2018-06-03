@@ -6,6 +6,8 @@ import android.support.v4.view.ViewPager
 import com.lch.menote.R
 
 import com.lch.menote.home.route.RouteCall
+import com.lch.menote.note.ui.HotNoteUi
+import com.lch.menote.note.ui.NoteFragmentContainer
 import com.lch.netkit.common.base.BaseCompatActivity
 import com.lch.netkit.common.base.BaseFragment
 import com.lch.netkit.common.base.FragmentAdapter
@@ -23,12 +25,12 @@ class HomeActivity : BaseCompatActivity() {
 
         val local = RouteCall.getNoteModule()?.localFrament(null)
         if (local != null) {
-            adapter.addFragment(local, ResUtils.parseString(R.string.note))
+            adapter.addFragment( HotNoteUi(),"热榜")
         }
 
         val cloud = RouteCall.getNoteModule()?.cloudFragment(null)
         if (cloud != null) {
-            adapter.addFragment(cloud, ResUtils.parseString(R.string.cloud_note))
+            adapter.addFragment(NoteFragmentContainer(), "笔记")
         }
 
         val userFragment =RouteCall.getUserModule()?.indexPage(null)

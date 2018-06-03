@@ -49,7 +49,7 @@ class RegisterFragment : BaseFragment() {
         val username = user_account_edit.text.toString()
         val pwd = user_pwd_edit.text.toString()
 
-        userController.register(username, pwd, object : ControllerCallback<User> {
+        userController.register(username, pwd, null,object : ControllerCallback<User> {
 
             override fun onComplete(res: ResponseValue<User>) {
                 if (res.hasError() || res.data == null) {

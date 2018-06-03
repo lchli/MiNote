@@ -27,6 +27,8 @@ public class NoteModel implements Serializable {
     public String uid;
 
     public String userId;
+    public String userHeadUrl;
+    public boolean isPublic;
 
     public String ShareUrl = "";
 

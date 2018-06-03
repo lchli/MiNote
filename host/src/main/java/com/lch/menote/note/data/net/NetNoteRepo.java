@@ -1,14 +1,17 @@
 package com.lch.menote.note.data.net;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.lch.menote.ApiConstants;
 import com.lch.menote.ConstantUtil;
-import com.lch.menote.note.data.NoteSource;
 import com.lch.menote.note.domain.BaseResponse;
 import com.lch.menote.note.domain.Note;
 import com.lch.menote.note.domain.NoteModel;
 import com.lch.menote.note.domain.QueryNoteResponse;
+import com.lch.menote.note.route.RouteCall;
+import com.lch.menote.user.route.User;
+import com.lch.menote.user.route.UserRouteApi;
 import com.lch.netkit.NetKit;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.AliJsonHelper;
@@ -16,20 +19,93 @@ import com.lch.netkit.string.Parser;
 import com.lch.netkit.string.StringRequestParams;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * Created by lichenghang on 2018/5/19.
  */
 
-public class NetNoteRepo implements NoteSource {
+public class NetNoteRepo {
+
+    public static class NetNoteQuery {
+        private String sortKey;
+        private String sortDiretion;
+        private String tag;
+        private String title;
+        private String useId;
+        private String token;
+        private boolean isPublic = false;
+        private int page;
+        private int pageSize;
+
+        public static NetNoteQuery newInstance() {
+            return new NetNoteQuery();
+        }
+
+        public NetNoteQuery setSortDiretion(String sortDiretion) {
+            this.sortDiretion = sortDiretion;
+            return this;
+        }
+
+        public NetNoteQuery setSortKey(String sortKey) {
+            this.sortKey = sortKey;
+            return this;
+        }
+
+        public NetNoteQuery setTag(String tag) {
+            this.tag = tag;
+            return this;
+        }
+
+        public NetNoteQuery setTitle(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public NetNoteQuery setUseId(String useId) {
+            this.useId = useId;
+            return this;
+        }
+
+        public NetNoteQuery setPage(int page) {
+            this.page = page;
+            return this;
+        }
+
+        public NetNoteQuery setPageSize(int pageSize) {
+            this.pageSize = pageSize;
+            return this;
+        }
+
+        public NetNoteQuery setPublic(boolean aPublic) {
+            isPublic = aPublic;
+            return this;
+        }
+    }
 
     @NonNull
-    public ResponseValue<QueryNoteResponse> queryNotes(@Nullable String tag, @Nullable String title, boolean sortTimeAsc, @NotNull String useId) {
+    public ResponseValue<QueryNoteResponse> queryNotes(NetNoteQuery query) {
+        JSONArray jsonArray = new JSONArray();
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("key", query.sortKey);
+            jsonObject.put("direction", query.sortDiretion);
+
+            jsonArray.put(jsonObject);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+
         StringRequestParams param = new StringRequestParams()
                 .setUrl(ApiConstants.QUERY_NOTE)
-                .addParam("UserId", useId)
-                .addParam("UserToken", "");
+                .addParam("userId", query.useId)
+                .addParam("page", query.page + "")
+                .addParam("pageSize", query.pageSize + "")
+                .addParam("isPublic", query.isPublic + "")
+                .addParam("sort", jsonArray.toString())
+                .addParam("userToken", query.token);
 
 
         ResponseValue<QueryNoteResponse> ret = NetKit.stringRequest().postSync(param, new Parser<QueryNoteResponse>() {
@@ -45,6 +121,20 @@ public class NetNoteRepo implements NoteSource {
     public ResponseValue<Void> save(@NotNull NoteModel note) {
         ResponseValue<Void> ret = new ResponseValue<>();
 
+        String useid = null;
+        UserRouteApi userMod = RouteCall.getUserModule();
+        if (userMod != null) {
+            User se = userMod.userSession();
+            if (se != null) {
+                useid = se.uid;
+            }
+        }
+
+        if (TextUtils.isEmpty(useid)) {
+            ret.setErrMsg("user not login");
+            return ret;
+        }
+
         StringRequestParams params = new StringRequestParams()
                 .setUrl(ApiConstants.UPLOAD_NOTE)
                 .addParam("content", note.content)
@@ -52,7 +142,8 @@ public class NetNoteRepo implements NoteSource {
                 .addParam("type", note.type)
                 .addParam("thumbNail", note.thumbNail)
                 .addParam("uid", note.uid)
-                .addParam("userId", note.userId);
+                .addParam("isPublic", note.isPublic + "")
+                .addParam("userId", useid);
 
         ResponseValue<BaseResponse> res = NetKit.stringRequest().postSync(params, new Parser<BaseResponse>() {
             @Override

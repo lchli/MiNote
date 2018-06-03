@@ -4,12 +4,11 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.blankj.utilcode.util.ToastUtils;
-import com.lch.menote.note.data.NoteSource;
 import com.lch.menote.note.data.db.gen.NoteDao;
-import com.lch.menote.note.helper.ModelMapper;
 import com.lch.menote.note.domain.Note;
 import com.lch.menote.note.domain.NoteModel;
 import com.lch.menote.note.domain.QueryNoteResponse;
+import com.lch.menote.note.helper.ModelMapper;
 import com.lch.netkit.common.mvc.MvcError;
 import com.lch.netkit.common.mvc.ResponseValue;
 
@@ -18,7 +17,43 @@ import org.greenrobot.greendao.query.QueryBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DatabseNoteRepo implements NoteSource {
+import static com.lch.menote.note.data.db.DatabseNoteRepo.LocalNoteQuery.SORT_ASC;
+
+public class DatabseNoteRepo  {
+
+    public static class LocalNoteQuery {
+        public static final String SORT_ASC="asc";
+        public static final String SORT_DESC="desc";
+        private String sortDiretion=SORT_ASC;
+        private String tag;
+        private String title;
+        private String useId;
+
+        public static LocalNoteQuery newInstance() {
+            return new LocalNoteQuery();
+        }
+
+        public LocalNoteQuery setSortDiretion(String sortDiretion) {
+            this.sortDiretion = sortDiretion;
+            return this;
+        }
+
+
+        public LocalNoteQuery setTag(String tag) {
+            this.tag = tag;
+            return this;
+        }
+
+        public LocalNoteQuery setTitle(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public LocalNoteQuery setUseId(String useId) {
+            this.useId = useId;
+            return this;
+        }
+    }
 
     private Context context;
 
@@ -26,21 +61,21 @@ public class DatabseNoteRepo implements NoteSource {
         this.context = context.getApplicationContext();
     }
 
-    public ResponseValue<QueryNoteResponse> queryNotes(String tag, String title, boolean sortTimeAsc, String useId) {
+    public ResponseValue<QueryNoteResponse> queryNotes(LocalNoteQuery query) {
         ResponseValue<QueryNoteResponse> res = new ResponseValue<>();
 
         try {
 
             QueryBuilder<Note> builder = DaoSessionManager.noteDao(context).queryBuilder();
-            if (!TextUtils.isEmpty(title)) {
+            if (!TextUtils.isEmpty(query.title)) {
                 builder.where(NoteDao.Properties.Title.like("%$title%"));
             }
 
-            if (!TextUtils.isEmpty(tag)) {
-                builder.where(NoteDao.Properties.Type.eq(tag));
+            if (!TextUtils.isEmpty(query.tag)) {
+                builder.where(NoteDao.Properties.Type.eq(query.tag));
             }
 
-            if (sortTimeAsc) {
+            if (SORT_ASC.equals(query.sortDiretion)) {
                 builder.orderAsc(NoteDao.Properties.Type).orderAsc(NoteDao.Properties.LastModifyTime);
             } else {
                 builder.orderAsc(NoteDao.Properties.Type).orderDesc(NoteDao.Properties.LastModifyTime);

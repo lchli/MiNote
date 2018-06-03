@@ -3,20 +3,19 @@ package com.lch.menote.note.ui;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.lch.menote.R;
-import com.lch.menote.note.controller.NoteController;
+import com.lch.menote.note.controller.LocalNoteController;
+import com.lch.menote.note.data.db.DatabseNoteRepo;
 import com.lch.menote.note.domain.LocalNoteListChangedEvent;
 import com.lch.netkit.common.base.BaseFragment;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.EventBusUtils;
-import com.lch.netkit.common.tool.Navigator;
 import com.lch.netkit.common.tool.VF;
 import com.lch.netkit.common.widget.CommonEmptyView;
 import com.lchli.pinedrecyclerlistview.library.pinnedRecyclerView.PinnedRecyclerView;
@@ -35,14 +34,13 @@ public class LocalNoteUi extends BaseFragment {
     private LocalNoteListAdp notesAdp;
     private CommonEmptyView empty_widget;
     private PinnedRecyclerView moduleListRecyclerView;
-    private FloatingActionButton fab;
-    private NoteController noteController;
+    private LocalNoteController noteController;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBusUtils.register(this);
-        noteController = new NoteController(getActivity());
+        noteController = new LocalNoteController(getActivity());
         notesAdp = new LocalNoteListAdp(getActivity(), noteController);
     }
 
@@ -64,7 +62,6 @@ public class LocalNoteUi extends BaseFragment {
 
         empty_widget = VF.f(view, R.id.empty_widget);
         moduleListRecyclerView = VF.f(view, R.id.moduleListRecyclerView);
-        fab = VF.f(view, R.id.fab);
 
         empty_widget.addEmptyText("no data");
 
@@ -72,33 +69,6 @@ public class LocalNoteUi extends BaseFragment {
         moduleListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         moduleListRecyclerView.addItemDecoration(new GridDividerDecoration(getActivity(), GridDividerDecoration.VERTICAL_LIST));
         moduleListRecyclerView.setPinnedAdapter(notesAdp);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigator.launchActivity(getActivity(), EditNoteUi.class);
-
-//                ContextExtKt.showListDialog(getActivity(), new OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
-//                        switch (position) {
-//                            case 0:
-//                                dialog.dismiss();
-//
-//                                Navigator.launchActivity(getActivity(), EditNoteUi.class);
-//                                break;
-//                            case 1:
-//                                dialog.dismiss();
-//
-//                                Navigator.launchActivity(getActivity(), MusicActivity.class);
-//                                break;
-//                        }
-//
-//                    }
-//                }, false, Arrays.asList("创建笔记", "创建音乐"));
-            }
-        });
-
 
         queryNotesAsync();
 
@@ -111,7 +81,9 @@ public class LocalNoteUi extends BaseFragment {
 
 
     private void queryNotesAsync() {
-        noteController.getLocalNotesWithCat(null, null, true, "", new ControllerCallback<List<Object>>() {
+        DatabseNoteRepo.LocalNoteQuery query = DatabseNoteRepo.LocalNoteQuery.newInstance();
+
+        noteController.getLocalNotesWithCat(query, new ControllerCallback<List<Object>>() {
             @Override
             public void onComplete(@NonNull ResponseValue<List<Object>> responseValue) {
                 if (responseValue.hasError()) {

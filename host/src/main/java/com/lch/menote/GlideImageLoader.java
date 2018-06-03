@@ -22,10 +22,16 @@ public class GlideImageLoader implements cn.finalteam.galleryfinal.ImageLoader {
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.NONE);
 
+        if (!path.startsWith("http://") && !path.startsWith("https://")) {
+            path = "file://" + path;
+        }
+
         Glide.with(activity)
                 .load(path)
                 .apply(opt)
                 .into(imageView);
+
+
     }
 
     @Override

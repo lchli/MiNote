@@ -36,6 +36,8 @@ dependencies {
     api "com.github.lchli:LchVideoPlayer:$rootProject.ext.lch_videoPlayer_version"
     api "com.github.lchli:boxing:$rootProject.ext.boxing_version"
 
+    api 'com.laputapp:laputapp-pulltorefresh:2.1.1'
+
 
 
 }

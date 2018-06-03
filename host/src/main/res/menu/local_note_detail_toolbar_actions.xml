@@ -18,4 +18,10 @@
         android:title="分享"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/action_public_note"
+        android:icon="@drawable/ic_public_note"
+        android:title="公开"
+        app:showAsAction="ifRoom" />
+
 </menu>

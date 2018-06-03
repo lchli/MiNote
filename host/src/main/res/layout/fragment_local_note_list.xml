@@ -9,12 +9,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.lch.netkit.common.widget.CommonTitleView
-            android:id="@+id/common_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/titleView_bgColor" />
-
         <com.lchli.pinedrecyclerlistview.library.pinnedRecyclerView.PinnedRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/moduleListRecyclerView"
             android:layout_width="match_parent"
@@ -30,15 +24,7 @@
             android:visibility="gone" />
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="10dp"
-        android:src="@drawable/ic_add_note"
-        android:tint="#fff"
-        android:visibility="visible" />
+
 
 </android.support.design.widget.CoordinatorLayout>
 

@@ -39,6 +39,7 @@
         <activity android:name=".note.ui.MusicActivity" />
         <activity android:name=".note.ui.EditNoteUi" />
         <activity android:name=".note.ui.LocalNoteDetailUi" />
+        <activity android:name=".user.ui.UserInfoActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

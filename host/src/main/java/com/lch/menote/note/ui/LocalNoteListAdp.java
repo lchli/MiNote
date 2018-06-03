@@ -17,9 +17,9 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.lch.menote.R;
-import com.lch.menote.note.controller.NoteController;
+import com.lch.menote.note.controller.CloudNoteController;
+import com.lch.menote.note.controller.LocalNoteController;
 import com.lch.menote.note.domain.CloudNoteListChangedEvent;
-import com.lch.menote.note.domain.HeadData;
 import com.lch.menote.note.domain.LocalNoteListChangedEvent;
 import com.lch.menote.note.domain.Note;
 import com.lch.menote.note.domain.NoteModel;
@@ -41,18 +41,19 @@ import com.orhanobut.dialogplus.OnItemClickListener;
  */
 
 public class LocalNoteListAdp extends PinnedRecyclerAdapter {
-    private static final int VIEW_TYPE_HEADER = 0;
-    private static final int VIEW_TYPE_ITEM = 1;
-    private static final int VIEW_TYPE_PINED = 2;
+    private static final int VIEW_TYPE_ITEM = 0;
+    public static final int VIEW_TYPE_PINED = 1;
 
     private final Bitmap def = BitmapFactory.decodeResource(ContextProvider.context().getResources(), R.drawable.ic_add_note);
     private Activity activity;
-    private NoteController noteController;
+    private LocalNoteController noteController;
+    private CloudNoteController cloudNoteController;
 
 
-    public LocalNoteListAdp(Activity activity, NoteController noteController) {
+    public LocalNoteListAdp(Activity activity, LocalNoteController noteController) {
         this.activity = activity;
         this.noteController = noteController;
+        cloudNoteController=new CloudNoteController(activity);
     }
 
     @Override
@@ -60,13 +61,6 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter {
         View view;
 
         switch (viewType) {
-
-            case VIEW_TYPE_HEADER:
-                view = LayoutInflater.from(parent.getContext())
-
-                        .inflate(R.layout.local_note_list_header, parent, false);
-
-                return new HeaderViewHolder(view);
 
             case VIEW_TYPE_PINED:
 
@@ -76,24 +70,29 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter {
 
                 return new PinedViewHolder(view);
 
-            default:
+
+            case VIEW_TYPE_ITEM:
                 view = LayoutInflater.from(parent.getContext())
 
                         .inflate(R.layout.local_note_list_item, parent, false);
 
                 return new ViewHolder(view);
 
+            default:
+                return null;
+
         }
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder h, int position) {
-        int viewtype = getItemViewType(position);
+        if (h == null) {
+            return;
+        }
 
         Object o = getItem(position);
 
-
-        if (viewtype == VIEW_TYPE_PINED) {
+        if (h instanceof PinedViewHolder) {
 
             PinedViewHolder holder = (PinedViewHolder) h;
 
@@ -104,10 +103,8 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter {
             return;
         }
 
-        if (viewtype == VIEW_TYPE_HEADER) {
 
-            HeaderViewHolder holder = (HeaderViewHolder) h;
-            holder.imageView.setImageResource(R.drawable.ic_add_note);
+        if (!(h instanceof ViewHolder)) {
             return;
         }
 
@@ -184,11 +181,11 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter {
         holder.course_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                noteController.saveNoteToNet(data, new ControllerCallback<Void>() {
+                cloudNoteController.saveNoteToNet(data, new ControllerCallback<Void>() {
                     @Override
                     public void onComplete(@NonNull ResponseValue<Void> responseValue) {
                         if (responseValue.hasError()) {
-                            ToastUtils.showShort(responseValue.errMsg()+"");
+                            ToastUtils.showShort(responseValue.errMsg() + "");
                             return;
                         }
 
@@ -213,12 +210,10 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter {
             return VIEW_TYPE_PINED;
         }
 
-        if (data instanceof HeadData) {
-            return VIEW_TYPE_HEADER;
-        }
-
         return VIEW_TYPE_ITEM;
     }
+
+
 
     private class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView course_thumb_imageView;
@@ -233,17 +228,6 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter {
             couse_title_textView = VF.f(itemView, R.id.couse_title_textView);
             course_time_textView = VF.f(itemView, R.id.course_time_textView);
             course_upload = VF.f(itemView, R.id.course_upload);
-        }
-    }
-
-
-    private class HeaderViewHolder extends RecyclerView.ViewHolder {
-
-        private ImageView imageView;
-
-        public HeaderViewHolder(View itemView) {
-            super(itemView);
-            imageView = VF.f(itemView, R.id.imageView);
         }
     }
 

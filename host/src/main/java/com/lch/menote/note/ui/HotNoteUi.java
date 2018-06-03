@@ -4,24 +4,24 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.lch.menote.R;
-import com.lch.menote.note.controller.CloudNoteController;
-import com.lch.menote.note.data.net.NetNoteRepo;
+import com.lch.menote.note.controller.HotNoteController;
 import com.lch.menote.note.domain.CloudNoteListChangedEvent;
-import com.lch.menote.note.domain.NoteModel;
 import com.lch.netkit.common.base.BaseFragment;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.EventBusUtils;
+import com.lch.netkit.common.tool.Navigator;
 import com.lch.netkit.common.tool.VF;
+import com.lch.netkit.common.widget.CommonEmptyView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -32,20 +32,21 @@ import java.util.List;
  * Created by lichenghang on 2018/5/20.
  */
 
-public class CloudNoteUi extends BaseFragment {
+public class HotNoteUi extends BaseFragment {
 
-    private CloudNoteListAdapter notesAdp;
+    private HotNoteListAdp notesAdp;
+    private CommonEmptyView empty_widget;
     private PullToRefreshListView moduleListRecyclerView;
-    private CloudNoteController noteController;
+    private FloatingActionButton fab;
+    private HotNoteController noteController;
     private Handler handler = new Handler();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBusUtils.register(this);
-
-        notesAdp = new CloudNoteListAdapter();
-        noteController = new CloudNoteController(getActivity());
+        noteController = new HotNoteController(getActivity());
+        notesAdp = new HotNoteListAdp();
     }
 
     @Override
@@ -57,13 +58,18 @@ public class CloudNoteUi extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_cloud_note_list, container, false);
+        return inflater.inflate(R.layout.fragment_hot_note_list, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        empty_widget = VF.f(view, R.id.empty_widget);
         moduleListRecyclerView = VF.f(view, R.id.moduleListRecyclerView);
+        fab = VF.f(view, R.id.fab);
+
+        empty_widget.addEmptyText("no data");
 
         moduleListRecyclerView.setMode(PullToRefreshBase.Mode.BOTH);
         moduleListRecyclerView.setAdapter(notesAdp);
@@ -79,10 +85,36 @@ public class CloudNoteUi extends BaseFragment {
             }
         });
 
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigator.launchActivity(getActivity(), EditNoteUi.class);
+
+//                ContextExtKt.showListDialog(getActivity(), new OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
+//                        switch (position) {
+//                            case 0:
+//                                dialog.dismiss();
+//
+//                                Navigator.launchActivity(getActivity(), EditNoteUi.class);
+//                                break;
+//                            case 1:
+//                                dialog.dismiss();
+//
+//                                Navigator.launchActivity(getActivity(), MusicActivity.class);
+//                                break;
+//                        }
+//
+//                    }
+//                }, false, Arrays.asList("创建笔记", "创建音乐"));
+            }
+        });
+
+
         queryNotesAsync();
 
     }
-
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(CloudNoteListChangedEvent e) {
@@ -91,13 +123,9 @@ public class CloudNoteUi extends BaseFragment {
 
 
     private void queryNotesAsync() {
-        NetNoteRepo.NetNoteQuery query = NetNoteRepo.NetNoteQuery.newInstance()
-                .setSortDiretion("asc")
-                .setSortKey("updateTime");
-
-        noteController.refresh(query, new ControllerCallback<List<NoteModel>>() {
+        noteController.refresh(new ControllerCallback<List<Object>>() {
             @Override
-            public void onComplete(@NonNull ResponseValue<List<NoteModel>> responseValue) {
+            public void onComplete(@NonNull ResponseValue<List<Object>> responseValue) {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -106,37 +134,31 @@ public class CloudNoteUi extends BaseFragment {
                 });
 
                 if (responseValue.hasError()) {
-                    ToastUtils.showShort(responseValue.errMsg());
-                    return;
+                    com.blankj.utilcode.util.ToastUtils.showShort(responseValue.errMsg());
+                } else {
+                    notesAdp.refresh(responseValue.data);
                 }
-
-                notesAdp.refresh(responseValue.data);
-
-
             }
         });
+
     }
 
     private void loadmore() {
-        noteController.loadMore(new ControllerCallback<List<NoteModel>>() {
+        noteController.loadMore(new ControllerCallback<List<Object>>() {
             @Override
-            public void onComplete(@NonNull ResponseValue<List<NoteModel>> responseValue) {
+            public void onComplete(@NonNull ResponseValue<List<Object>> responseValue) {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
                         moduleListRecyclerView.onRefreshComplete();
-
                     }
                 });
 
                 if (responseValue.hasError()) {
-                    ToastUtils.showShort(responseValue.errMsg());
-                    return;
+                    com.blankj.utilcode.util.ToastUtils.showShort(responseValue.errMsg());
+                } else {
+                    notesAdp.refresh(responseValue.data);
                 }
-
-                notesAdp.refresh(responseValue.data);
-
-
             }
         });
     }
