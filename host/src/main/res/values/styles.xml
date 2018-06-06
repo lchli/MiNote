@@ -38,9 +38,12 @@
     </style>
 
 
-    <string name="user_login_text">登录</string>
-    <string name="user_goto_login_text">去登录</string>
-    <string name="user_goto_register_text">去注册</string>
-    <string name="user_register_text">注册</string>
+    <style name="SwitchTheme" parent="@android:style/TextAppearance.Small">
+        <item name="android:textColor">#fff</item>
+    </style>
+
+    <style name="toolbar_theme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textSize">@dimen/title_view_textsize</item>
+    </style>
 
 </resources>

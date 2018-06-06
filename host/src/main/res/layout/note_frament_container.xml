@@ -10,35 +10,20 @@
 
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/titleView_bgColor"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/btLocalNote"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:text="本地笔记" />
-
-
-
-        <TextView
-            android:id="@+id/btCloudNote"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/white"
-            android:gravity="center"
-            android:text="云笔记" />
-
-    </LinearLayout>
+    <Switch
+        android:id="@+id/swNoteLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:showText="true"
+        android:switchTextAppearance="@style/SwitchTheme"
+        android:textOff="@string/local_note"
+        android:textOn="@string/cloud_note"
+        android:thumb="@drawable/switch_rectangle_thumb_selector"
+        android:track="@drawable/switch_rectangle_track" />
 
 
     <FrameLayout
@@ -50,6 +35,7 @@
         android:layout_height="0dp"
 
         android:layout_weight="1">
+
 
     </FrameLayout>
 
