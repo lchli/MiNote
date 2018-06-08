@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -30,6 +29,7 @@ import com.lch.menote.note.domain.LocalNoteListChangedEvent;
 import com.lch.menote.note.domain.NoteElement;
 import com.lch.menote.note.domain.NoteModel;
 import com.lch.menote.note.helper.NoteUtils;
+import com.lch.menote.utils.DialogTool;
 import com.lch.netkit.common.base.BaseCompatActivity;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
@@ -219,15 +219,11 @@ public class EditNoteUi extends BaseCompatActivity {
     }
 
     private void showAddTagDialog() {
-        final Dialog d = new Dialog(this);
-        d.setContentView(R.layout.add_new_note_tag_dialog);
-        final EditText note_edittext = VF.f(d, R.id.note_edittext);
-        Button note_button = VF.f(d, R.id.note_button);
-
-        note_button.setOnClickListener(new View.OnClickListener() {
+        DialogTool.showInputDialog(this, "添加标签", new DialogTool.InputDialogListener() {
             @Override
-            public void onClick(View v) {
-                String newtag = note_edittext.getText().toString();
+            public void onConfirm(final Dialog dialog, String inputText) {
+                String newtag = inputText;
+
                 if (TextUtils.isEmpty(newtag)) {
                     return;
                 }
@@ -237,17 +233,15 @@ public class EditNoteUi extends BaseCompatActivity {
                         if (responseValue.hasError()) {
                             ToastUtils.showShort(responseValue.errMsg());
                         } else {
-                            d.dismiss();
+                            dialog.dismiss();
                             ToastUtils.showShort("添加成功");
                         }
 
                     }
                 });
-
             }
         });
 
-        d.show();
     }
 
 

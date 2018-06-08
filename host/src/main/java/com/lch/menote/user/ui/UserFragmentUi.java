@@ -10,8 +10,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,6 +26,7 @@ import com.lch.menote.note.route.NoteRouteApi;
 import com.lch.menote.user.controller.UserController;
 import com.lch.menote.user.route.RouteCall;
 import com.lch.menote.user.route.User;
+import com.lch.menote.utils.DialogTool;
 import com.lch.netkit.common.base.BaseFragment;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
@@ -144,15 +143,12 @@ public class UserFragmentUi extends BaseFragment {
 
 
     private void showAddTagDialog() {
-        final Dialog d = new Dialog(getActivity());
-        d.setContentView(R.layout.add_new_note_tag_dialog);
-        final EditText note_edittext = VF.f(d, R.id.note_edittext);
-        Button note_button = VF.f(d, R.id.note_button);
 
-        note_button.setOnClickListener(new View.OnClickListener() {
+        DialogTool.showInputDialog(getActivity(), "修改联系方式", new DialogTool.InputDialogListener() {
             @Override
-            public void onClick(View v) {
-                final String newtag = note_edittext.getText().toString();
+            public void onConfirm(final Dialog dialog, String inputText) {
+                final String newtag = inputText;
+
                 if (TextUtils.isEmpty(newtag)) {
                     return;
                 }
@@ -169,7 +165,7 @@ public class UserFragmentUi extends BaseFragment {
                                 if (responseValue.hasError()) {
                                     ToastUtils.showShort(responseValue.errMsg());
                                 } else {
-                                    d.dismiss();
+                                    dialog.dismiss();
                                     ToastUtils.showShort("添加成功");
 
                                     refreshUi();
@@ -179,12 +175,10 @@ public class UserFragmentUi extends BaseFragment {
                         });
                     }
                 });
-
-
             }
         });
 
-        d.show();
+
     }
 
 

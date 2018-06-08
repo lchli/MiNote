@@ -4,10 +4,11 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import com.lch.menote.R
-
 import com.lch.menote.home.route.RouteCall
+import com.lch.menote.note.ui.CloudNoteUi
 import com.lch.menote.note.ui.HotNoteUi
-import com.lch.menote.note.ui.NoteFragmentContainer
+import com.lch.menote.note.ui.LocalNoteUi
+import com.lch.menote.user.ui.UserFragmentContainer
 import com.lch.netkit.common.base.BaseCompatActivity
 import com.lch.netkit.common.base.BaseFragment
 import com.lch.netkit.common.base.FragmentAdapter
@@ -23,20 +24,15 @@ class HomeActivity : BaseCompatActivity() {
         setContentView(R.layout.activity_home)
         val adapter = FragmentAdapter(supportFragmentManager)
 
-        val local = RouteCall.getNoteModule()?.localFrament(null)
-        if (local != null) {
-            adapter.addFragment( HotNoteUi(),"热榜")
-        }
 
-        val cloud = RouteCall.getNoteModule()?.cloudFragment(null)
-        if (cloud != null) {
-            adapter.addFragment(NoteFragmentContainer(), "笔记")
-        }
+        adapter.addFragment(HotNoteUi(), "热榜")
 
-        val userFragment =RouteCall.getUserModule()?.indexPage(null)
-        if (userFragment != null) {
-            adapter.addFragment(userFragment, ResUtils.parseString(R.string.user))
-        }
+        adapter.addFragment(LocalNoteUi(), getString(R.string.local_note))
+
+        adapter.addFragment(CloudNoteUi(), getString(R.string.cloud_note))
+
+
+        adapter.addFragment(UserFragmentContainer(), ResUtils.parseString(R.string.user))
 
         viewpager.adapter = adapter
         viewpager.offscreenPageLimit = adapter.count
@@ -73,8 +69,6 @@ class HomeActivity : BaseCompatActivity() {
 
         tabs.tabMode = TabLayout.MODE_FIXED
         tabs.setupWithViewPager(viewpager)
-
-
 
 
     }
