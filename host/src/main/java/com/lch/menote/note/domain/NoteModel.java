@@ -1,6 +1,7 @@
 package com.lch.menote.note.domain;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by lichenghang on 2018/5/27.
@@ -16,7 +17,8 @@ public class NoteModel implements Serializable {
 
     public String content = "";
 
-    public String lastModifyTime;
+
+    public long updateTime;
 
     public String title = "";
 
@@ -28,9 +30,11 @@ public class NoteModel implements Serializable {
 
     public String userId;
     public String userHeadUrl;
+    public String userName;
     public boolean isPublic;
 
     public String ShareUrl = "";
 
     public int category = CAT_NOTE;
+    public List<String> star;
 }

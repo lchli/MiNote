@@ -19,6 +19,7 @@ import com.lch.menote.user.ui.UserInfoActivity;
 import com.lch.netkit.common.base.AbsAdapter;
 import com.lch.netkit.common.tool.AppListItemAnimatorUtils;
 import com.lch.netkit.common.tool.ContextProvider;
+import com.lch.netkit.common.tool.TimeUtils;
 import com.lch.netkit.common.tool.VF;
 
 /**
@@ -80,8 +81,11 @@ public class HotNoteListAdp extends AbsAdapter<Object> {
         final Context context = holder.itemView.getContext();
 
         holder.couse_title_textView.setText(data.title);
+        int star = data.star != null ? data.star.size() : 0;
+        holder.course_star_textView.setText(star + "");
+        holder.course_userName_textView.setText(data.userName);
 
-        holder.course_time_textView.setText(data.lastModifyTime);
+        holder.course_time_textView.setText(TimeUtils.getTime(data.updateTime));
         holder.course_thumb_imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,6 +133,8 @@ public class HotNoteListAdp extends AbsAdapter<Object> {
         private ImageView course_thumb_imageView;
         private TextView couse_title_textView;
         private TextView course_time_textView;
+        private TextView course_star_textView;
+        private TextView course_userName_textView;
         private View itemView;
 
 
@@ -139,6 +145,8 @@ public class HotNoteListAdp extends AbsAdapter<Object> {
             course_thumb_imageView = VF.f(itemView, R.id.course_thumb_imageView);
             couse_title_textView = VF.f(itemView, R.id.couse_title_textView);
             course_time_textView = VF.f(itemView, R.id.course_time_textView);
+            course_star_textView = VF.f(itemView, R.id.course_star_textView);
+            course_userName_textView = VF.f(itemView, R.id.course_userName_textView);
         }
 
         @Override

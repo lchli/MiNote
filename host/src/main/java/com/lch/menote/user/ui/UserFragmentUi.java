@@ -21,7 +21,10 @@ import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.lch.menote.ApiConstants;
 import com.lch.menote.R;
+import com.lch.menote.app.ApkController;
+import com.lch.menote.app.model.ApkResponse;
 import com.lch.menote.note.route.NoteRouteApi;
 import com.lch.menote.user.controller.UserController;
 import com.lch.menote.user.route.RouteCall;
@@ -47,7 +50,9 @@ public class UserFragmentUi extends BaseFragment {
     private TextView user_contact;
     private UserCenterListItem logout_widget;
     private UserCenterListItem app_version_widget;
+    private UserCenterListItem check_update_widget;
     private ImageView user_portrait;
+    private ApkController apkController = new ApkController();
 
     @Nullable
     @Override
@@ -63,6 +68,24 @@ public class UserFragmentUi extends BaseFragment {
         user_nick = VF.f(view, R.id.user_nick);
         user_portrait = VF.f(view, R.id.user_portrait);
         user_contact = VF.f(view, R.id.user_contact);
+        check_update_widget = VF.f(view, R.id.check_update_widget);
+
+        check_update_widget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                apkController.checkUpdate(AppUtils.getAppVersionCode(), new ControllerCallback<ApkResponse>() {
+                    @Override
+                    public void onComplete(@NonNull ResponseValue<ApkResponse> responseValue) {
+                        if (responseValue.hasError()||responseValue.data==null||responseValue.data.status!= ApiConstants.RESPCODE_SUCCESS) {
+                            ToastUtils.showShort(responseValue.errMsg());
+                            return;
+                        }
+                        ToastUtils.showShort("已有新版本，请到应用宝市场下载！");
+
+                    }
+                });
+            }
+        });
 
         user_portrait.setOnClickListener(new View.OnClickListener() {
             @Override

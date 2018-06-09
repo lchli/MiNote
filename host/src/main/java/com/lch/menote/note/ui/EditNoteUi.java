@@ -37,7 +37,6 @@ import com.lch.netkit.common.tool.AliJsonHelper;
 import com.lch.netkit.common.tool.DialogUtils;
 import com.lch.netkit.common.tool.EventBusUtils;
 import com.lch.netkit.common.tool.ListUtils;
-import com.lch.netkit.common.tool.TimeUtils;
 import com.lch.netkit.common.tool.UUIDUtils;
 import com.lch.netkit.common.tool.VF;
 import com.lch.video_player.LchVideoPlayer;
@@ -160,7 +159,7 @@ public class EditNoteUi extends BaseCompatActivity {
                 note.imagesDir = courseDir;
                 note.type = currentTag;
                 note.title = title;
-                note.lastModifyTime = TimeUtils.getTime(System.currentTimeMillis());
+                note.updateTime = System.currentTimeMillis();
                 note.content = AliJsonHelper.toJSONString(content);
 
                 noteController.saveLocalNote(note, new ControllerCallback<Void>() {

@@ -42,6 +42,8 @@ public class LocalNoteDetailUi extends BaseCompatActivity {
     private VideoPlayer videoPlayer;
     private int launchFrom = LAUNCH_FROM_LOCAL_NOTE;
     private CloudNoteController cloudNoteController;
+    private CloudNoteController noteController;
+    private MenuItem likeMenu;
 
     public static void launchFromLocal(Context context, NoteModel note) {
         Intent it = new Intent(context, LocalNoteDetailUi.class);
@@ -62,6 +64,7 @@ public class LocalNoteDetailUi extends BaseCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        noteController = new CloudNoteController(this);
         videoPlayer = LchVideoPlayer.newPlayer(getApplicationContext());
         note = (NoteModel) getIntent().getSerializableExtra("note");
         launchFrom = getIntent().getIntExtra("from", LAUNCH_FROM_LOCAL_NOTE);
@@ -90,6 +93,29 @@ public class LocalNoteDetailUi extends BaseCompatActivity {
 
     }
 
+    private void refreshLikeMenu() {
+        if (likeMenu == null) {
+            return;
+        }
+
+        UserRouteApi userMod = RouteCall.getUserModule();
+        String sessionUid = null;
+
+        if (userMod != null) {
+            User session = userMod.userSession();
+            if (session != null) {
+                sessionUid = session.uid;
+            }
+        }
+
+        if (note.star != null && note.star.contains(sessionUid)) {
+            likeMenu.setIcon(R.drawable.like_thumb_up_selected);
+
+        } else {
+            likeMenu.setIcon(R.drawable.like_thumb_up);
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.local_note_detail_toolbar_actions, menu);
@@ -104,6 +130,11 @@ public class LocalNoteDetailUi extends BaseCompatActivity {
             }
         }
 
+        likeMenu = menu.findItem(R.id.action_like_note);
+
+        refreshLikeMenu();
+
+
         if (launchFrom == LAUNCH_FROM_LOCAL_NOTE) {
             menu.removeItem(R.id.action_like_note);
         }
@@ -116,7 +147,7 @@ public class LocalNoteDetailUi extends BaseCompatActivity {
             menu.removeItem(R.id.action_edit_note);
         }
 
-        if (launchFrom == LAUNCH_FROM_LOCAL_NOTE || sessionUid == null || !sessionUid.equals(note.userId)||note.isPublic) {
+        if (launchFrom == LAUNCH_FROM_LOCAL_NOTE || sessionUid == null || !sessionUid.equals(note.userId) || note.isPublic) {
             menu.removeItem(R.id.action_public_note);
         }
 
@@ -156,8 +187,24 @@ public class LocalNoteDetailUi extends BaseCompatActivity {
                     if (responseValue.hasError()) {
                         note.isPublic = false;
                         ToastUtils.showShort(responseValue.errMsg());
-                    }else{
+                    } else {
                         EventBusUtils.post(new CloudNoteListChangedEvent());
+                        ToastUtils.showShort("操作成功!");
+                    }
+
+                }
+            });
+        } else if (item.getItemId() == R.id.action_like_note) {
+
+            cloudNoteController.likeNetNote(note.uid, new ControllerCallback<Void>() {
+                @Override
+                public void onComplete(@NonNull ResponseValue<Void> responseValue) {
+                    if (responseValue.hasError()) {
+                        ToastUtils.showShort(responseValue.errMsg());
+                    } else {
+                        EventBusUtils.post(new CloudNoteListChangedEvent());
+
+                        ToastUtils.showShort("操作成功!");
                     }
 
                 }
@@ -172,4 +219,6 @@ public class LocalNoteDetailUi extends BaseCompatActivity {
         audioPlayer.release();
         videoPlayer.release();
     }
+
+
 }

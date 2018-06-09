@@ -1,16 +1,14 @@
 package com.lch.menote.user.domain;
 
 
+import com.lch.menote.note.domain.BaseResponse;
 import com.lch.menote.user.route.User;
 
 /**
  * Created by lichenghang on 2018/5/27.
  */
 
-public class LoginResponse {
-
-    public int status;
-    public String message;
+public class LoginResponse extends BaseResponse{
 
     public User data;
 

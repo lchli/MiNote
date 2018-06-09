@@ -173,6 +173,26 @@ public class CloudNoteController {
 
     }
 
+    public void likeNetNote(final String noteId, final ControllerCallback<Void> cb) {
+
+        TaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final ResponseValue<Void> resSave = netNoteSource.likeNote(noteId);
+
+                UiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (cb != null) {
+                            cb.onComplete(resSave);
+                        }
+                    }
+                });
+            }
+        });
+
+    }
+
     public void saveNoteToNet(final NoteModel note, final ControllerCallback<Void> cb) {
         note.uid = null;//server will generate uid.
         saveNoteToNetImpl(note, cb);
@@ -290,8 +310,6 @@ public class CloudNoteController {
         });
 
     }
-
-
 
 
 }

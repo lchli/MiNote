@@ -1,10 +1,10 @@
 package com.lch.menote.note.domain;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 
 import java.io.Serializable;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * Created by Administrator on 2017/9/21.
@@ -20,7 +20,7 @@ public class Note implements Serializable {
 
     public String content = "";
 
-    public String lastModifyTime;
+    public long lastModifyTime;
 
     public String title = "";
 
@@ -35,10 +35,10 @@ public class Note implements Serializable {
 
     public int category = CAT_NOTE;
 
-    @Generated(hash = 1156300408)
-    public Note(String imagesDir, String content, String lastModifyTime,
-                String title, String type, String thumbNail, String uid, String userId,
-                int category) {
+    @Generated(hash = 22410477)
+    public Note(String imagesDir, String content, long lastModifyTime, String title,
+            String type, String thumbNail, String uid, String userId,
+            int category) {
         this.imagesDir = imagesDir;
         this.content = content;
         this.lastModifyTime = lastModifyTime;
@@ -70,11 +70,11 @@ public class Note implements Serializable {
         this.content = content;
     }
 
-    public String getLastModifyTime() {
+    public long getLastModifyTime() {
         return this.lastModifyTime;
     }
 
-    public void setLastModifyTime(String lastModifyTime) {
+    public void setLastModifyTime(long lastModifyTime) {
         this.lastModifyTime = lastModifyTime;
     }
 
@@ -126,18 +126,4 @@ public class Note implements Serializable {
         this.category = category;
     }
 
-    @Override
-    public String toString() {
-        return "Note{" +
-                "imagesDir='" + imagesDir + '\'' +
-                ", content='" + content + '\'' +
-                ", lastModifyTime='" + lastModifyTime + '\'' +
-                ", title='" + title + '\'' +
-                ", type='" + type + '\'' +
-                ", thumbNail='" + thumbNail + '\'' +
-                ", uid='" + uid + '\'' +
-                ", userId='" + userId + '\'' +
-                ", category=" + category +
-                '}';
-    }
 }

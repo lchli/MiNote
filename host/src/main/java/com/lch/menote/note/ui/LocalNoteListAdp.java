@@ -30,6 +30,7 @@ import com.lch.netkit.common.tool.AppListItemAnimatorUtils;
 import com.lch.netkit.common.tool.ContextProvider;
 import com.lch.netkit.common.tool.DialogUtils;
 import com.lch.netkit.common.tool.EventBusUtils;
+import com.lch.netkit.common.tool.TimeUtils;
 import com.lch.netkit.common.tool.VF;
 import com.lchli.pinedrecyclerlistview.library.ListSectionData;
 import com.lchli.pinedrecyclerlistview.library.pinnedRecyclerView.PinnedRecyclerAdapter;
@@ -117,7 +118,7 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter {
 
         holder.couse_title_textView.setText(data.title);
 
-        holder.course_time_textView.setText(data.lastModifyTime);
+        holder.course_time_textView.setText(TimeUtils.getTime(data.updateTime));
 
         if (!isScrolling) {
 

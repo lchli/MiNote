@@ -11,6 +11,7 @@ import com.lch.menote.R;
 import com.lch.menote.note.domain.NoteModel;
 import com.lch.menote.user.ui.UserInfoActivity;
 import com.lch.netkit.common.base.AbsAdapter;
+import com.lch.netkit.common.tool.TimeUtils;
 import com.lch.netkit.common.tool.VF;
 
 /**
@@ -34,7 +35,8 @@ public class CloudNoteListAdapter extends AbsAdapter<NoteModel> {
         final H h = (H) holder;
 
         h.couse_title_textView.setText(model.title);
-        h.course_time_textView.setText(model.lastModifyTime);
+        h.course_time_textView.setText(TimeUtils.getTime(model.updateTime));
+        h.course_userName_textView.setText(model.userName);
         h.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,6 +58,7 @@ public class CloudNoteListAdapter extends AbsAdapter<NoteModel> {
         private ImageView course_thumb_imageView;
         private TextView couse_title_textView;
         private TextView course_time_textView;
+        private TextView course_userName_textView;
         private View itemView;
 
         public H(int viewtype, View view) {
@@ -65,6 +68,7 @@ public class CloudNoteListAdapter extends AbsAdapter<NoteModel> {
             course_thumb_imageView = VF.f(itemView, R.id.course_thumb_imageView);
             couse_title_textView = VF.f(itemView, R.id.couse_title_textView);
             course_time_textView = VF.f(itemView, R.id.course_time_textView);
+            course_userName_textView = VF.f(itemView, R.id.course_userName_textView);
         }
 
         @Override

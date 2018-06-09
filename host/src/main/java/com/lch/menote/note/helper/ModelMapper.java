@@ -14,7 +14,7 @@ public final class ModelMapper {
         model.category = note.category;
         model.content = note.content;
         model.imagesDir = note.imagesDir;
-        model.lastModifyTime = note.lastModifyTime;
+        model.updateTime = note.lastModifyTime;
         model.ShareUrl = null;
         model.thumbNail = note.thumbNail;
         model.title = note.title;
@@ -31,7 +31,7 @@ public final class ModelMapper {
         note.category = model.category;
         note.content = model.content;
         note.imagesDir = model.imagesDir;
-        note.lastModifyTime = model.lastModifyTime;
+        note.lastModifyTime = model.updateTime;
         note.thumbNail = model.thumbNail;
         note.title = model.title;
         note.type = model.type;

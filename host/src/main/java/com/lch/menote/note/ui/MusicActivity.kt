@@ -13,10 +13,12 @@ import com.lch.menote.R
 import com.lch.menote.kotlinext.launchActivity
 import com.lch.menote.kotlinext.log
 import com.lch.menote.kotlinext.saveViewBmpToSdcard
-
 import com.lch.menote.note.controller.LocalNoteController
 import com.lch.menote.note.domain.*
-import com.lch.netkit.common.tool.*
+import com.lch.netkit.common.tool.AliJsonHelper
+import com.lch.netkit.common.tool.AppListItemAnimatorUtils
+import com.lch.netkit.common.tool.EventBusUtils
+import com.lch.netkit.common.tool.UUIDUtils
 import kotlinx.android.synthetic.main.activity_edit_music.*
 
 class MusicActivity : AppCompatActivity() {
@@ -180,7 +182,7 @@ class MusicActivity : AppCompatActivity() {
         note.type = tv_note_category.text.toString()
         note.title = et_note_title.text.toString()
         note.uid = courseUUID
-        note.lastModifyTime = TimeUtils.getTime(System.currentTimeMillis())
+        note.updateTime = System.currentTimeMillis()
         note.content = content
         note.category = Note.CAT_MUSIC
 

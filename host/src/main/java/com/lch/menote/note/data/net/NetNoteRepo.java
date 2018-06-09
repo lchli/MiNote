@@ -35,6 +35,7 @@ public class NetNoteRepo {
         private String tag;
         private String title;
         private String useId;
+        private String uid;
         private String token;
         private boolean isPublic = false;
         private int page;
@@ -83,6 +84,11 @@ public class NetNoteRepo {
             isPublic = aPublic;
             return this;
         }
+
+        public NetNoteQuery setUid(String uid) {
+            this.uid = uid;
+            return this;
+        }
     }
 
     @NonNull
@@ -103,6 +109,7 @@ public class NetNoteRepo {
                 .setUrl(ApiConstants.QUERY_NOTE)
                 .addParam("userId", query.useId)
                 .addParam("page", query.page + "")
+                .addParam("uid", query.uid)
                 .addParam("pageSize", query.pageSize + "")
                 .addParam("isPublic", query.isPublic + "")
                 .addParam("sort", jsonArray.toString())
@@ -175,5 +182,57 @@ public class NetNoteRepo {
     public ResponseValue<Void> delete(@NotNull Note note) {
 
         return null;
+    }
+
+
+    public ResponseValue<Void> likeNote(String noteId) {
+        ResponseValue<Void> ret = new ResponseValue<>();
+
+        String useid = null;
+        String userToken = null;
+        UserRouteApi userMod = RouteCall.getUserModule();
+        if (userMod != null) {
+            User se = userMod.userSession();
+            if (se != null) {
+                useid = se.uid;
+                userToken=se.token;
+            }
+        }
+
+        if (TextUtils.isEmpty(useid)||TextUtils.isEmpty(userToken)) {
+            ret.setErrMsg("user not login");
+            return ret;
+        }
+
+        StringRequestParams params = RequestUtils.minoteStringRequestParams()
+                .setUrl(ApiConstants.LIKE_NOTE)
+                .addParam("noteId", noteId)
+                .addParam("userToken",userToken)
+                .addParam("userId", useid);
+
+        ResponseValue<BaseResponse> res = NetKit.stringRequest().postSync(params, new Parser<BaseResponse>() {
+            @Override
+            public BaseResponse parse(String s) {
+                return AliJsonHelper.parseObject(s, BaseResponse.class);
+            }
+        });
+
+        if (res.hasError()) {
+            ret.err = res.err;
+            return ret;
+        }
+
+        if (res.data == null) {
+            ret.setErrMsg("ret data is null");
+            return ret;
+        }
+
+        if (res.data.status != ConstantUtil.SERVER_REQUEST_SUCCESS) {
+            ret.setErrMsg(res.data.message);
+            return ret;
+        }
+
+        return ret;
+
     }
 }
