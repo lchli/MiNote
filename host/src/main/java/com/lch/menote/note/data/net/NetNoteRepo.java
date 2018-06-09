@@ -12,6 +12,7 @@ import com.lch.menote.note.domain.QueryNoteResponse;
 import com.lch.menote.note.route.RouteCall;
 import com.lch.menote.user.route.User;
 import com.lch.menote.user.route.UserRouteApi;
+import com.lch.menote.utils.RequestUtils;
 import com.lch.netkit.NetKit;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.AliJsonHelper;
@@ -98,7 +99,7 @@ public class NetNoteRepo {
             e.printStackTrace();
         }
 
-        StringRequestParams param = new StringRequestParams()
+        StringRequestParams param = RequestUtils.minoteStringRequestParams()
                 .setUrl(ApiConstants.QUERY_NOTE)
                 .addParam("userId", query.useId)
                 .addParam("page", query.page + "")
@@ -135,7 +136,7 @@ public class NetNoteRepo {
             return ret;
         }
 
-        StringRequestParams params = new StringRequestParams()
+        StringRequestParams params = RequestUtils.minoteStringRequestParams()
                 .setUrl(ApiConstants.UPLOAD_NOTE)
                 .addParam("content", note.content)
                 .addParam("title", note.title)

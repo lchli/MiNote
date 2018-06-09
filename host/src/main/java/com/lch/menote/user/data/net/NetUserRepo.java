@@ -4,6 +4,7 @@ import com.lch.menote.ApiConstants;
 import com.lch.menote.user.data.sp.SpUserRepo;
 import com.lch.menote.user.domain.LoginResponse;
 import com.lch.menote.user.route.User;
+import com.lch.menote.utils.RequestUtils;
 import com.lch.netkit.NetKit;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.AliJsonHelper;
@@ -18,7 +19,7 @@ public class NetUserRepo {
 
     public ResponseValue<LoginResponse> save(String userName, String userPwd, String userHeadUrl) {
 
-        StringRequestParams params = new StringRequestParams();
+        StringRequestParams params = RequestUtils.minoteStringRequestParams();
         params.setUrl(ApiConstants.REGISTER);
         params.addParam("userName", userName);
         params.addParam("userPwd", userPwd);
@@ -36,7 +37,7 @@ public class NetUserRepo {
 
     public ResponseValue<LoginResponse> update(User u) {
 
-        StringRequestParams params = new StringRequestParams();
+        StringRequestParams params = RequestUtils.minoteStringRequestParams();
         params.setUrl(ApiConstants.USER_UPDATE);
         params.addParam("userName", u.name);
         params.addParam("userPwd", u.pwd);
@@ -56,7 +57,7 @@ public class NetUserRepo {
 
     public ResponseValue<LoginResponse> get(String userName, String userPwd) {
 
-        StringRequestParams params = new StringRequestParams();
+        StringRequestParams params = RequestUtils.minoteStringRequestParams();
         params.setUrl(ApiConstants.LOGIN);
         params.addParam("userName", userName);
         params.addParam("userPwd", userPwd);
@@ -83,7 +84,7 @@ public class NetUserRepo {
             return ret;
         }
 
-        StringRequestParams params = new StringRequestParams();
+        StringRequestParams params = RequestUtils.minoteStringRequestParams();
         params.setUrl(ApiConstants.USER_GET_BY_ID);
         params.addParam("userId", userId);
         params.addParam("token", se.data.token);

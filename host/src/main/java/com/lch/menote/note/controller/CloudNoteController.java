@@ -5,13 +5,13 @@ import android.text.TextUtils;
 
 import com.lch.menote.ApiConstants;
 import com.lch.menote.note.data.net.NetNoteRepo;
-import com.lch.menote.note.domain.Note;
 import com.lch.menote.note.domain.NoteElement;
 import com.lch.menote.note.domain.NoteModel;
 import com.lch.menote.note.domain.QueryNoteResponse;
 import com.lch.menote.note.domain.UploadFileResponse;
 import com.lch.menote.note.route.RouteCall;
 import com.lch.menote.user.route.UserRouteApi;
+import com.lch.menote.utils.RequestUtils;
 import com.lch.netkit.NetKit;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
@@ -23,10 +23,6 @@ import com.lch.netkit.file.helper.FileOptions;
 import com.lch.netkit.file.helper.UploadFileParams;
 import com.lch.netkit.string.Parser;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -222,7 +218,7 @@ public class CloudNoteController {
 
                 for (NoteElement e : elms) {
                     if (!e.type.equals(NoteElement.TYPE_TEXT)) {
-                        UploadFileParams param = UploadFileParams.newInstance()
+                        UploadFileParams param = RequestUtils.minoteUploadFileParams()
                                 .setUrl(ApiConstants.UPLOAD_FILE)
                                 .addFile(new FileOptions().setFileKey("file").setFilePath(e.path));
                         ResponseValue<UploadFileResponse> res = NetKit.fileRequest().uploadFileSync(param, new Parser<UploadFileResponse>() {
@@ -296,20 +292,6 @@ public class CloudNoteController {
     }
 
 
-    private void deleteUnusedImages(Note note) {
-        File[] images = new File(note.imagesDir).listFiles();
-        if (!ArrayUtils.isEmpty(images)) {
-            for (File img : images) {
-                if (StringUtils.equals(img.getName(), note.thumbNail)) {
-                    continue;
-                }
-                if (note.content == null || !note.content.contains(img.getName())) {
-                    img.delete();
-                }
-
-            }
-        }
-    }
 
 
 }

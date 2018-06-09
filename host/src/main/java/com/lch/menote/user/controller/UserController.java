@@ -10,6 +10,7 @@ import com.lch.menote.user.data.net.NetUserRepo;
 import com.lch.menote.user.data.sp.SpUserRepo;
 import com.lch.menote.user.domain.LoginResponse;
 import com.lch.menote.user.route.User;
+import com.lch.menote.utils.RequestUtils;
 import com.lch.netkit.NetKit;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
@@ -87,7 +88,7 @@ public class UserController {
 
                 if (!TextUtils.isEmpty(userHead)) {
 
-                    UploadFileParams param = UploadFileParams.newInstance()
+                    UploadFileParams param = RequestUtils.minoteUploadFileParams()
                             .setUrl(ApiConstants.UPLOAD_FILE)
                             .addFile(new FileOptions().setFileKey("file").setFilePath(userHead));
 
