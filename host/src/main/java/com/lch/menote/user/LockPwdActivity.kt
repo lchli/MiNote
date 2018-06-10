@@ -1,5 +1,6 @@
 package com.lch.menote.user
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -12,6 +13,7 @@ import com.lch.menote.kotlinext.showListDialog
 import com.lch.menote.kotlinext.toast
 import com.lch.menote.user.controller.UserController
 import com.lch.menote.user.route.RouteCall
+import com.lch.netkit.common.tool.DialogUtils
 import com.orhanobut.dialogplus.OnItemClickListener
 import kotlinx.android.synthetic.main.activity_pwd.*
 
@@ -56,6 +58,11 @@ class LockPwdActivity : AppCompatActivity() {
             }
         })
 
+        tvResetPwd.setOnLongClickListener {
+            reset()
+            true
+        }
+
     }
 
 
@@ -80,13 +87,22 @@ class LockPwdActivity : AppCompatActivity() {
     }
 
 
-    fun reset(v: View) {
+    fun reset() {
 
         showListDialog(OnItemClickListener { dialog, item, view, position ->
             if (position == 1) {
-                RouteCall.getNoteModule()?.clearDB(null)
-                toast("重置成功")
+                DialogUtils.showTextListDialog(this, DialogInterface.OnClickListener { dia, which ->
+                    if (which == 1) {
+                        RouteCall.getNoteModule()?.clearDB(null)
+                        toast("重置成功")
+                    }
+
+                    dia.dismiss()
+
+                }, "请再次确认?", "确定")
+
             }
+
             dialog.dismiss()
 
         }, items = listOf("重置会导致所有数据丢失，是否确认？", "确认"))

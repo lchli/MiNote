@@ -7,7 +7,7 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="150dp"
         app:srcCompat="@drawable/note_banner"
         android:scaleType="fitXY"
         android:id="@+id/imageView" />

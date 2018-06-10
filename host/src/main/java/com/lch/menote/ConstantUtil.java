@@ -14,6 +14,6 @@ public final class ConstantUtil {
 
     public static final long BITMAP_MAX_MEMORY = 5 * 1024 * 1024L;
 
-    public static final int SERVER_REQUEST_SUCCESS= 0;
+    public static final int SERVER_REQUEST_SUCCESS= 1;
 
 }

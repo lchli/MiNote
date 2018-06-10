@@ -69,7 +69,7 @@ public class HotNoteListAdp extends AbsAdapter<Object> {
         if (viewtype == VIEW_TYPE_HEADER) {
 
             HeaderViewHolder holder = (HeaderViewHolder) h;
-            holder.imageView.setImageResource(R.drawable.ic_add_note);
+            holder.imageView.setImageResource(R.drawable.note_banner);
             return;
         }
 

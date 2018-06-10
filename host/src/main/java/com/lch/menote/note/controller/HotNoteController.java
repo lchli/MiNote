@@ -103,7 +103,7 @@ public class HotNoteController {
         final ResponseValue<List<Object>> ret = new ResponseValue<>();
 
         if (!isHaveMore) {
-            ret.setErrMsg("no more");
+            ret.setErrMsg("已无更多数据");
             UiHandler.post(new Runnable() {
                 @Override
                 public void run() {

@@ -21,6 +21,7 @@ public final class ApiConstants {
     public static final String USER_GET_BY_ID = HOST + "/api/sec/user/findById";
     public static final String UPLOAD_NOTE = HOST + "/api/sec/note/save";
     public static final String LIKE_NOTE = HOST + "/api/sec/note/like";
+    public static final String DELETE_NOTE = HOST + "/api/sec/note/delete";
     public static final String QUERY_NOTE = HOST + "/api/sec/note/get";
     public static final String UPLOAD_FILE = HOST + "/api/sec/file/upload";
 

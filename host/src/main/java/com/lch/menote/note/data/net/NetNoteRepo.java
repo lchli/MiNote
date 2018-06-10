@@ -6,12 +6,10 @@ import android.text.TextUtils;
 import com.lch.menote.ApiConstants;
 import com.lch.menote.ConstantUtil;
 import com.lch.menote.note.domain.BaseResponse;
-import com.lch.menote.note.domain.Note;
 import com.lch.menote.note.domain.NoteModel;
 import com.lch.menote.note.domain.QueryNoteResponse;
-import com.lch.menote.note.route.RouteCall;
+import com.lch.menote.user.data.sp.SpUserRepo;
 import com.lch.menote.user.route.User;
-import com.lch.menote.user.route.UserRouteApi;
 import com.lch.menote.utils.RequestUtils;
 import com.lch.netkit.NetKit;
 import com.lch.netkit.common.mvc.ResponseValue;
@@ -30,29 +28,22 @@ import org.json.JSONObject;
 public class NetNoteRepo {
 
     public static class NetNoteQuery {
-        private String sortKey;
-        private String sortDiretion;
+        public static final String DIRECTION_ASC = "asc";
+        public static final String DIRECTION_DESC = "desc";
+
         private String tag;
         private String title;
         private String useId;
         private String uid;
         private String token;
-        private boolean isPublic = false;
-        private int page;
-        private int pageSize;
+        private String isPublic;
+        private int page=0;
+        private int pageSize=20;
+
+        private JSONArray jsonArray = new JSONArray();
 
         public static NetNoteQuery newInstance() {
             return new NetNoteQuery();
-        }
-
-        public NetNoteQuery setSortDiretion(String sortDiretion) {
-            this.sortDiretion = sortDiretion;
-            return this;
-        }
-
-        public NetNoteQuery setSortKey(String sortKey) {
-            this.sortKey = sortKey;
-            return this;
         }
 
         public NetNoteQuery setTag(String tag) {
@@ -81,7 +72,7 @@ public class NetNoteRepo {
         }
 
         public NetNoteQuery setPublic(boolean aPublic) {
-            isPublic = aPublic;
+            isPublic = aPublic?"1":"0";
             return this;
         }
 
@@ -89,21 +80,29 @@ public class NetNoteRepo {
             this.uid = uid;
             return this;
         }
+
+        public NetNoteQuery addSort(String key, String sortDiretion) {
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("key", key);
+                jsonObject.put("direction", sortDiretion);
+
+                jsonArray.put(jsonObject);
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+
+            return this;
+        }
+
+
+        public String sortResult() {
+            return jsonArray.toString();
+        }
     }
 
     @NonNull
     public ResponseValue<QueryNoteResponse> queryNotes(NetNoteQuery query) {
-        JSONArray jsonArray = new JSONArray();
-
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("key", query.sortKey);
-            jsonObject.put("direction", query.sortDiretion);
-
-            jsonArray.put(jsonObject);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
 
         StringRequestParams param = RequestUtils.minoteStringRequestParams()
                 .setUrl(ApiConstants.QUERY_NOTE)
@@ -111,8 +110,8 @@ public class NetNoteRepo {
                 .addParam("page", query.page + "")
                 .addParam("uid", query.uid)
                 .addParam("pageSize", query.pageSize + "")
-                .addParam("isPublic", query.isPublic + "")
-                .addParam("sort", jsonArray.toString())
+                .addParam("isPublic", query.isPublic)
+                .addParam("sort", query.sortResult())
                 .addParam("userToken", query.token);
 
 
@@ -129,14 +128,14 @@ public class NetNoteRepo {
     public ResponseValue<Void> save(@NotNull NoteModel note) {
         ResponseValue<Void> ret = new ResponseValue<>();
 
+        User se = SpUserRepo.getINS().getUser().data;
+
         String useid = null;
-        UserRouteApi userMod = RouteCall.getUserModule();
-        if (userMod != null) {
-            User se = userMod.userSession();
-            if (se != null) {
-                useid = se.uid;
-            }
+
+        if (se != null) {
+            useid = se.uid;
         }
+
 
         if (TextUtils.isEmpty(useid)) {
             ret.setErrMsg("user not login");
@@ -150,7 +149,7 @@ public class NetNoteRepo {
                 .addParam("type", note.type)
                 .addParam("thumbNail", note.thumbNail)
                 .addParam("uid", note.uid)
-                .addParam("isPublic", note.isPublic + "")
+                .addParam("isPublic", note.isPublic)
                 .addParam("userId", useid);
 
         ResponseValue<BaseResponse> res = NetKit.stringRequest().postSync(params, new Parser<BaseResponse>() {
@@ -179,27 +178,71 @@ public class NetNoteRepo {
 
     }
 
-    public ResponseValue<Void> delete(@NotNull Note note) {
+    public ResponseValue<Void> delete(@NotNull String noteId) {
+        ResponseValue<Void> ret = new ResponseValue<>();
 
-        return null;
+        User se = SpUserRepo.getINS().getUser().data;
+
+        String useid = null;
+        String userToken = null;
+
+        if (se != null) {
+            useid = se.uid;
+            userToken = se.token;
+        }
+
+        if (TextUtils.isEmpty(useid) || TextUtils.isEmpty(userToken)) {
+            ret.setErrMsg("user not login");
+            return ret;
+        }
+
+        StringRequestParams params = RequestUtils.minoteStringRequestParams()
+                .setUrl(ApiConstants.DELETE_NOTE)
+                .addParam("noteId", noteId)
+                .addParam("userToken", userToken)
+                .addParam("userId", useid);
+
+        ResponseValue<BaseResponse> res = NetKit.stringRequest().postSync(params, new Parser<BaseResponse>() {
+            @Override
+            public BaseResponse parse(String s) {
+                return AliJsonHelper.parseObject(s, BaseResponse.class);
+            }
+        });
+
+        if (res.hasError()) {
+            ret.err = res.err;
+            return ret;
+        }
+
+        if (res.data == null) {
+            ret.setErrMsg("ret data is null");
+            return ret;
+        }
+
+        if (res.data.status != ConstantUtil.SERVER_REQUEST_SUCCESS) {
+            ret.setErrMsg(res.data.message);
+            return ret;
+        }
+
+        return ret;
     }
 
 
     public ResponseValue<Void> likeNote(String noteId) {
         ResponseValue<Void> ret = new ResponseValue<>();
 
+        User se = SpUserRepo.getINS().getUser().data;
+
         String useid = null;
         String userToken = null;
-        UserRouteApi userMod = RouteCall.getUserModule();
-        if (userMod != null) {
-            User se = userMod.userSession();
-            if (se != null) {
-                useid = se.uid;
-                userToken=se.token;
-            }
+
+        if (se != null) {
+            useid = se.uid;
+            userToken = se.token;
         }
 
-        if (TextUtils.isEmpty(useid)||TextUtils.isEmpty(userToken)) {
+
+        if (TextUtils.isEmpty(useid) || TextUtils.isEmpty(userToken)) {
             ret.setErrMsg("user not login");
             return ret;
         }
@@ -207,7 +250,7 @@ public class NetNoteRepo {
         StringRequestParams params = RequestUtils.minoteStringRequestParams()
                 .setUrl(ApiConstants.LIKE_NOTE)
                 .addParam("noteId", noteId)
-                .addParam("userToken",userToken)
+                .addParam("userToken", userToken)
                 .addParam("userId", useid);
 
         ResponseValue<BaseResponse> res = NetKit.stringRequest().postSync(params, new Parser<BaseResponse>() {

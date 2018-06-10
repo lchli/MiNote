@@ -44,8 +44,10 @@ public class CloudNoteUi extends BaseFragment {
         super.onCreate(savedInstanceState);
         EventBusUtils.register(this);
 
-        notesAdp = new CloudNoteListAdapter();
         noteController = new CloudNoteController(getActivity());
+
+        notesAdp = new CloudNoteListAdapter(noteController,getActivity());
+
     }
 
     @Override
@@ -81,6 +83,7 @@ public class CloudNoteUi extends BaseFragment {
 
         queryNotesAsync();
 
+
     }
 
 
@@ -91,9 +94,10 @@ public class CloudNoteUi extends BaseFragment {
 
 
     private void queryNotesAsync() {
+
         NetNoteRepo.NetNoteQuery query = NetNoteRepo.NetNoteQuery.newInstance()
-                .setSortDiretion("asc")
-                .setSortKey("updateTime");
+                .addSort("updateTime",NetNoteRepo.NetNoteQuery.DIRECTION_ASC);
+
 
         noteController.refresh(query, new ControllerCallback<List<NoteModel>>() {
             @Override

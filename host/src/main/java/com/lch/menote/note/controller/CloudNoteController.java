@@ -131,7 +131,7 @@ public class CloudNoteController {
         final ResponseValue<List<NoteModel>> ret = new ResponseValue<>();
 
         if (!isHaveMore) {
-            ret.setErrMsg("no more");
+            ret.setErrMsg("已无更多数据");
             UiHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -191,6 +191,77 @@ public class CloudNoteController {
             }
         });
 
+    }
+
+    public void getNoteById(final String noteId, final ControllerCallback<NoteModel> cb) {
+
+        TaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final ResponseValue<NoteModel> ret = new ResponseValue<>();
+
+                NetNoteRepo.NetNoteQuery query = new NetNoteRepo.NetNoteQuery();
+                query.setUid(noteId);
+
+                ResponseValue<QueryNoteResponse> res = netNoteSource.queryNotes(query);
+
+                if (res.hasError()) {
+                    ret.setErrMsg(res.errMsg());
+                    UiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (cb != null) {
+                                cb.onComplete(ret);
+                            }
+                        }
+                    });
+                    return;
+                }
+
+                if (res.data == null || ListUtils.isEmpty(res.data.data)) {
+                    UiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (cb != null) {
+                                cb.onComplete(ret);
+                            }
+                        }
+                    });
+                    return;
+                }
+
+                ret.data = res.data.data.get(0);
+
+                UiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (cb != null) {
+                            cb.onComplete(ret);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+
+    public void deleteNetNote(final String noteId, final ControllerCallback<Void> cb) {
+
+        TaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final ResponseValue<Void> resSave = netNoteSource.delete(noteId);
+
+                UiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (cb != null) {
+                            cb.onComplete(resSave);
+                        }
+                    }
+                });
+            }
+        });
     }
 
     public void saveNoteToNet(final NoteModel note, final ControllerCallback<Void> cb) {

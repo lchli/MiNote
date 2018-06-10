@@ -94,7 +94,7 @@ public class LocalNoteDetailUi extends BaseCompatActivity {
     }
 
     private void refreshLikeMenu() {
-        if (likeMenu == null) {
+        if (likeMenu == null||note==null) {
             return;
         }
 
@@ -114,6 +114,7 @@ public class LocalNoteDetailUi extends BaseCompatActivity {
         } else {
             likeMenu.setIcon(R.drawable.like_thumb_up);
         }
+
     }
 
     @Override
@@ -143,11 +144,11 @@ public class LocalNoteDetailUi extends BaseCompatActivity {
             menu.removeItem(R.id.action_share_note);
         }
 
-        if (launchFrom == LAUNCH_FROM_CLOUD_NOTE && (sessionUid == null || !sessionUid.equals(note.userId))) {
+        if (launchFrom == LAUNCH_FROM_CLOUD_NOTE) {
             menu.removeItem(R.id.action_edit_note);
         }
 
-        if (launchFrom == LAUNCH_FROM_LOCAL_NOTE || sessionUid == null || !sessionUid.equals(note.userId) || note.isPublic) {
+        if (launchFrom == LAUNCH_FROM_LOCAL_NOTE || sessionUid == null || !sessionUid.equals(note.userId) || note.isPublic()) {
             menu.removeItem(R.id.action_public_note);
         }
 
@@ -174,18 +175,18 @@ public class LocalNoteDetailUi extends BaseCompatActivity {
             }
         } else if (item.getItemId() == R.id.action_public_note) {
 
-            if (note.isPublic) {
+            if (note.isPublic()) {
                 ToastUtils.showShort("已经公开!");
                 return super.onOptionsItemSelected(item);
             }
 
-            note.isPublic = true;
+            note.isPublic = NoteModel.PUBLIC_TRUE;
 
             cloudNoteController.publicNetNote(note, new ControllerCallback<Void>() {
                 @Override
                 public void onComplete(@NonNull ResponseValue<Void> responseValue) {
                     if (responseValue.hasError()) {
-                        note.isPublic = false;
+                        note.isPublic = NoteModel.PUBLIC_FALSE;
                         ToastUtils.showShort(responseValue.errMsg());
                     } else {
                         EventBusUtils.post(new CloudNoteListChangedEvent());
@@ -204,6 +205,8 @@ public class LocalNoteDetailUi extends BaseCompatActivity {
                     } else {
                         EventBusUtils.post(new CloudNoteListChangedEvent());
 
+                        reloadData();
+
                         ToastUtils.showShort("操作成功!");
                     }
 
@@ -218,6 +221,24 @@ public class LocalNoteDetailUi extends BaseCompatActivity {
         super.onDestroy();
         audioPlayer.release();
         videoPlayer.release();
+    }
+
+
+    private void reloadData() {
+
+        cloudNoteController.getNoteById(note.uid, new ControllerCallback<NoteModel>() {
+            @Override
+            public void onComplete(@NonNull ResponseValue<NoteModel> responseValue) {
+                if (responseValue.hasError()) {
+                    ToastUtils.showShort(responseValue.errMsg());
+                    return;
+                }
+                note = responseValue.data;
+
+                refreshLikeMenu();
+            }
+        });
+
     }
 
 
