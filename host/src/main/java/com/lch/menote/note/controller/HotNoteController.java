@@ -5,7 +5,7 @@ import android.content.Context;
 import com.lch.menote.note.data.net.NetNoteRepo;
 import com.lch.menote.note.domain.HeadData;
 import com.lch.menote.note.domain.NoteModel;
-import com.lch.menote.note.domain.QueryNoteResponse;
+import com.lch.menote.note.domain.response.QueryNoteResponse;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.ListUtils;

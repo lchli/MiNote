@@ -15,6 +15,7 @@ import com.lch.menote.kotlinext.log
 import com.lch.menote.kotlinext.saveViewBmpToSdcard
 import com.lch.menote.note.controller.LocalNoteController
 import com.lch.menote.note.domain.*
+import com.lch.menote.note.domain.entity.Note
 import com.lch.netkit.common.tool.AliJsonHelper
 import com.lch.netkit.common.tool.AppListItemAnimatorUtils
 import com.lch.netkit.common.tool.EventBusUtils

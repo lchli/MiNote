@@ -1,6 +1,6 @@
 package com.lch.menote.note.helper;
 
-import com.lch.menote.note.domain.Note;
+import com.lch.menote.note.domain.entity.Note;
 import com.lch.menote.note.domain.NoteModel;
 
 /**

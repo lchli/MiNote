@@ -1,4 +1,6 @@
-package com.lch.menote.note.domain;
+package com.lch.menote.note.domain.response;
+
+import com.lch.menote.note.domain.NoteModel;
 
 import java.util.List;
 

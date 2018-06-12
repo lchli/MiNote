@@ -1,10 +1,10 @@
-package com.lch.menote.note.domain;
+package com.lch.menote.note.domain.entity;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 
 import java.io.Serializable;
-import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * Created by Administrator on 2017/9/21.

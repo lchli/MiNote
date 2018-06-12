@@ -9,7 +9,7 @@ import com.lch.netkit.string.StringRequestParams;
  * Created by lichenghang on 2018/6/9.
  */
 
-public class RequestUtils {
+public final class RequestUtils {
 
     public static String buildHeaderSign(String ts) {
         return EncryptUtils.encryptMD5ToString( ApiConstants.APP_KEY+ts);

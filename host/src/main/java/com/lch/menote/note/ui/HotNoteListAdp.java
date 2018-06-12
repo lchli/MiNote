@@ -13,7 +13,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.lch.menote.R;
 import com.lch.menote.note.domain.HeadData;
-import com.lch.menote.note.domain.Note;
+import com.lch.menote.note.domain.entity.Note;
 import com.lch.menote.note.domain.NoteModel;
 import com.lch.menote.user.ui.UserInfoActivity;
 import com.lch.netkit.common.base.AbsAdapter;

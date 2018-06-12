@@ -76,7 +76,7 @@ public class UserFragmentUi extends BaseFragment {
                 apkController.checkUpdate(AppUtils.getAppVersionCode(), new ControllerCallback<ApkResponse>() {
                     @Override
                     public void onComplete(@NonNull ResponseValue<ApkResponse> responseValue) {
-                        if (responseValue.hasError()||responseValue.data==null||responseValue.data.status!= ApiConstants.RESPCODE_SUCCESS) {
+                        if (responseValue.hasError()||responseValue.data==null||responseValue.data.status!= ApiConstants.RESPONSE_CODE_SUCCESS) {
                             ToastUtils.showShort(responseValue.errMsg());
                             return;
                         }

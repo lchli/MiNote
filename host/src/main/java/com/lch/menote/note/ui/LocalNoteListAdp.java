@@ -21,7 +21,7 @@ import com.lch.menote.note.controller.CloudNoteController;
 import com.lch.menote.note.controller.LocalNoteController;
 import com.lch.menote.note.domain.CloudNoteListChangedEvent;
 import com.lch.menote.note.domain.LocalNoteListChangedEvent;
-import com.lch.menote.note.domain.Note;
+import com.lch.menote.note.domain.entity.Note;
 import com.lch.menote.note.domain.NoteModel;
 import com.lch.menote.note.domain.NotePinedData;
 import com.lch.netkit.common.mvc.ControllerCallback;

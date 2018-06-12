@@ -3,10 +3,9 @@ package com.lch.menote.note.route;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 
+import com.lch.menote.ConstantUtil;
 import com.lch.menote.note.data.db.DaoSessionManager;
 import com.lch.menote.note.domain.CloudNoteListChangedEvent;
-import com.lch.menote.ConstantUtil;
-import com.lch.menote.GlideImageLoader;
 import com.lch.menote.note.ui.CloudNoteUi;
 import com.lch.menote.note.ui.LocalNoteUi;
 import com.lch.netkit.common.tool.EventBusUtils;
@@ -18,11 +17,6 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.util.Map;
 
-import cn.finalteam.galleryfinal.CoreConfig;
-import cn.finalteam.galleryfinal.FunctionConfig;
-import cn.finalteam.galleryfinal.GalleryFinal;
-import cn.finalteam.galleryfinal.ThemeConfig;
-
 /**
  * Created by lichenghang on 2018/5/19.
  */
@@ -32,20 +26,6 @@ public class NoteRouteApiImpl implements NoteRouteApi, Router {
 
     @Override
     public void init(Context context) {
-
-        FunctionConfig functionConfig = new FunctionConfig.Builder()
-                .setEnableCamera(true)
-                .setEnableEdit(true)
-                .setEnableCrop(true)
-                .setEnableRotate(true)
-                .setCropSquare(true)
-                .setEnablePreview(true)
-                .build();
-
-        CoreConfig b = new CoreConfig.Builder(context, new GlideImageLoader(), ThemeConfig.DEFAULT)
-                .setFunctionConfig(functionConfig)
-                .build();
-        GalleryFinal.init(b);
 
     }
 

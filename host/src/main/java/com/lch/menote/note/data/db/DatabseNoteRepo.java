@@ -5,9 +5,9 @@ import android.text.TextUtils;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.lch.menote.note.data.db.gen.NoteDao;
-import com.lch.menote.note.domain.Note;
+import com.lch.menote.note.domain.entity.Note;
 import com.lch.menote.note.domain.NoteModel;
-import com.lch.menote.note.domain.QueryNoteResponse;
+import com.lch.menote.note.domain.response.QueryNoteResponse;
 import com.lch.menote.note.helper.ModelMapper;
 import com.lch.netkit.common.mvc.MvcError;
 import com.lch.netkit.common.mvc.ResponseValue;

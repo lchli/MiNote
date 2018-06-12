@@ -20,7 +20,7 @@
             android:padding="0.5dp"
             android:scaleType="fitXY"
             android:layout_gravity="center"
-            android:src="@drawable/ic_gf_default_photo" />
+             />
     </FrameLayout>
 
 

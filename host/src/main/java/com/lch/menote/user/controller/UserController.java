@@ -4,7 +4,7 @@ package com.lch.menote.user.controller;
 import android.text.TextUtils;
 
 import com.lch.menote.ApiConstants;
-import com.lch.menote.note.domain.UploadFileResponse;
+import com.lch.menote.note.domain.response.UploadFileResponse;
 import com.lch.menote.user.data.mem.MemUserRepo;
 import com.lch.menote.user.data.net.NetUserRepo;
 import com.lch.menote.user.data.sp.SpUserRepo;
@@ -50,7 +50,7 @@ public class UserController {
                     return;
                 }
 
-                if (res.data.getStatus() != ApiConstants.RESPCODE_SUCCESS || res.data.getData() == null) {
+                if (res.data.getStatus() != ApiConstants.RESPONSE_CODE_SUCCESS || res.data.getData() == null) {
                     ret.setErrMsg(res.data.getMessage());
                     UiHandler.post(new Runnable() {
                         @Override
@@ -125,7 +125,7 @@ public class UserController {
                         return;
                     }
 
-                    if (resf.data.status != ApiConstants.RESPCODE_SUCCESS) {
+                    if (resf.data.status != ApiConstants.RESPONSE_CODE_SUCCESS) {
                         ret.setErrMsg(resf.data.message);
                         UiHandler.post(new Runnable() {
                             @Override
@@ -155,7 +155,7 @@ public class UserController {
                     return;
                 }
 
-                if (res.data.getStatus() != ApiConstants.RESPCODE_SUCCESS || res.data.getData() == null) {
+                if (res.data.getStatus() != ApiConstants.RESPONSE_CODE_SUCCESS || res.data.getData() == null) {
                     ret.setErrMsg(res.data.getMessage());
                     UiHandler.post(new Runnable() {
                         @Override
@@ -202,7 +202,7 @@ public class UserController {
                     return;
                 }
 
-                if (res.data.getStatus() != ApiConstants.RESPCODE_SUCCESS || res.data.getData() == null) {
+                if (res.data.getStatus() != ApiConstants.RESPONSE_CODE_SUCCESS || res.data.getData() == null) {
                     ret.setErrMsg(res.data.getMessage());
                     UiHandler.post(new Runnable() {
                         @Override
@@ -247,7 +247,7 @@ public class UserController {
                     return;
                 }
 
-                if (res.data.getStatus() != ApiConstants.RESPCODE_SUCCESS || res.data.getData() == null) {
+                if (res.data.getStatus() != ApiConstants.RESPONSE_CODE_SUCCESS || res.data.getData() == null) {
                     ret.setErrMsg(res.data.getMessage());
                     UiHandler.post(new Runnable() {
                         @Override

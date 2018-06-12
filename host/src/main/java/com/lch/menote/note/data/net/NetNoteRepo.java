@@ -4,10 +4,9 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.lch.menote.ApiConstants;
-import com.lch.menote.ConstantUtil;
-import com.lch.menote.note.domain.BaseResponse;
 import com.lch.menote.note.domain.NoteModel;
-import com.lch.menote.note.domain.QueryNoteResponse;
+import com.lch.menote.note.domain.response.BaseResponse;
+import com.lch.menote.note.domain.response.QueryNoteResponse;
 import com.lch.menote.user.data.sp.SpUserRepo;
 import com.lch.menote.user.route.User;
 import com.lch.menote.utils.RequestUtils;
@@ -169,7 +168,7 @@ public class NetNoteRepo {
             return ret;
         }
 
-        if (res.data.status != ConstantUtil.SERVER_REQUEST_SUCCESS) {
+        if (res.data.status != ApiConstants.RESPONSE_CODE_SUCCESS) {
             ret.setErrMsg(res.data.message);
             return ret;
         }
@@ -219,7 +218,7 @@ public class NetNoteRepo {
             return ret;
         }
 
-        if (res.data.status != ConstantUtil.SERVER_REQUEST_SUCCESS) {
+        if (res.data.status != ApiConstants.RESPONSE_CODE_SUCCESS) {
             ret.setErrMsg(res.data.message);
             return ret;
         }
@@ -270,7 +269,7 @@ public class NetNoteRepo {
             return ret;
         }
 
-        if (res.data.status != ConstantUtil.SERVER_REQUEST_SUCCESS) {
+        if (res.data.status != ApiConstants.RESPONSE_CODE_SUCCESS) {
             ret.setErrMsg(res.data.message);
             return ret;
         }

@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply from:"$rootProject.rootDir/depend.gradle"
+apply from: "$rootProject.rootDir/depend.gradle"
 apply plugin: 'org.greenrobot.greendao'
 
 
@@ -19,17 +19,43 @@ android {
             abiFilters "armeabi-v7a"
         }
     }
+
+    signingConfigs {
+
+        release {
+            if (project.hasProperty("SIGN_FILE")) {
+                storeFile file(project.getProperty("SIGN_FILE"))
+            }
+
+            if (project.hasProperty("SIGN_PWD")) {
+                storePassword project.getProperty("SIGN_PWD")
+            }
+
+            keyAlias 'minote'
+
+            if (project.hasProperty("SIGN_PWD")) {
+                keyPassword project.getProperty("SIGN_PWD")
+            }
+
+            v2SigningEnabled false
+        }
+
+    }
+
     buildTypes {
 
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
+
 
     sourceSets {
         main {
@@ -37,6 +63,8 @@ android {
             jniLibs.srcDir 'libs'
         }
     }
+
+
 }
 
 

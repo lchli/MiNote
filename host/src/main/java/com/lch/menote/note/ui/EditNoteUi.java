@@ -44,11 +44,13 @@ import com.lch.video_player.VideoPlayer;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.OnItemClickListener;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.finalteam.toolsfinal.io.FileUtils;
 
 /**
  * Created by lichenghang on 2018/5/20.
@@ -130,7 +132,11 @@ public class EditNoteUi extends BaseCompatActivity {
         } else {
             courseUUID = UUIDUtils.uuid();
             courseDir = NoteUtils.INSTANCE.buildNoteDir(courseUUID);
-            FileUtils.mkdirs(new File(courseDir));
+            try {
+                FileUtils.forceMkdir(new File(courseDir));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
 

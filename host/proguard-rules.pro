@@ -40,33 +40,37 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
-#okhttp
+
+
+####====================okhttp=======================
 -dontwarn com.squareup.okhttp.**
 -keep class com.squareup.okhttp.** { *;}
 -dontwarn okio.**
 -dontwarn javax.**
 
-#entity.
+####====================entity=======================
 -keep class * implements java.io.Serializable
 -keepclassmembers class * implements java.io.Serializable { *; }
 
-
-#gson.
+####====================gson=======================
 -dontnote com.google.gson.**
 -dontwarn com.google.gson.**
 -keep class com.google.gson.** { *; }
 
-
-#fastjson
+####====================fastjson=======================
+#
 -dontwarn com.alibaba.fastjson.**
 -keep class com.alibaba.fastjson.**{*; }
 
+####====================amap=======================
 #定位
 -keep class com.amap.api.location.**{*;}
 -keep class com.loc.**{*;}
 -keep class com.amap.api.fence.**{*;}
 -keep class com.autonavi.aps.amapapi.model.**{*;}
-#retrofit
+
+####====================retrofit=======================
+#
 # Platform calls Class.forName on types which do not exist on Android to determine platform.
 -dontnote retrofit2.Platform
 # Platform used when running on Java 8 VMs. Will not be used at runtime.
@@ -76,7 +80,7 @@
 # Retain declared checked exceptions for use by a Proxy instance.
 -keepattributes Exceptions
 
-### greenDAO 3
+####====================greenDAO3=======================
 -keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
 public static java.lang.String TABLENAME;
 }
@@ -86,3 +90,25 @@ public static java.lang.String TABLENAME;
 -dontwarn org.greenrobot.greendao.database.**
 # If you do not use RxJava:
 -dontwarn rx.**
+#====================eventbus=======================
+-keepattributes *Annotation*
+-keepclassmembers class * {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+
+# Only required if you use AsyncExecutor
+-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+    <init>(java.lang.Throwable);
+}
+
+#====================glide=======================
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+-dontwarn com.bumptech.glide.**
+# for DexGuard only
+#-keepresourcexmlelements manifest/application/meta-data@value=GlideModule

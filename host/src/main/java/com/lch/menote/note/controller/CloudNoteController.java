@@ -7,8 +7,8 @@ import com.lch.menote.ApiConstants;
 import com.lch.menote.note.data.net.NetNoteRepo;
 import com.lch.menote.note.domain.NoteElement;
 import com.lch.menote.note.domain.NoteModel;
-import com.lch.menote.note.domain.QueryNoteResponse;
-import com.lch.menote.note.domain.UploadFileResponse;
+import com.lch.menote.note.domain.response.QueryNoteResponse;
+import com.lch.menote.note.domain.response.UploadFileResponse;
 import com.lch.menote.note.route.RouteCall;
 import com.lch.menote.user.route.UserRouteApi;
 import com.lch.menote.utils.RequestUtils;
@@ -344,7 +344,7 @@ public class CloudNoteController {
                             return;
                         }
 
-                        if (res.data.status != ApiConstants.RESPCODE_SUCCESS) {
+                        if (res.data.status != ApiConstants.RESPONSE_CODE_SUCCESS) {
                             ret.setErrMsg(res.data.message);
                             UiHandler.post(new Runnable() {
                                 @Override
