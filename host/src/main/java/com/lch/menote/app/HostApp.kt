@@ -2,6 +2,7 @@ package com.lch.menote.app
 
 import android.app.Application
 import com.bilibili.boxing.BoxingMediaLoader
+import com.blankj.utilcode.util.PermissionUtils
 import com.blankj.utilcode.util.Utils
 import com.lch.menote.IBoxingMediaLoaderImpl
 import com.lch.menote.home.route.HomeRouteApiImpl
