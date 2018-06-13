@@ -76,7 +76,7 @@ public class UserFragmentUi extends BaseFragment {
                 apkController.checkUpdate(AppUtils.getAppVersionCode(), new ControllerCallback<ApkResponse>() {
                     @Override
                     public void onComplete(@NonNull ResponseValue<ApkResponse> responseValue) {
-                        if (responseValue.hasError()||responseValue.data==null||responseValue.data.status!= ApiConstants.RESPONSE_CODE_SUCCESS) {
+                        if (responseValue.hasError() || responseValue.data == null || responseValue.data.status != ApiConstants.RESPONSE_CODE_SUCCESS) {
                             ToastUtils.showShort(responseValue.errMsg());
                             return;
                         }
@@ -156,7 +156,30 @@ public class UserFragmentUi extends BaseFragment {
         user_contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAddTagDialog();
+                showModifyContactDialog();
+            }
+        });
+
+        user_nick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mUserController.getUserSession(new ControllerCallback<User>() {
+                    @Override
+                    public void onComplete(@NonNull ResponseValue<User> responseValue) {
+                        if (responseValue.hasError()) {
+                            ToastUtils.showLong(responseValue.errMsg());
+                            return;
+                        }
+                        if (responseValue.data == null) {
+                            UserFragmentContainer parent = (UserFragmentContainer) getParentFragment();
+                            if (parent != null) {
+                                parent.toLogin(true);
+                            }
+                        }
+
+                    }
+                });
             }
         });
 
@@ -165,7 +188,7 @@ public class UserFragmentUi extends BaseFragment {
     }
 
 
-    private void showAddTagDialog() {
+    private void showModifyContactDialog() {
 
         DialogTool.showInputDialog(getActivity(), "修改联系方式", new DialogTool.InputDialogListener() {
             @Override

@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.lch.menote.ApiConstants;
+import com.lch.menote.R;
 import com.lch.menote.note.domain.NoteModel;
 import com.lch.menote.note.domain.response.BaseResponse;
 import com.lch.menote.note.domain.response.QueryNoteResponse;
@@ -13,6 +14,7 @@ import com.lch.menote.utils.RequestUtils;
 import com.lch.netkit.NetKit;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.AliJsonHelper;
+import com.lch.netkit.common.tool.ContextProvider;
 import com.lch.netkit.string.Parser;
 import com.lch.netkit.string.StringRequestParams;
 
@@ -36,8 +38,8 @@ public class NetNoteRepo {
         private String uid;
         private String token;
         private String isPublic;
-        private int page=0;
-        private int pageSize=20;
+        private int page = 0;
+        private int pageSize = 20;
 
         private JSONArray jsonArray = new JSONArray();
 
@@ -71,7 +73,7 @@ public class NetNoteRepo {
         }
 
         public NetNoteQuery setPublic(boolean aPublic) {
-            isPublic = aPublic?"1":"0";
+            isPublic = aPublic ? "1" : "0";
             return this;
         }
 
@@ -137,7 +139,7 @@ public class NetNoteRepo {
 
 
         if (TextUtils.isEmpty(useid)) {
-            ret.setErrMsg("user not login");
+            ret.setErrMsg(ContextProvider.context().getString(R.string.not_login));
             return ret;
         }
 
@@ -191,7 +193,7 @@ public class NetNoteRepo {
         }
 
         if (TextUtils.isEmpty(useid) || TextUtils.isEmpty(userToken)) {
-            ret.setErrMsg("user not login");
+            ret.setErrMsg(ContextProvider.context().getString(R.string.not_login));
             return ret;
         }
 
@@ -242,7 +244,7 @@ public class NetNoteRepo {
 
 
         if (TextUtils.isEmpty(useid) || TextUtils.isEmpty(userToken)) {
-            ret.setErrMsg("user not login");
+            ret.setErrMsg(ContextProvider.context().getString(R.string.not_login));
             return ret;
         }
 

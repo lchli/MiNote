@@ -4,18 +4,22 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.lch.menote.ApiConstants;
+import com.lch.menote.R;
 import com.lch.menote.note.data.net.NetNoteRepo;
 import com.lch.menote.note.domain.NoteElement;
 import com.lch.menote.note.domain.NoteModel;
 import com.lch.menote.note.domain.response.QueryNoteResponse;
 import com.lch.menote.note.domain.response.UploadFileResponse;
 import com.lch.menote.note.route.RouteCall;
+import com.lch.menote.user.data.sp.SpUserRepo;
+import com.lch.menote.user.route.User;
 import com.lch.menote.user.route.UserRouteApi;
 import com.lch.menote.utils.RequestUtils;
 import com.lch.netkit.NetKit;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.AliJsonHelper;
+import com.lch.netkit.common.tool.ContextProvider;
 import com.lch.netkit.common.tool.ListUtils;
 import com.lch.netkit.common.tool.TaskExecutor;
 import com.lch.netkit.common.tool.UiHandler;
@@ -33,6 +37,7 @@ import java.util.List;
 public class CloudNoteController {
 
 
+    private final Context context;
     private NetNoteRepo netNoteSource;
     private int page;
     private static final int PAGE_SIZE = 20;
@@ -42,6 +47,7 @@ public class CloudNoteController {
 
     public CloudNoteController(Context context) {
         netNoteSource = new NetNoteRepo();
+        this.context = context;
     }
 
 
@@ -56,7 +62,7 @@ public class CloudNoteController {
         }
 
         if (TextUtils.isEmpty(userId)) {
-            ret.setErrMsg("not login");
+            ret.setErrMsg(context.getString(R.string.not_login));
             UiHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -286,6 +292,20 @@ public class CloudNoteController {
             });
             return;
         }
+        final User se = SpUserRepo.getINS().getUser().data;
+
+        if (se == null || TextUtils.isEmpty(se.uid) || TextUtils.isEmpty(se.token)) {
+            ret.setErrMsg(ContextProvider.context().getString(R.string.not_login));
+            UiHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (cb != null) {
+                        cb.onComplete(ret);
+                    }
+                }
+            });
+            return;
+        }
 
         TaskExecutor.execute(new Runnable() {
             @Override
@@ -310,8 +330,11 @@ public class CloudNoteController {
                 for (NoteElement e : elms) {
                     if (!e.type.equals(NoteElement.TYPE_TEXT)) {
                         UploadFileParams param = RequestUtils.minoteUploadFileParams()
+                                .addParam("userId", se.uid)
+                                .addParam("userToken", se.token)
                                 .setUrl(ApiConstants.UPLOAD_FILE)
                                 .addFile(new FileOptions().setFileKey("file").setFilePath(e.path));
+
                         ResponseValue<UploadFileResponse> res = NetKit.fileRequest().uploadFileSync(param, new Parser<UploadFileResponse>() {
                             @Override
                             public UploadFileResponse parse(String s) {

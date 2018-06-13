@@ -1,6 +1,7 @@
 package com.lch.menote.user.data.net;
 
 import com.lch.menote.ApiConstants;
+import com.lch.menote.R;
 import com.lch.menote.user.data.sp.SpUserRepo;
 import com.lch.menote.user.domain.LoginResponse;
 import com.lch.menote.user.route.User;
@@ -8,6 +9,7 @@ import com.lch.menote.utils.RequestUtils;
 import com.lch.netkit.NetKit;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.AliJsonHelper;
+import com.lch.netkit.common.tool.ContextProvider;
 import com.lch.netkit.string.Parser;
 import com.lch.netkit.string.StringRequestParams;
 
@@ -80,7 +82,7 @@ public class NetUserRepo {
         }
 
         if (se.data == null) {
-            ret.setErrMsg("not login");
+            ret.setErrMsg(ContextProvider.context().getString(R.string.not_login));
             return ret;
         }
 
@@ -88,6 +90,7 @@ public class NetUserRepo {
         params.setUrl(ApiConstants.USER_GET_BY_ID);
         params.addParam("userId", userId);
         params.addParam("token", se.data.token);
+        params.addParam("myUserId", se.data.uid);
 
         return NetKit.stringRequest().getSync(params, new Parser<LoginResponse>() {
             @Override
