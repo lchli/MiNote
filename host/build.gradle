@@ -23,9 +23,8 @@ android {
     signingConfigs {
 
         release {
-            if (project.hasProperty("SIGN_FILE")) {
-                storeFile file(project.getProperty("SIGN_FILE"))
-            }
+            storeFile file("../debug.jks")
+
 
             if (project.hasProperty("SIGN_PWD")) {
                 storePassword project.getProperty("SIGN_PWD")

@@ -41,12 +41,33 @@
 #   public *;
 #}
 
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Application
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider
+-keep public class * extends android.content.ContentValues
+-keep public class * extends android.database.Cursor
+
+-keepclassmembers class * {
+	public <init>(org.json.JSONObject);
+}
+
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
 
 ####====================okhttp=======================
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class com.squareup.okhttp.** { *; }
+-keep interface com.squareup.okhttp.** { *; }
 -dontwarn com.squareup.okhttp.**
--keep class com.squareup.okhttp.** { *;}
--dontwarn okio.**
--dontwarn javax.**
+
+-keep class okhttp3.** {*; }
+-keep interface okhttp3.** {*; }
+-dontwarn okhttp3.**
 
 ####====================entity=======================
 -keep class * implements java.io.Serializable
@@ -112,3 +133,83 @@ public static java.lang.String TABLENAME;
 -dontwarn com.bumptech.glide.**
 # for DexGuard only
 #-keepresourcexmlelements manifest/application/meta-data@value=GlideModule
+
+
+########## okio start #########
+-keep class sun.misc.Unsafe { *; }
+-dontwarn java.nio.file.*
+-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+-dontwarn okio.**
+########## okio end #########
+
+-dontwarn javax.annotation.**
+-dontwarn com.android.volley.toolbox.**
+
+-keep public class * extends android.app.Activity
+-keep public class * extends android.support.v4.app.Fragment
+-keep public class * extends android.app.Application
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider
+-keep public class * extends android.app.backup.BackupAgentHelper
+-keep public class * extends android.preference.Preference
+-keep public class * extends android.view.View
+-keep public class com.google.vending.licensing.ILicensingService
+-keep public class com.android.vending.licensing.ILicensingService
+
+-keepattributes *Annotation*,InnerClasses
+
+
+-ignorewarning
+-keepattributes Exceptions
+-keepattributes Signature
+
+### org.json xml
+-dontwarn org.json.**
+-keep class org.json.**{*;}
+
+### fabric
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+-keep class net.sqlcipher.** {*;}
+
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context, android.util.AttributeSet);
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+}
+
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+-keep class * implements android.os.Parcelable {
+  public static final android.os.Parcelable$Creator *;
+}
+
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+}
+
+-keep class **.R$* {
+ *;
+
+}
+
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
+################### video player start ##################################
+-keep class tv.danmaku.ijk.** { *; }
+-dontwarn tv.danmaku.ijk.**
+################### video player end ##################################
