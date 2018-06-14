@@ -18,6 +18,7 @@ import com.lch.menote.user.ui.UserInfoActivity;
 import com.lch.netkit.common.base.AbsAdapter;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
+import com.lch.netkit.common.tool.AppListItemAnimatorUtils;
 import com.lch.netkit.common.tool.DialogUtils;
 import com.lch.netkit.common.tool.EventBusUtils;
 import com.lch.netkit.common.tool.TimeUtils;
@@ -101,6 +102,8 @@ public class CloudNoteListAdapter extends AbsAdapter<NoteModel> {
                 return true;
             }
         });
+
+        AppListItemAnimatorUtils.startAnim(h.itemView);
     }
 
     private class H extends AbsAdapter.AbsViewHolder {

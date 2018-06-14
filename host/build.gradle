@@ -82,3 +82,7 @@ greendao {
     daoPackage 'com.lch.menote.note.data.db.gen'
     targetGenDir 'src/main/java'
 }
+
+dependencies {
+    implementation 'com.android.support.constraint:constraint-layout:+'
+}

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.net.Uri;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Surface;
 import android.view.TextureView;
@@ -512,6 +513,15 @@ public class NoteElementAdapter extends AbsAdapter<NoteElement> {
 
                         }
 
+                    }
+                });
+
+                h.videoView.getPlayerController().ivFullscreen.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!TextUtils.isEmpty(data.path)) {
+                            FullVideoPlayActivity.launch(v.getContext(), data.path);
+                        }
                     }
                 });
             }

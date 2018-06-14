@@ -17,7 +17,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:replace="android:theme,android:icon,android:label">
-
         <activity android:name=".app.HostActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,17 +24,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".home.HomeActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity android:name=".user.LockPwdActivity" />
-
-
         <activity android:name=".note.ui.ImageGalleryActivity" />
-
         <activity android:name=".note.ui.MusicActivity" />
         <activity android:name=".note.ui.EditNoteUi" />
         <activity android:name=".note.ui.LocalNoteDetailUi" />
@@ -46,12 +40,12 @@
             android:authorities="${applicationId}.file.provider"
             android:exported="false"
             android:grantUriPermissions="true">
-
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/boxing_file_provider" />
-
         </provider>
+
+        <activity android:name=".note.ui.FullVideoPlayActivity" android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

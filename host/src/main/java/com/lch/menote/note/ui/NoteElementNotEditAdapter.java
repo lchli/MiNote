@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.lch.audio_player.AudioPlayer;
 import com.lch.audio_player.ui.SimpleAudioView;
 import com.lch.menote.R;
 import com.lch.menote.note.domain.NoteElement;
+import com.lch.menote.utils.VideoPlayUtil;
 import com.lch.netkit.common.base.AbsAdapter;
 import com.lch.netkit.common.tool.VF;
 import com.lch.video_player.VideoPlayer;
@@ -437,13 +439,8 @@ public class NoteElementNotEditAdapter extends AbsAdapter<NoteElement> {
                                 return;
                             }
 
-                            boolean useCache = false;
-                            if (data.path.startsWith("http://") || data.path.startsWith("https://")) {
-                                useCache = true;
-                            }
-
                             mVideoPlayer.reset();
-                            mVideoPlayer.setDataSource(activity, Uri.parse(data.path),useCache);
+                            mVideoPlayer.setDataSource(activity, Uri.parse(data.path), VideoPlayUtil.isShouldCache(data.path));
 
                             currentPlayingVideoPosition = position;
 
@@ -454,6 +451,15 @@ public class NoteElementNotEditAdapter extends AbsAdapter<NoteElement> {
 
                         }
 
+                    }
+                });
+
+                h.videoView.getPlayerController().ivFullscreen.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!TextUtils.isEmpty(data.path)) {
+                            FullVideoPlayActivity.launch(v.getContext(), data.path);
+                        }
                     }
                 });
             }
