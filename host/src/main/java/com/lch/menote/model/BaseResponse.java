@@ -1,4 +1,4 @@
-package com.lch.menote.note.domain.response;
+package com.lch.menote.model;
 
 import java.io.Serializable;
 

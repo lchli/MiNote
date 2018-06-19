@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.lch.menote.ApiConstants;
 import com.lch.menote.R;
 import com.lch.menote.note.domain.NoteModel;
-import com.lch.menote.note.domain.response.BaseResponse;
+import com.lch.menote.model.BaseResponse;
 import com.lch.menote.note.domain.response.QueryNoteResponse;
 import com.lch.menote.user.data.sp.SpUserRepo;
 import com.lch.menote.user.route.User;

@@ -1,7 +1,7 @@
 package com.lch.menote.user.domain;
 
 
-import com.lch.menote.note.domain.response.BaseResponse;
+import com.lch.menote.model.BaseResponse;
 import com.lch.menote.user.route.User;
 
 /**

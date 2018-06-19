@@ -33,6 +33,7 @@ import com.lch.video_player.ui.SimpleVideoView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import tv.danmaku.ijk.media.player.IMediaPlayer;
@@ -264,6 +265,16 @@ public class NoteElementAdapter extends AbsAdapter<NoteElement> {
                             .load(data.path)
                             .apply(opt)
                             .into(h.note_imageview);
+
+                    h.note_imageview.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ArrayList<String> imgPaths = new ArrayList<>();
+                            imgPaths.add(data.path);
+
+                            ImageGalleryActivity.Companion.startSelf(activity, imgPaths, 0);
+                        }
+                    });
                 }
 
                 h.operationButton.setOnClickListener(new View.OnClickListener() {
@@ -520,6 +531,8 @@ public class NoteElementAdapter extends AbsAdapter<NoteElement> {
                     @Override
                     public void onClick(View v) {
                         if (!TextUtils.isEmpty(data.path)) {
+                            mVideoPlayer.pause();
+
                             FullVideoPlayActivity.launch(v.getContext(), data.path);
                         }
                     }
