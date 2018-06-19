@@ -224,6 +224,7 @@ public class NoteElementAdapter extends AbsAdapter<NoteElement> {
         switch (viewType) {
             case ITEM_TEXT: {
                 final HText h = (HText) holder;
+                h.note_edittext.requestFocus();
                 h.note_edittext.setText(data.text);
                 h.note_edittext.setSelection(data.text != null ? data.text.length() : 0);
 
