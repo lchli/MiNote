@@ -132,9 +132,11 @@ public class NetNoteRepo {
         User se = SpUserRepo.getINS().getUser().data;
 
         String useid = null;
+        String userToken = null;
 
         if (se != null) {
             useid = se.uid;
+            userToken=se.token;
         }
 
 
@@ -151,6 +153,7 @@ public class NetNoteRepo {
                 .addParam("thumbNail", note.thumbNail)
                 .addParam("uid", note.uid)
                 .addParam("isPublic", note.isPublic)
+                .addParam("userToken", userToken)
                 .addParam("userId", useid);
 
         ResponseValue<BaseResponse> res = NetKit.stringRequest().postSync(params, new Parser<BaseResponse>() {

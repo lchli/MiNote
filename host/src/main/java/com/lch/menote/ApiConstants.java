@@ -11,8 +11,8 @@ public final class ApiConstants {
     public static final int RESPONSE_CODE_SUCCESS = 1;
     public static final int RESPONSE_CODE_FAILE = 2;
 
-    public static final String IP = "192.168.1.101";
-    public static final String PORT = "8088";
+    public static final String IP = "h.tomjamescn.win";
+    public static final String PORT = "12301";
     public static final String HOST = "http://" + IP + ":" + PORT;
 
     public static final String REGISTER = HOST + "/api/sec/user/register";
