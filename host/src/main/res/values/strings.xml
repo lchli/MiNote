@@ -52,5 +52,7 @@
     <string name="user_goto_register_text">去注册</string>
     <string name="user_register_text">注册</string>
 
+    <string name="res_app_like">com.lch.menote.app.HostApp</string>
+
 
 </resources>

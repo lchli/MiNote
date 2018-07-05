@@ -37,12 +37,18 @@
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:
+-applymapping  map/mapping.txt
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
 
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Application
+-keep public class * extends com.lchli.litehotfix.ApplicationLike
+-keep public class com.lch.menote.Modified
+-keepclassmembers class * extends com.lchli.litehotfix.ApplicationLike {
+*;
+}
 -keep public class * extends android.app.Service
 -keep public class * extends android.content.BroadcastReceiver
 -keep public class * extends android.content.ContentProvider
