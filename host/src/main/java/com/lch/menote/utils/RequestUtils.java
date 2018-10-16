@@ -2,8 +2,8 @@ package com.lch.menote.utils;
 
 import com.blankj.utilcode.util.EncryptUtils;
 import com.lch.menote.ApiConstants;
-import com.lch.netkit.file.helper.UploadFileParams;
-import com.lch.netkit.string.StringRequestParams;
+import com.lch.netkit.v2.apirequest.ApiRequestParams;
+import com.lch.netkit.v2.filerequest.UploadFileParams;
 
 /**
  * Created by lichenghang on 2018/6/9.
@@ -12,11 +12,11 @@ import com.lch.netkit.string.StringRequestParams;
 public final class RequestUtils {
 
     public static String buildHeaderSign(String ts) {
-        return EncryptUtils.encryptMD5ToString( ApiConstants.APP_KEY+ts);
+        return EncryptUtils.encryptMD5ToString(ApiConstants.APP_KEY + ts);
     }
 
-    public static StringRequestParams minoteStringRequestParams() {
-        StringRequestParams params = new StringRequestParams();
+    public static ApiRequestParams minoteStringRequestParams() {
+        ApiRequestParams params = new ApiRequestParams();
 
         String ts = System.currentTimeMillis() + "";
         params.addHeader("ts", ts);

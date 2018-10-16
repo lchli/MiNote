@@ -15,7 +15,6 @@ import com.lch.menote.user.data.sp.SpUserRepo;
 import com.lch.menote.user.route.User;
 import com.lch.menote.user.route.UserRouteApi;
 import com.lch.menote.utils.RequestUtils;
-import com.lch.netkit.NetKit;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.AliJsonHelper;
@@ -23,9 +22,12 @@ import com.lch.netkit.common.tool.ContextProvider;
 import com.lch.netkit.common.tool.ListUtils;
 import com.lch.netkit.common.tool.TaskExecutor;
 import com.lch.netkit.common.tool.UiHandler;
-import com.lch.netkit.file.helper.FileOptions;
-import com.lch.netkit.file.helper.UploadFileParams;
-import com.lch.netkit.string.Parser;
+
+import com.lch.netkit.v2.NetKit;
+import com.lch.netkit.v2.apirequest.ApiRequestParams;
+import com.lch.netkit.v2.filerequest.FileOptions;
+import com.lch.netkit.v2.filerequest.UploadFileParams;
+import com.lch.netkit.v2.parser.Parser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +54,6 @@ public class CloudNoteController {
 
 
     private void getCloudNotes(final ControllerCallback<List<NoteModel>> cb) {
-        final ResponseValue<List<NoteModel>> ret = new ResponseValue<>();
-
         String userId = null;
 
         UserRouteApi m = RouteCall.getUserModule();
@@ -62,12 +62,11 @@ public class CloudNoteController {
         }
 
         if (TextUtils.isEmpty(userId)) {
-            ret.setErrMsg(context.getString(R.string.not_login));
             UiHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     if (cb != null) {
-                        cb.onComplete(ret);
+                        cb.onError(0, context.getString(R.string.not_login));
                     }
                 }
             });
@@ -83,12 +82,11 @@ public class CloudNoteController {
                 final ResponseValue<QueryNoteResponse> r = netNoteSource.queryNotes(mQuery);
 
                 if (r.hasError() || r.data == null) {
-                    ret.setErrMsg(r.errMsg());
                     UiHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             if (cb != null) {
-                                cb.onComplete(ret);
+                                cb.onError(r.code, r.errorMsg);
                             }
                         }
                     });
@@ -104,16 +102,15 @@ public class CloudNoteController {
                     isHaveMore = false;
                 }
 
-                List<NoteModel> result = new ArrayList<>();
+                final List<NoteModel> result = new ArrayList<>();
                 result.addAll(all);
 
-                ret.data = result;
 
                 UiHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         if (cb != null) {
-                            cb.onComplete(ret);
+                            cb.onSuccess(result);
                         }
                     }
                 });
@@ -134,15 +131,12 @@ public class CloudNoteController {
     }
 
     public void loadMore(final ControllerCallback<List<NoteModel>> cb) {
-        final ResponseValue<List<NoteModel>> ret = new ResponseValue<>();
-
         if (!isHaveMore) {
-            ret.setErrMsg("已无更多数据");
             UiHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     if (cb != null) {
-                        cb.onComplete(ret);
+                        cb.onError(0, "已无更多数据");
                     }
                 }
             });
@@ -165,12 +159,24 @@ public class CloudNoteController {
             @Override
             public void run() {
                 final ResponseValue<Void> resSave = netNoteSource.save(note);
+                if (resSave.hasError()) {
+                    UiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (cb != null) {
+                                cb.onError(resSave.code, resSave.errorMsg);
+                            }
+                        }
+                    });
+
+                    return;
+                }
 
                 UiHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         if (cb != null) {
-                            cb.onComplete(resSave);
+                            cb.onSuccess(null);
                         }
                     }
                 });
@@ -186,14 +192,27 @@ public class CloudNoteController {
             public void run() {
                 final ResponseValue<Void> resSave = netNoteSource.likeNote(noteId);
 
-                UiHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (cb != null) {
-                            cb.onComplete(resSave);
-                        }
+                if (resSave.hasError()) {
+                    if (cb != null) {
+                        UiHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                cb.onError(resSave.code, resSave.errorMsg);
+                            }
+                        });
                     }
-                });
+
+                    return;
+                }
+
+                if (cb != null) {
+                    UiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            cb.onSuccess(null);
+                        }
+                    });
+                }
             }
         });
 
@@ -204,20 +223,17 @@ public class CloudNoteController {
         TaskExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                final ResponseValue<NoteModel> ret = new ResponseValue<>();
-
                 NetNoteRepo.NetNoteQuery query = new NetNoteRepo.NetNoteQuery();
                 query.setUid(noteId);
 
-                ResponseValue<QueryNoteResponse> res = netNoteSource.queryNotes(query);
+               final ResponseValue<QueryNoteResponse> res = netNoteSource.queryNotes(query);
 
                 if (res.hasError()) {
-                    ret.setErrMsg(res.errMsg());
                     UiHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             if (cb != null) {
-                                cb.onComplete(ret);
+                                cb.onError(res.code,res.errorMsg);
                             }
                         }
                     });
@@ -229,20 +245,18 @@ public class CloudNoteController {
                         @Override
                         public void run() {
                             if (cb != null) {
-                                cb.onComplete(ret);
+                                cb.onSuccess(null);
                             }
                         }
                     });
                     return;
                 }
 
-                ret.data = res.data.data.get(0);
-
                 UiHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         if (cb != null) {
-                            cb.onComplete(ret);
+                            cb.onSuccess(res.data.data.get(0));
                         }
                     }
                 });
@@ -258,11 +272,23 @@ public class CloudNoteController {
             public void run() {
                 final ResponseValue<Void> resSave = netNoteSource.delete(noteId);
 
+                if(resSave.hasError()){
+                    if (cb != null) {
+                        UiHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                    cb.onError(resSave.code,resSave.errorMsg);
+                            }
+                        });
+                    }
+                    return;
+                }
+
                 UiHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         if (cb != null) {
-                            cb.onComplete(resSave);
+                            cb.onSuccess(null);
                         }
                     }
                 });
@@ -278,15 +304,12 @@ public class CloudNoteController {
 
     private void saveNoteToNetImpl(final NoteModel note, final ControllerCallback<Void> cb) {
 
-        final ResponseValue<Void> ret = new ResponseValue<>();
-
         if (note == null) {
-            ret.setErrMsg("note is null.");
             UiHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     if (cb != null) {
-                        cb.onComplete(ret);
+                        cb.onError(0,"note is null.");
                     }
                 }
             });
@@ -295,12 +318,11 @@ public class CloudNoteController {
         final User se = SpUserRepo.getINS().getUser().data;
 
         if (se == null || TextUtils.isEmpty(se.uid) || TextUtils.isEmpty(se.token)) {
-            ret.setErrMsg(ContextProvider.context().getString(R.string.not_login));
             UiHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     if (cb != null) {
-                        cb.onComplete(ret);
+                        cb.onError(0,ContextProvider.context().getString(R.string.not_login));
                     }
                 }
             });
@@ -312,12 +334,11 @@ public class CloudNoteController {
             public void run() {
                 final List<NoteElement> elms = AliJsonHelper.parseArray(note.content, NoteElement.class);
                 if (ListUtils.isEmpty(elms)) {
-                    ret.setErrMsg("note content is empty.");
                     UiHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             if (cb != null) {
-                                cb.onComplete(ret);
+                                cb.onError(0,"note content is empty.");
                             }
                         }
                     });
@@ -335,7 +356,7 @@ public class CloudNoteController {
                                 .setUrl(ApiConstants.UPLOAD_FILE)
                                 .addFile(new FileOptions().setFileKey("file").setFilePath(e.path));
 
-                        ResponseValue<UploadFileResponse> res = NetKit.fileRequest().uploadFileSync(param, new Parser<UploadFileResponse>() {
+                        ResponseValue<UploadFileResponse> res = NetKit.fileRequest().uploadFile(param, new Parser<UploadFileResponse>() {
                             @Override
                             public UploadFileResponse parse(String s) {
                                 return AliJsonHelper.parseObject(s, UploadFileResponse.class);
