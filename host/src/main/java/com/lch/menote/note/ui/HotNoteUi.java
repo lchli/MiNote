@@ -1,23 +1,19 @@
 package com.lch.menote.note.ui;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.lch.menote.Modified;
 import com.lch.menote.R;
+import com.lch.menote.kotlinext.ContextExtKt;
 import com.lch.menote.note.controller.HotNoteController;
 import com.lch.menote.note.domain.CloudNoteListChangedEvent;
 import com.lch.netkit.common.base.BaseFragment;
@@ -27,11 +23,13 @@ import com.lch.netkit.common.tool.EventBusUtils;
 import com.lch.netkit.common.tool.Navigator;
 import com.lch.netkit.common.tool.VF;
 import com.lch.netkit.common.widget.CommonEmptyView;
-import com.lchli.litehotfix.HotFix;
+import com.orhanobut.dialogplus.DialogPlus;
+import com.orhanobut.dialogplus.OnItemClickListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -94,72 +92,26 @@ public class HotNoteUi extends BaseFragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Navigator.launchActivity(getActivity(), EditNoteUi.class);
+                Navigator.launchActivity(getActivity(), EditNoteUi.class);
 
-//                ContextExtKt.showListDialog(getActivity(), new OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
-//                        switch (position) {
-//                            case 0:
-//                                dialog.dismiss();
-//
-//                                Navigator.launchActivity(getActivity(), EditNoteUi.class);
-//                                break;
-//                            case 1:
-//                                dialog.dismiss();
-//
-//                                Navigator.launchActivity(getActivity(), MusicActivity.class);
-//                                break;
-//                        }
-//
-//                    }
-//                }, false, Arrays.asList("创建笔记", "创建音乐"));
-
-                HotFix.instance().installPatch(Environment.getExternalStorageDirectory() + "/changed.zip", 1, 0, new HotFix.InstallPatchCallback() {
-
+                ContextExtKt.showListDialog(getActivity(), new OnItemClickListener() {
                     @Override
+                    public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
+                        switch (position) {
+                            case 0:
+                                dialog.dismiss();
 
-                    public void onFinish(boolean isSuccess) {
+                                Navigator.launchActivity(getActivity(), EditNoteUi.class);
+                                break;
+                            case 1:
+                                dialog.dismiss();
 
-                        if (isSuccess) {
-                            new AlertDialog.Builder(getActivity())
-
-                                    .setMessage("已完成热修复，需要重启才能生效。是否现在重启？")
-
-                                    .setNegativeButton("稍后自己重启", new DialogInterface.OnClickListener() {
-
-                                        @Override
-
-                                        public void onClick(DialogInterface dialog, int which) {
-
-                                            dialog.dismiss();
-
-                                        }
-
-                                    })
-
-                                    .setPositiveButton("立即重启", new DialogInterface.OnClickListener() {
-
-                                        @Override
-
-                                        public void onClick(DialogInterface dialog, int which) {
-
-                                            System.exit(0);
-
-                                        }
-
-                                    }).create().show();
-
-
-                        } else {
-
-                            Toast.makeText(getActivity(), "修复失败！", Toast.LENGTH_LONG).show();
-
+                                Navigator.launchActivity(getActivity(), MusicActivity.class);
+                                break;
                         }
 
                     }
-
-                });
+                }, false, Arrays.asList("创建笔记", "创建音乐"));
             }
         });
 
