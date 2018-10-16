@@ -2,7 +2,6 @@ package com.lch.menote.note.controller;
 
 import com.lch.menote.note.data.mem.MemNoteElementRepo;
 import com.lch.menote.note.domain.NoteElement;
-import com.lch.netkit.common.mvc.ResponseValue;
 
 import java.util.List;
 
@@ -15,58 +14,49 @@ public class NoteElementController {
     private MemNoteElementRepo memNoteElementSource = new MemNoteElementRepo();
 
 
-    public ResponseValue<Void> insertText(int position) {
+    public void insertText(int position) {
         NoteElement noteElement = new NoteElement();
         noteElement.type = NoteElement.TYPE_TEXT;
 
         memNoteElementSource.save(noteElement, position);
-
-        return new ResponseValue<>();
     }
 
-    public ResponseValue<Void> insertImg(String path, int position) {
+    public void insertImg(String path, int position) {
         NoteElement noteElement = new NoteElement();
         noteElement.type = NoteElement.TYPE_IMG;
         noteElement.path = path;
 
         memNoteElementSource.save(noteElement, position);
 
-        return new ResponseValue<>();
     }
 
-    public ResponseValue<Void> insertAudio(String path, int position) {
+    public void insertAudio(String path, int position) {
         NoteElement noteElement = new NoteElement();
         noteElement.type = NoteElement.TYPE_AUDIO;
         noteElement.path = path;
 
         memNoteElementSource.save(noteElement, position);
 
-        return new ResponseValue<>();
     }
 
-    public ResponseValue<Void> insertVideo(String path, int position) {
+    public void insertVideo(String path, int position) {
         NoteElement noteElement = new NoteElement();
         noteElement.type = NoteElement.TYPE_VIDEO;
         noteElement.path = path;
 
         memNoteElementSource.save(noteElement, position);
 
-        return new ResponseValue<>();
     }
 
-    public ResponseValue<List<NoteElement>> getElements() {
-        ResponseValue<List<NoteElement>> res = new ResponseValue<>();
-        res.data = memNoteElementSource.getElements();
-        return res;
+    public List<NoteElement> getElements() {
+        return memNoteElementSource.getElements();
     }
 
-    public ResponseValue<Void> delete(int position) {
+    public void delete(int position) {
         memNoteElementSource.delete(position);
-        return new ResponseValue<>();
     }
 
-    public ResponseValue<Void> setElements(List<NoteElement> datas) {
+    public void setElements(List<NoteElement> datas) {
         memNoteElementSource.setElements(datas);
-        return new ResponseValue<>();
     }
 }

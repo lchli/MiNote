@@ -154,7 +154,7 @@ public class EditNoteUi extends BaseCompatActivity {
                     ToastUtils.showShort(R.string.note_title_cannot_empty);
                     return;
                 }
-                List<NoteElement> content = noteElementController.getElements().data;
+                List<NoteElement> content = noteElementController.getElements();
                 if (ListUtils.isEmpty(content)) {
                     ToastUtils.showShort(R.string.note_content_cannot_empty);
                     return;
@@ -325,14 +325,14 @@ public class EditNoteUi extends BaseCompatActivity {
             if (!ListUtils.isEmpty(medias)) {
                 noteElementController.insertVideo(medias.get(0).getPath(), mPositionToModify);
 
-                noteElementAdapter.refresh(noteElementController.getElements().data);
+                noteElementAdapter.refresh(noteElementController.getElements());
             }
         } else if (requestCode == SELECT_AUDIO_RQUEST && resultCode == Activity.RESULT_OK) {
             List<BaseMedia> medias = Boxing.getResult(data);
             if (!ListUtils.isEmpty(medias)) {
                 noteElementController.insertAudio(medias.get(0).getPath(), mPositionToModify);
 
-                noteElementAdapter.refresh(noteElementController.getElements().data);
+                noteElementAdapter.refresh(noteElementController.getElements());
             }
         }
     }
@@ -348,13 +348,13 @@ public class EditNoteUi extends BaseCompatActivity {
     private void insertTextNoteCase(int position) {
         noteElementController.insertText(position);
 
-        noteElementAdapter.refresh(noteElementController.getElements().data);
+        noteElementAdapter.refresh(noteElementController.getElements());
     }
 
     private void insertImgNoteCase(int position, String imgPath) {
         noteElementController.insertImg(imgPath, position);
 
-        noteElementAdapter.refresh(noteElementController.getElements().data);
+        noteElementAdapter.refresh(noteElementController.getElements());
     }
 
 
@@ -368,7 +368,7 @@ public class EditNoteUi extends BaseCompatActivity {
 
         noteElementController.delete(position);
 
-        noteElementAdapter.refresh(noteElementController.getElements().data);
+        noteElementAdapter.refresh(noteElementController.getElements());
     }
 
 }
