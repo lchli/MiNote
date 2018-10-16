@@ -22,9 +22,8 @@ import com.lch.netkit.common.tool.ContextProvider;
 import com.lch.netkit.common.tool.ListUtils;
 import com.lch.netkit.common.tool.TaskExecutor;
 import com.lch.netkit.common.tool.UiHandler;
-
 import com.lch.netkit.v2.NetKit;
-import com.lch.netkit.v2.apirequest.ApiRequestParams;
+import com.lch.netkit.v2.common.NetworkResponse;
 import com.lch.netkit.v2.filerequest.FileOptions;
 import com.lch.netkit.v2.filerequest.UploadFileParams;
 import com.lch.netkit.v2.parser.Parser;
@@ -226,14 +225,14 @@ public class CloudNoteController {
                 NetNoteRepo.NetNoteQuery query = new NetNoteRepo.NetNoteQuery();
                 query.setUid(noteId);
 
-               final ResponseValue<QueryNoteResponse> res = netNoteSource.queryNotes(query);
+                final ResponseValue<QueryNoteResponse> res = netNoteSource.queryNotes(query);
 
                 if (res.hasError()) {
                     UiHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             if (cb != null) {
-                                cb.onError(res.code,res.errorMsg);
+                                cb.onError(res.code, res.errorMsg);
                             }
                         }
                     });
@@ -272,12 +271,12 @@ public class CloudNoteController {
             public void run() {
                 final ResponseValue<Void> resSave = netNoteSource.delete(noteId);
 
-                if(resSave.hasError()){
+                if (resSave.hasError()) {
                     if (cb != null) {
                         UiHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                    cb.onError(resSave.code,resSave.errorMsg);
+                                cb.onError(resSave.code, resSave.errorMsg);
                             }
                         });
                     }
@@ -309,7 +308,7 @@ public class CloudNoteController {
                 @Override
                 public void run() {
                     if (cb != null) {
-                        cb.onError(0,"note is null.");
+                        cb.onError(0, "note is null.");
                     }
                 }
             });
@@ -322,7 +321,7 @@ public class CloudNoteController {
                 @Override
                 public void run() {
                     if (cb != null) {
-                        cb.onError(0,ContextProvider.context().getString(R.string.not_login));
+                        cb.onError(0, ContextProvider.context().getString(R.string.not_login));
                     }
                 }
             });
@@ -338,7 +337,7 @@ public class CloudNoteController {
                         @Override
                         public void run() {
                             if (cb != null) {
-                                cb.onError(0,"note content is empty.");
+                                cb.onError(0, "note content is empty.");
                             }
                         }
                     });
@@ -356,19 +355,18 @@ public class CloudNoteController {
                                 .setUrl(ApiConstants.UPLOAD_FILE)
                                 .addFile(new FileOptions().setFileKey("file").setFilePath(e.path));
 
-                        ResponseValue<UploadFileResponse> res = NetKit.fileRequest().uploadFile(param, new Parser<UploadFileResponse>() {
+                        final NetworkResponse<UploadFileResponse> res = NetKit.fileRequest().syncUploadFile(param, new Parser<UploadFileResponse>() {
                             @Override
                             public UploadFileResponse parse(String s) {
                                 return AliJsonHelper.parseObject(s, UploadFileResponse.class);
                             }
                         });
                         if (res.hasError()) {
-                            ret.setErrMsg(res.errMsg());
                             UiHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     if (cb != null) {
-                                        cb.onComplete(ret);
+                                        cb.onError(res.httpCode, res.getErrorMsg());
                                     }
                                 }
                             });
@@ -376,12 +374,11 @@ public class CloudNoteController {
                         }
 
                         if (res.data == null) {
-                            ret.setErrMsg("res data is null");
                             UiHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     if (cb != null) {
-                                        cb.onComplete(ret);
+                                        cb.onError(res.httpCode, "res data is null");
                                     }
                                 }
                             });
@@ -389,12 +386,11 @@ public class CloudNoteController {
                         }
 
                         if (res.data.status != ApiConstants.RESPONSE_CODE_SUCCESS) {
-                            ret.setErrMsg(res.data.message);
                             UiHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     if (cb != null) {
-                                        cb.onComplete(ret);
+                                        cb.onError(res.httpCode, res.data.message);
                                     }
                                 }
                             });
@@ -417,7 +413,7 @@ public class CloudNoteController {
                     @Override
                     public void run() {
                         if (cb != null) {
-                            cb.onComplete(resSave);
+                            cb.onSuccess(resSave.data);
                         }
                     }
                 });
