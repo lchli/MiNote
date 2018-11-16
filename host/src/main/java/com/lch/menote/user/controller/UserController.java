@@ -8,7 +8,7 @@ import com.lch.menote.note.domain.response.UploadFileResponse;
 import com.lch.menote.user.data.mem.MemUserRepo;
 import com.lch.menote.user.data.net.NetUserRepo;
 import com.lch.menote.user.data.sp.SpUserRepo;
-import com.lch.menote.user.domain.LoginResponse;
+import com.lch.menote.user.model.LoginResponse;
 import com.lch.menote.user.route.User;
 import com.lch.menote.utils.RequestUtils;
 import com.lch.netkit.NetKit;
@@ -33,6 +33,7 @@ public class UserController {
 
     public void register(final String userName, final String userPwd, final String userHeadUrl,
                          final ControllerCallback<User> cb) {
+
         final ResponseValue<User> ret = new ResponseValue<>();
 
         TaskExecutor.execute(new Runnable() {

@@ -37,6 +37,14 @@ dependencies {
 
     api 'com.laputapp:laputapp-pulltorefresh:2.1.1'
 
+    // Architecture Components
+
+    implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.lifecycleVersion"
+
+    implementation "androidx.lifecycle:lifecycle-livedata:$rootProject.lifecycleVersion"
+
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$rootProject.lifecycleVersion"
+
 
 
 }

@@ -34,4 +34,6 @@ ext {
     lch_videoPlayer_version="1.0.1"
     boxing_version="1.0.5"
 
+    lifecycleVersion = '+'
+
 }

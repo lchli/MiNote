@@ -1,4 +1,4 @@
-package com.lch.menote.user.domain;
+package com.lch.menote.user.model;
 
 
 import com.lch.menote.model.BaseResponse;
