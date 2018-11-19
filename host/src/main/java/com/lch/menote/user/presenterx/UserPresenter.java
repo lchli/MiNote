@@ -69,7 +69,9 @@ public final class UserPresenter {
 
             @Override
             public void onError(int i, String s) {
-                cb.onError(i, s);
+                if(cb!=null) {
+                    cb.onError(i, s);
+                }
 
             }
         });
