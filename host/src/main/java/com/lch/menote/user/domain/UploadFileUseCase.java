@@ -1,17 +1,26 @@
 package com.lch.menote.user.domain;
 
 import com.lch.menote.UseCase;
+import com.lch.menote.file.data.RemoteFileSource;
 import com.lch.netkit.common.mvc.ResponseValue;
+
+import java.io.File;
 
 public class UploadFileUseCase extends UseCase<UploadFileUseCase.Params, String> {
 
     public static class Params {
 
-        public String userHeadImgPath;
+        public File userHeadImg;
+    }
+
+    private RemoteFileSource fileSource;
+
+    public UploadFileUseCase(RemoteFileSource fileSource) {
+        this.fileSource = fileSource;
     }
 
     @Override
     protected ResponseValue<String> execute(UploadFileUseCase.Params parameters) {
-        return null;
+        return fileSource.addFile(parameters.userHeadImg);
     }
 }

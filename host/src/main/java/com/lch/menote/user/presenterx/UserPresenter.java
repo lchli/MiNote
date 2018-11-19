@@ -1,11 +1,10 @@
-package com.lch.menote.user.ui;
+package com.lch.menote.user.presenterx;
 
 import android.support.annotation.Nullable;
 
-import com.lch.menote.DI;
+import com.lch.menote.file.data.RemoteFileSource;
 import com.lch.menote.user.data.LocalUserDataSource;
 import com.lch.menote.user.data.RemoteUserDataSource;
-import com.lch.menote.user.data.UserRepo;
 import com.lch.menote.user.domain.LoginUseCase;
 import com.lch.menote.user.domain.RegisterUseCase;
 import com.lch.menote.user.domain.SaveUserSessionUseCase;
@@ -14,18 +13,26 @@ import com.lch.menote.user.domain.UploadFileUseCase;
 import com.lch.menote.user.route.User;
 import com.lch.netkit.common.mvc.ControllerCallback;
 
+import java.io.File;
+
 /**
  * 需要保证：mock数据源在demo里面传递进来。
  */
-public class UserPrensenter {
+public final class UserPresenter {
 
-    private final LoginUseCase mLoginUseCase = new LoginUseCase(new UserRepo(DI.provideRemoteUserDataSource()));
-    private final UpdateUseCase updateUseCase = new UpdateUseCase(new UserRepo(DI.provideRemoteUserDataSource()));
-    private final UploadFileUseCase uploadFileUseCase = new UploadFileUseCase();
-    private final RegisterUseCase mRegisterUseCase = new RegisterUseCase(DI.provideRemoteUserDataSource());
-    private final SaveUserSessionUseCase mSaveUserSessionUseCase = new SaveUserSessionUseCase(DI.provideLocalUserDataSource());
+    private final LoginUseCase mLoginUseCase;
+    private final UpdateUseCase updateUseCase;
+    private final UploadFileUseCase uploadFileUseCase;
+    private final RegisterUseCase mRegisterUseCase;
+    private final SaveUserSessionUseCase mSaveUserSessionUseCase;
 
-    public UserPrensenter(LocalUserDataSource localUserDataSource, RemoteUserDataSource remoteUserDataSource) {
+    public UserPresenter(LocalUserDataSource localUserDataSource, RemoteUserDataSource remoteUserDataSource, RemoteFileSource remoteFileSource) {
+        mLoginUseCase = new LoginUseCase(remoteUserDataSource);
+        updateUseCase = new UpdateUseCase(remoteUserDataSource);
+        uploadFileUseCase = new UploadFileUseCase(remoteFileSource);
+        mRegisterUseCase = new RegisterUseCase(remoteUserDataSource);
+
+        mSaveUserSessionUseCase = new SaveUserSessionUseCase(localUserDataSource);
     }
 
     public void register(String userName, String userPwd, String userHeadUrl, final ControllerCallback<User> result) {
@@ -47,7 +54,7 @@ public class UserPrensenter {
 
     public void update(final User user, final String userHeadImgPath, final ControllerCallback<User> cb) {
         UploadFileUseCase.Params fileParam = new UploadFileUseCase.Params();
-        fileParam.userHeadImgPath = userHeadImgPath;
+        fileParam.userHeadImg = new File(userHeadImgPath);
 
         uploadFileUseCase.invokeAsync(fileParam, new ControllerCallback<String>() {
             @Override

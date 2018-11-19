@@ -3,12 +3,10 @@ package com.lch.menote.user
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
 import com.andrognito.patternlockview.PatternLockView
 import com.andrognito.patternlockview.listener.PatternLockViewListener
 import com.blankj.utilcode.util.ToastUtils
-import com.lch.menote.Modified
 import com.lch.menote.R
 import com.lch.menote.kotlinext.logIfDebug
 import com.lch.menote.kotlinext.showListDialog

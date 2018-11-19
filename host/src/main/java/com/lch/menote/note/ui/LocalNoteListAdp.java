@@ -16,7 +16,6 @@ import com.blankj.utilcode.util.SizeUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.lch.menote.Modified;
 import com.lch.menote.R;
 import com.lch.menote.note.controller.CloudNoteController;
 import com.lch.menote.note.controller.LocalNoteController;

@@ -1,7 +1,7 @@
 package com.lch.menote.user.domain;
 
 import com.lch.menote.UseCase;
-import com.lch.menote.user.data.RemoteUserDataSource;
+import com.lch.menote.user.data.LocalUserDataSource;
 import com.lch.menote.user.route.User;
 import com.lch.netkit.common.mvc.ResponseValue;
 
@@ -13,9 +13,9 @@ public class SaveUserSessionUseCase extends UseCase<SaveUserSessionUseCase.Param
     }
 
 
-    private RemoteUserDataSource userDataSource;
+    private LocalUserDataSource userDataSource;
 
-    public SaveUserSessionUseCase(RemoteUserDataSource userDataSource) {
+    public SaveUserSessionUseCase(LocalUserDataSource userDataSource) {
         this.userDataSource = userDataSource;
     }
 
