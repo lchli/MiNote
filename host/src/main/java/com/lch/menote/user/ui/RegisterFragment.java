@@ -8,11 +8,9 @@ import android.view.ViewGroup;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.lch.menote.R;
-import com.lch.menote.file.data.NetFileSource;
 import com.lch.menote.note.route.NoteRouteApi;
+import com.lch.menote.user.UserDI;
 import com.lch.menote.user.controller.UserController;
-import com.lch.menote.user.data.NetUserDataSource;
-import com.lch.menote.user.data.SpUserDataSource;
 import com.lch.menote.user.presenterx.UserPresenter;
 import com.lch.menote.user.route.RouteCall;
 import com.lch.menote.user.route.User;
@@ -29,7 +27,7 @@ public class RegisterFragment extends BaseFragment {
     UserController userController = new UserController();
     CommonTitleView common_title;
     View register_widget;
-    UserPresenter userPrensenter;
+    UserPresenter userPrensenter = UserDI.provideUserPresenter();
 
 
     @Nullable
@@ -90,8 +88,6 @@ public class RegisterFragment extends BaseFragment {
                 });
             }
         });
-
-        userPrensenter = new UserPresenter(new SpUserDataSource(), new NetUserDataSource(), new NetFileSource());
 
 
     }
