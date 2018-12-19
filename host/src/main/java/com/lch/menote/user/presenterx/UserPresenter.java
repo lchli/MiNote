@@ -3,8 +3,8 @@ package com.lch.menote.user.presenterx;
 import android.support.annotation.Nullable;
 
 import com.lch.menote.file.data.RemoteFileSource;
-import com.lch.menote.user.data.LocalUserDataSource;
-import com.lch.menote.user.data.RemoteUserDataSource;
+import com.lch.menote.user.datainterface.LocalUserDataSource;
+import com.lch.menote.user.datainterface.RemoteUserDataSource;
 import com.lch.menote.user.domain.LoginUseCase;
 import com.lch.menote.user.domain.RegisterUseCase;
 import com.lch.menote.user.domain.SaveUserSessionUseCase;
@@ -16,6 +16,7 @@ import com.lch.netkit.common.mvc.ControllerCallback;
 import java.io.File;
 
 /**
+ * Presenter负责创建用例，它只依赖于数据源接口。
  * 需要保证：mock数据源在demo里面传递进来。
  */
 public final class UserPresenter {
@@ -69,7 +70,7 @@ public final class UserPresenter {
 
             @Override
             public void onError(int i, String s) {
-                if(cb!=null) {
+                if (cb != null) {
                     cb.onError(i, s);
                 }
 

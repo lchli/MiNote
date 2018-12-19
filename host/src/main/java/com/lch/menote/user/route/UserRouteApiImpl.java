@@ -4,8 +4,8 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 
 import com.lch.menote.user.LockPwdActivity;
-import com.lch.menote.user.data.mem.MemUserRepo;
-import com.lch.menote.user.data.sp.SpUserRepo;
+import com.lch.menote.user.dataimpl.mem.MemUserRepo;
+import com.lch.menote.user.dataimpl.sp.SpUserRepo;
 import com.lch.menote.user.ui.UserFragmentContainer;
 import com.lch.netkit.common.tool.Navigator;
 import com.lch.route.noaop.lib.RouteMethod;

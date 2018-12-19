@@ -1,8 +1,8 @@
-package com.lch.menote.user.data.net;
+package com.lch.menote.user.dataimpl.net;
 
 import com.lch.menote.ApiConstants;
 import com.lch.menote.R;
-import com.lch.menote.user.data.sp.SpUserRepo;
+import com.lch.menote.user.dataimpl.sp.SpUserRepo;
 import com.lch.menote.user.model.LoginResponse;
 import com.lch.menote.user.route.User;
 import com.lch.menote.utils.RequestUtils;

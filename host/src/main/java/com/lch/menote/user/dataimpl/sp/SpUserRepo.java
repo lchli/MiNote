@@ -1,4 +1,4 @@
-package com.lch.menote.user.data.sp;
+package com.lch.menote.user.dataimpl.sp;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.lch.menote.user.route.User;

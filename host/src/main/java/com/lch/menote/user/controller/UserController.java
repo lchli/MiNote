@@ -5,9 +5,9 @@ import android.text.TextUtils;
 
 import com.lch.menote.ApiConstants;
 import com.lch.menote.note.domain.response.UploadFileResponse;
-import com.lch.menote.user.data.mem.MemUserRepo;
-import com.lch.menote.user.data.net.NetUserRepo;
-import com.lch.menote.user.data.sp.SpUserRepo;
+import com.lch.menote.user.dataimpl.mem.MemUserRepo;
+import com.lch.menote.user.dataimpl.net.NetUserRepo;
+import com.lch.menote.user.dataimpl.sp.SpUserRepo;
 import com.lch.menote.user.model.LoginResponse;
 import com.lch.menote.user.route.User;
 import com.lch.menote.utils.RequestUtils;

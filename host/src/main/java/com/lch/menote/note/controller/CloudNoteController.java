@@ -11,7 +11,7 @@ import com.lch.menote.note.domain.NoteModel;
 import com.lch.menote.note.domain.response.QueryNoteResponse;
 import com.lch.menote.note.domain.response.UploadFileResponse;
 import com.lch.menote.note.route.RouteCall;
-import com.lch.menote.user.data.sp.SpUserRepo;
+import com.lch.menote.user.dataimpl.sp.SpUserRepo;
 import com.lch.menote.user.route.User;
 import com.lch.menote.user.route.UserRouteApi;
 import com.lch.menote.utils.RequestUtils;

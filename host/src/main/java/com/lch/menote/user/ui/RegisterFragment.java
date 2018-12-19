@@ -11,6 +11,7 @@ import com.lch.menote.R;
 import com.lch.menote.note.route.NoteRouteApi;
 import com.lch.menote.user.UserDI;
 import com.lch.menote.user.controller.UserController;
+import com.lch.menote.user.presenterx.LoginPresenter;
 import com.lch.menote.user.presenterx.UserPresenter;
 import com.lch.menote.user.route.RouteCall;
 import com.lch.menote.user.route.User;
@@ -28,7 +29,33 @@ public class RegisterFragment extends BaseFragment {
     CommonTitleView common_title;
     View register_widget;
     UserPresenter userPrensenter = UserDI.provideUserPresenter();
+    LoginPresenter mLoginPresenter;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mLoginPresenter = new LoginPresenter(null, null, new LoginPresenter.View() {
+            @Override
+            public void renderLoading() {
+
+            }
+
+            @Override
+            public void dismissLoading() {
+
+            }
+
+            @Override
+            public void renderLoginSuccess() {
+
+            }
+
+            @Override
+            public void renderLoginFail(String msg) {
+
+            }
+        });
+    }
 
     @Nullable
     @Override

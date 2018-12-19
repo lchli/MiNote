@@ -1,4 +1,4 @@
-package com.lch.menote.user.data.mem;
+package com.lch.menote.user.dataimpl.mem;
 
 import com.blankj.utilcode.util.EncryptUtils;
 import com.lch.netkit.common.mvc.ResponseValue;
