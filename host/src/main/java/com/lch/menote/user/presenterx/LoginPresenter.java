@@ -7,10 +7,12 @@ import android.text.TextUtils;
 import com.lch.menote.user.datainterface.LocalUserDataSource;
 import com.lch.menote.user.datainterface.RemoteUserDataSource;
 import com.lch.menote.user.domain.LoginUseCase;
-import com.lch.menote.user.domain.SaveUserSessionUseCase;
 import com.lch.menote.user.route.User;
 import com.lch.netkit.common.mvc.ControllerCallback;
 
+/**
+ * presenter负责将model转换成视图需要的viewmodel
+ */
 public class LoginPresenter {
 
     public interface View {
@@ -26,12 +28,10 @@ public class LoginPresenter {
 
     private final View view;
     private final LoginUseCase mLoginUseCase;
-    private final SaveUserSessionUseCase mSaveUserSessionUseCase;
 
     public LoginPresenter(RemoteUserDataSource remoteUserDataSource, LocalUserDataSource localUserDataSource, @NonNull View view) {
         this.view = view;
-        mLoginUseCase = new LoginUseCase(remoteUserDataSource);
-        mSaveUserSessionUseCase = new SaveUserSessionUseCase(localUserDataSource);
+        mLoginUseCase = new LoginUseCase(remoteUserDataSource, localUserDataSource);
     }
 
     public void login(String userName, String userPwd) {
@@ -50,28 +50,14 @@ public class LoginPresenter {
         mLoginUseCase.invokeAsync(p, new ControllerCallback<User>() {
             @Override
             public void onSuccess(@Nullable User user) {
+                view.dismissLoading();
+
                 if (user == null) {
                     view.renderLoginFail("user is null.");
-                    view.dismissLoading();
                     return;
                 }
 
-                SaveUserSessionUseCase.Params p = new SaveUserSessionUseCase.Params();
-                p.session = user;
-
-                mSaveUserSessionUseCase.invokeAsync(p, new ControllerCallback<Void>() {
-                    @Override
-                    public void onSuccess(@Nullable Void aVoid) {
-                        view.renderLoginSuccess();
-                        view.dismissLoading();
-                    }
-
-                    @Override
-                    public void onError(int i, String s) {
-                        view.renderLoginFail(s);
-                        view.dismissLoading();
-                    }
-                });
+                view.renderLoginSuccess();
             }
 
             @Override

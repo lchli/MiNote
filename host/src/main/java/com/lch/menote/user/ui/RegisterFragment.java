@@ -47,12 +47,18 @@ public class RegisterFragment extends BaseFragment {
 
             @Override
             public void renderLoginSuccess() {
+                NoteRouteApi m = RouteCall.getNoteModule();
+                if (m != null) {
+                    m.onUserLogin(null);
+                }
 
+                UserFragmentContainer p = (UserFragmentContainer) getParentFragment();
+                p.toUserCenter(false);
             }
 
             @Override
             public void renderLoginFail(String msg) {
-
+                ToastUtils.showShort(msg);
             }
         });
     }

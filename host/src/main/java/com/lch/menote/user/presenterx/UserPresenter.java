@@ -7,7 +7,6 @@ import com.lch.menote.user.datainterface.LocalUserDataSource;
 import com.lch.menote.user.datainterface.RemoteUserDataSource;
 import com.lch.menote.user.domain.LoginUseCase;
 import com.lch.menote.user.domain.RegisterUseCase;
-import com.lch.menote.user.domain.SaveUserSessionUseCase;
 import com.lch.menote.user.domain.UpdateUseCase;
 import com.lch.menote.user.domain.UploadFileUseCase;
 import com.lch.menote.user.route.User;

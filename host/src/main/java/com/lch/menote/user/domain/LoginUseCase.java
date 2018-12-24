@@ -1,14 +1,19 @@
 package com.lch.menote.user.domain;
 
+import com.lch.menote.user.datainterface.LocalUserDataSource;
 import com.lch.menote.user.datainterface.RemoteUserDataSource;
 import com.lch.menote.user.route.User;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.mvc.UseCase;
 
 /**
- * 传给用例的一定是数据源的抽象接口。
+ * 传给用例的一定是数据源的抽象接口。model转换器？如果从数据源拿到的是entity应该使用转换器转换为model
  */
 public class LoginUseCase extends UseCase<LoginUseCase.LoginParams, User> {
+
+    private final LocalUserDataSource localUserDataSource;
+    private RemoteUserDataSource dataSource;
+
 
     public static class LoginParams {
 
@@ -17,14 +22,17 @@ public class LoginUseCase extends UseCase<LoginUseCase.LoginParams, User> {
     }
 
 
-    private RemoteUserDataSource dataSource;
-
-    public LoginUseCase(RemoteUserDataSource dataSource) {
+    public LoginUseCase(RemoteUserDataSource dataSource, LocalUserDataSource localUserDataSource) {
         this.dataSource = dataSource;
+        this.localUserDataSource = localUserDataSource;
     }
 
     @Override
     protected ResponseValue<User> execute(LoginParams parameters) {
-        return dataSource.getUser(parameters.userName, parameters.userPwd);
+        ResponseValue<User> res = dataSource.getUser(parameters.userName, parameters.userPwd);
+        if (res.hasError() || res.data == null) {
+            return res;
+        }
+        return localUserDataSource.updateUser(res.data);
     }
 }
