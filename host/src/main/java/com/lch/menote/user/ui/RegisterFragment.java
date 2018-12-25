@@ -15,9 +15,12 @@ import com.lch.menote.user.presenterx.LoginPresenter;
 import com.lch.menote.user.presenterx.UserPresenter;
 import com.lch.menote.user.route.RouteCall;
 import com.lch.menote.user.route.User;
+import com.lch.menote.user.viewmodel.LoginViewModel;
 import com.lch.netkit.common.base.BaseFragment;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.widget.CommonTitleView;
+
+import androidx.lifecycle.Observer;
 
 
 /**
@@ -30,6 +33,7 @@ public class RegisterFragment extends BaseFragment {
     View register_widget;
     UserPresenter userPrensenter = UserDI.provideUserPresenter();
     LoginPresenter mLoginPresenter;
+    LoginViewModel loginViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +63,17 @@ public class RegisterFragment extends BaseFragment {
             @Override
             public void renderLoginFail(String msg) {
                 ToastUtils.showShort(msg);
+            }
+        });
+
+        loginViewModel.loading.observeForever(new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    ToastUtils.showShort("loading");
+                }else{
+                    ToastUtils.showShort("dismiss loading");
+                }
             }
         });
     }

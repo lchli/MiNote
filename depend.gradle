@@ -11,7 +11,7 @@ dependencies {
     api "com.android.support.constraint:constraint-layout:${rootProject.ext.constraint_layout_version}"
     api "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_version"
-    api "com.github.lchli:router:$router_version"
+   // api "com.github.lchli:router:$router_version"
     api "com.github.lchli:AndroidPinnedRecyclerView:$AndroidPinnedRecyclerView_version"
     api "org.greenrobot:eventbus:$eventbus_version"
     api "com.apkfuns.logutils:library:$logutils_version"
