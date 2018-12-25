@@ -2,7 +2,7 @@
 ext {
 
     minSdkVersion = 16
-    compileSdkVersion = 27
+    compileSdkVersion = 28
     buildToolsVersion = "27.0.3"
     targetSdkVersion = 27
 
@@ -34,6 +34,6 @@ ext {
     lch_videoPlayer_version="1.0.1"
     boxing_version="1.0.5"
 
-    lifecycleVersion = '+'
+    lifecycleVersion = '2.0.0'
 
 }

@@ -1,10 +1,15 @@
 package com.lch.menote.user.domain;
 
+import android.text.TextUtils;
+
+import com.lch.menote.file.data.RemoteFileSource;
 import com.lch.menote.user.datainterface.LocalUserDataSource;
 import com.lch.menote.user.datainterface.RemoteUserDataSource;
 import com.lch.menote.user.route.User;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.mvc.UseCase;
+
+import java.io.File;
 
 public class RegisterUseCase extends UseCase<RegisterUseCase.RegisterParams, User> {
 
@@ -12,21 +17,37 @@ public class RegisterUseCase extends UseCase<RegisterUseCase.RegisterParams, Use
 
         public String userName;
         public String userPwd;
-        public String userHeadUrl;
+        public String userHeadPath;
     }
 
 
     private RemoteUserDataSource userDataSource;
     private final LocalUserDataSource localUserDataSource;
+    private RemoteFileSource remoteFileSource;
 
-    public RegisterUseCase(RemoteUserDataSource userDataSource, LocalUserDataSource localUserDataSource) {
+    public RegisterUseCase(RemoteUserDataSource userDataSource, LocalUserDataSource localUserDataSource,RemoteFileSource remoteFileSource) {
         this.userDataSource = userDataSource;
         this.localUserDataSource = localUserDataSource;
+        this.remoteFileSource=remoteFileSource;
     }
 
     @Override
     protected ResponseValue<User> execute(RegisterParams parameters) {
-        ResponseValue<User> res = userDataSource.addUser(parameters.userName, parameters.userPwd, parameters.userHeadUrl);
+
+        String headUrl = "";
+
+        if (!TextUtils.isEmpty(parameters.userHeadPath)) {
+            ResponseValue<String> fileres = remoteFileSource.addFile(new File(parameters.userHeadPath));
+            headUrl = fileres.data;
+
+            if (fileres.hasError() || TextUtils.isEmpty(headUrl)) {
+                ResponseValue<User> ret = new ResponseValue<>();
+                ret.setErrorMsg("head icon upload fail.");
+                return ret;
+            }
+        }
+
+        ResponseValue<User> res = userDataSource.addUser(parameters.userName, parameters.userPwd, headUrl);
         if (res.hasError() || res.data == null) {
             return res;
         }
