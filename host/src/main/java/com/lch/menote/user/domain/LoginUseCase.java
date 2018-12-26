@@ -1,6 +1,6 @@
 package com.lch.menote.user.domain;
 
-import com.lch.menote.user.datainterface.LocalUserDataSource;
+import com.lch.menote.user.datainterface.UserSessionDataSource;
 import com.lch.menote.user.datainterface.RemoteUserDataSource;
 import com.lch.menote.user.route.User;
 import com.lch.netkit.common.mvc.ResponseValue;
@@ -11,7 +11,7 @@ import com.lch.netkit.common.mvc.UseCase;
  */
 public class LoginUseCase extends UseCase<LoginUseCase.LoginParams, User> {
 
-    private final LocalUserDataSource localUserDataSource;
+    private final UserSessionDataSource localUserDataSource;
     private RemoteUserDataSource dataSource;
 
 
@@ -22,7 +22,7 @@ public class LoginUseCase extends UseCase<LoginUseCase.LoginParams, User> {
     }
 
 
-    public LoginUseCase(RemoteUserDataSource dataSource, LocalUserDataSource localUserDataSource) {
+    public LoginUseCase(RemoteUserDataSource dataSource, UserSessionDataSource localUserDataSource) {
         this.dataSource = dataSource;
         this.localUserDataSource = localUserDataSource;
     }
@@ -33,6 +33,8 @@ public class LoginUseCase extends UseCase<LoginUseCase.LoginParams, User> {
         if (res.hasError() || res.data == null) {
             return res;
         }
-        return localUserDataSource.updateUser(res.data);
+        localUserDataSource.saveUser(res.data);
+
+        return res;
     }
 }

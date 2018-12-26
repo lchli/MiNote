@@ -1,4 +1,4 @@
-package com.lch.menote.user.ui
+package com.lch.menote.user.ui;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -11,8 +11,6 @@ import android.widget.EditText;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.lch.menote.R;
-import com.lch.menote.user.dataimpl.NetUserDataSource;
-import com.lch.menote.user.dataimpl.SpUserDataSource;
 import com.lch.menote.user.route.RouteCall;
 import com.lch.menote.user.viewmodel.LoginViewModel;
 import com.lch.netkit.common.base.BaseFragment;
@@ -29,7 +27,7 @@ public class LoginFragment extends BaseFragment {
 
     private CommonTitleView common_title;
     private View login_widget;
-    private LoginViewModel mLoginViewModel;
+    private final LoginViewModel mLoginViewModel = new LoginViewModel();
     private ProgressDialog mLoadingDialog;
     private EditText user_account_edit;
     private EditText user_pwd_edit;
@@ -37,7 +35,6 @@ public class LoginFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLoginViewModel = new LoginViewModel(new NetUserDataSource(),new SpUserDataSource());
         mLoadingDialog = new ProgressDialog(getActivity());
     }
 

@@ -1,4 +1,4 @@
-package com.lch.menote.user
+package com.lch.menote.user.ui
 
 import android.content.DialogInterface
 import android.os.Bundle

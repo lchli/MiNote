@@ -29,6 +29,7 @@ import com.lch.menote.note.route.NoteRouteApi;
 import com.lch.menote.user.controller.UserController;
 import com.lch.menote.user.route.RouteCall;
 import com.lch.menote.user.route.User;
+import com.lch.menote.user.viewmodel.UserCenterViewModel;
 import com.lch.menote.utils.DialogTool;
 import com.lch.netkit.common.base.BaseFragment;
 import com.lch.netkit.common.mvc.ControllerCallback;
@@ -37,6 +38,8 @@ import com.lch.netkit.common.tool.ListUtils;
 import com.lch.netkit.common.tool.VF;
 
 import java.util.List;
+
+import androidx.lifecycle.Observer;
 
 /**
  * Created by lichenghang on 2018/6/3.
@@ -53,6 +56,7 @@ public class UserFragmentUi extends BaseFragment {
     private UserCenterListItem check_update_widget;
     private ImageView user_portrait;
     private ApkController apkController = new ApkController();
+    private final UserCenterViewModel userCenterViewModel = new UserCenterViewModel();
 
     @Nullable
     @Override
@@ -90,24 +94,10 @@ public class UserFragmentUi extends BaseFragment {
         user_portrait.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                user_portrait.setEnabled(false);
+                BoxingConfig config = new BoxingConfig(BoxingConfig.Mode.SINGLE_IMG); // Mode：Mode.SINGLE_IMG, Mode.MULTI_IMG, Mode.VIDEO
+                config.needCamera(R.drawable.ic_camera).needGif(); // camera, gif support, set selected images count
 
-                mUserController.getUserSession(new ControllerCallback<User>() {
-                    @Override
-                    public void onComplete(@NonNull ResponseValue<User> responseValue) {
-                        user_portrait.setEnabled(true);
-
-                        if (responseValue.data == null) {
-                            return;
-                        }
-
-                        BoxingConfig config = new BoxingConfig(BoxingConfig.Mode.SINGLE_IMG); // Mode：Mode.SINGLE_IMG, Mode.MULTI_IMG, Mode.VIDEO
-                        config.needCamera(R.drawable.ic_camera).needGif(); // camera, gif support, set selected images count
-
-                        Boxing.of(config).withIntent(getActivity(), BoxingActivity.class).start(UserFragmentUi.this, SELECT_IMG_RQUEST);
-
-                    }
-                });
+                Boxing.of(config).withIntent(getActivity(), BoxingActivity.class).start(UserFragmentUi.this, SELECT_IMG_RQUEST);
 
             }
         });
@@ -163,28 +153,95 @@ public class UserFragmentUi extends BaseFragment {
         user_nick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                userCenterViewModel.onNickButtonClick();
+            }
+        });
 
-                mUserController.getUserSession(new ControllerCallback<User>() {
-                    @Override
-                    public void onComplete(@NonNull ResponseValue<User> responseValue) {
-                        if (responseValue.hasError()) {
-                            ToastUtils.showLong(responseValue.errMsg());
-                            return;
-                        }
-                        if (responseValue.data == null) {
-                            UserFragmentContainer parent = (UserFragmentContainer) getParentFragment();
-                            if (parent != null) {
-                                parent.toLogin(true);
-                            }
-                        }
+        userCenterViewModel.uploadHeadSuccessEvent.observeForever(new Observer<String>() {
+            @Override
+            public void onChanged(String headUrl) {
+                Glide.with(getActivity()).load(headUrl).apply(RequestOptions
+                        .placeholderOf(R.drawable.add_portrait)).into(user_portrait);
+            }
+        });
 
+        userCenterViewModel.updateContactSuccessEvent.observeForever(new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                user_contact.setText("联系方式:" + s);
+            }
+        });
+        userCenterViewModel.getUserSessionSuccessEvent.observeForever(new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                if (user == null) {
+                    user_nick.setText(getString(R.string.not_login));
+                    logout_widget.setText(getString(R.string.click_to_login));
+                    user_contact.setText("");
+                    user_portrait.setImageResource(R.drawable.add_portrait);
+                } else {
+                    user_nick.setText(user.name);
+
+                    if (TextUtils.isEmpty(user.userContact)) {
+                        user_contact.setText("联系方式:未填写");
+                    } else {
+                        user_contact.setText("联系方式:" + user.userContact);
                     }
-                });
+
+                    Glide.with(getActivity()).load(user.headUrl).apply(RequestOptions
+                            .placeholderOf(R.drawable.add_portrait)).into(user_portrait);
+
+                    logout_widget.setText(getString(R.string.logout));
+                }
+            }
+        });
+        userCenterViewModel.failMsg.observeForever(new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                ToastUtils.showLong(s);
+            }
+        });
+        userCenterViewModel.loading.observeForever(new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+
+            }
+        });
+        userCenterViewModel.nickClickEvent.observeForever(new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (!aBoolean) {
+                    UserFragmentContainer parent = (UserFragmentContainer) getParentFragment();
+                    if (parent != null) {
+                        parent.toLogin(true);
+                    }
+                }
+            }
+        });
+        userCenterViewModel.logoutClickEvent.observeForever(new Observer<Void>() {
+            @Override
+            public void onChanged(Void v) {
+                NoteRouteApi mod = RouteCall.getNoteModule();
+                if (mod != null) {
+                    mod.onUserLogout(null);
+                }
+
+                UserFragmentContainer parent = (UserFragmentContainer) getParentFragment();
+                if (parent != null) {
+                    parent.toLogin(true);
+                }
+
+            }
+        });
+        userCenterViewModel.gotoLoginAction.observeForever(new Observer<Void>() {
+            @Override
+            public void onChanged(Void aVoid) {
+
             }
         });
 
 
-        refreshUi();
+        userCenterViewModel.onLoadUserInfo();
     }
 
 
@@ -194,69 +251,18 @@ public class UserFragmentUi extends BaseFragment {
             @Override
             public void onConfirm(final Dialog dialog, String inputText) {
                 final String newtag = inputText;
-
                 if (TextUtils.isEmpty(newtag)) {
                     return;
                 }
+                dialog.dismiss();
 
-                mUserController.getUserSession(new ControllerCallback<User>() {
-                    @Override
-                    public void onComplete(@NonNull ResponseValue<User> responseValue) {
-
-                        responseValue.data.userContact = newtag;
-
-                        mUserController.update(responseValue.data, null, new ControllerCallback<User>() {
-                            @Override
-                            public void onComplete(@NonNull ResponseValue<User> responseValue) {
-                                if (responseValue.hasError()) {
-                                    ToastUtils.showShort(responseValue.errMsg());
-                                } else {
-                                    dialog.dismiss();
-                                    ToastUtils.showShort("添加成功");
-
-                                    refreshUi();
-                                }
-
-                            }
-                        });
-                    }
-                });
+                userCenterViewModel.onModifyUserContact(newtag);
             }
         });
 
 
     }
 
-
-    private void refreshUi() {
-        mUserController.getUserSession(new ControllerCallback<User>() {
-            @Override
-            public void onComplete(@NonNull ResponseValue<User> responseValue) {
-                if (responseValue.hasError()) {
-                    ToastUtils.showLong(responseValue.errMsg());
-                } else if (responseValue.data == null) {//not login ui.
-                    user_nick.setText(getString(R.string.not_login));
-                    logout_widget.setText(getString(R.string.click_to_login));
-                    user_contact.setText("");
-                    user_portrait.setImageResource(R.drawable.add_portrait);
-
-                } else {
-                    user_nick.setText(responseValue.data.name);
-
-                    if (TextUtils.isEmpty(responseValue.data.userContact)) {
-                        user_contact.setText("联系方式:未填写");
-                    } else {
-                        user_contact.setText("联系方式:" + responseValue.data.userContact);
-                    }
-
-                    Glide.with(getActivity()).load(responseValue.data.headUrl).apply(RequestOptions
-                            .placeholderOf(R.drawable.add_portrait)).into(user_portrait);
-
-                    logout_widget.setText(getString(R.string.logout));
-                }
-            }
-        });
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -265,28 +271,7 @@ public class UserFragmentUi extends BaseFragment {
         if (requestCode == SELECT_IMG_RQUEST && resultCode == Activity.RESULT_OK) {
             final List<BaseMedia> medias = Boxing.getResult(data);
             if (!ListUtils.isEmpty(medias)) {
-
-                mUserController.getUserSession(new ControllerCallback<User>() {
-                    @Override
-                    public void onComplete(@NonNull ResponseValue<User> responseValue) {
-                        if (responseValue.data == null) {
-                            return;
-                        }
-
-                        mUserController.update(responseValue.data, medias.get(0).getPath(), new ControllerCallback<User>() {
-                            @Override
-                            public void onComplete(@NonNull ResponseValue<User> responseValue) {
-                                if (responseValue.hasError()) {
-                                    ToastUtils.showShort("err:" + responseValue.errMsg());
-                                    return;
-                                }
-
-                                refreshUi();
-
-                            }
-                        });
-                    }
-                });
+                userCenterViewModel.onModifyUserHead(medias.get(0).getPath());
             }
         }
     }

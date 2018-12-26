@@ -3,7 +3,7 @@ package com.lch.menote.user.route;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 
-import com.lch.menote.user.LockPwdActivity;
+import com.lch.menote.user.ui.LockPwdActivity;
 import com.lch.menote.user.dataimpl.mem.MemUserRepo;
 import com.lch.menote.user.dataimpl.sp.SpUserRepo;
 import com.lch.menote.user.ui.UserFragmentContainer;

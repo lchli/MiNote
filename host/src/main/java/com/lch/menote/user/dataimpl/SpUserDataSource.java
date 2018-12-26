@@ -1,17 +1,32 @@
 package com.lch.menote.user.dataimpl;
 
-import com.lch.menote.user.datainterface.LocalUserDataSource;
+import com.blankj.utilcode.util.SPUtils;
+import com.lch.menote.user.datainterface.UserSessionDataSource;
 import com.lch.menote.user.route.User;
+import com.lch.menote.user.route.UserRouteApiImpl;
 import com.lch.netkit.common.mvc.ResponseValue;
+import com.lch.netkit.common.tool.AliJsonHelper;
 
-public class SpUserDataSource implements LocalUserDataSource {
+public class SpUserDataSource implements UserSessionDataSource {
+    private static final String KEY_USER_SESSION = "KEY_USER_SESSION";
+
     @Override
-    public ResponseValue<User> updateUser(User user) {
-        return null;
+    public void saveUser(User user) {
+        SPUtils.getInstance(UserRouteApiImpl.SP).put(KEY_USER_SESSION, AliJsonHelper.toJSONString(user));
     }
 
     @Override
     public ResponseValue<User> getUser() {
-        return null;
+        ResponseValue<User> res = new ResponseValue<>();
+
+        try {
+            String json = SPUtils.getInstance(UserRouteApiImpl.SP).getString(KEY_USER_SESSION);
+            res.data = AliJsonHelper.parseObject(json, User.class);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            res.setErrorMsg(e.getMessage());
+        }
+
+        return res;
     }
 }

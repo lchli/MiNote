@@ -2,8 +2,8 @@ package com.lch.menote.user.domain;
 
 import android.text.TextUtils;
 
-import com.lch.menote.file.data.RemoteFileSource;
-import com.lch.menote.user.datainterface.LocalUserDataSource;
+import com.lch.menote.file.datainterface.RemoteFileSource;
+import com.lch.menote.user.datainterface.UserSessionDataSource;
 import com.lch.menote.user.datainterface.RemoteUserDataSource;
 import com.lch.menote.user.route.User;
 import com.lch.netkit.common.mvc.ResponseValue;
@@ -22,13 +22,13 @@ public class RegisterUseCase extends UseCase<RegisterUseCase.RegisterParams, Use
 
 
     private RemoteUserDataSource userDataSource;
-    private final LocalUserDataSource localUserDataSource;
+    private final UserSessionDataSource localUserDataSource;
     private RemoteFileSource remoteFileSource;
 
-    public RegisterUseCase(RemoteUserDataSource userDataSource, LocalUserDataSource localUserDataSource,RemoteFileSource remoteFileSource) {
+    public RegisterUseCase(RemoteUserDataSource userDataSource, UserSessionDataSource localUserDataSource, RemoteFileSource remoteFileSource) {
         this.userDataSource = userDataSource;
         this.localUserDataSource = localUserDataSource;
-        this.remoteFileSource=remoteFileSource;
+        this.remoteFileSource = remoteFileSource;
     }
 
     @Override
@@ -51,6 +51,9 @@ public class RegisterUseCase extends UseCase<RegisterUseCase.RegisterParams, Use
         if (res.hasError() || res.data == null) {
             return res;
         }
-        return localUserDataSource.updateUser(res.data);
+        localUserDataSource.saveUser(res.data);
+
+        return res;
+
     }
 }

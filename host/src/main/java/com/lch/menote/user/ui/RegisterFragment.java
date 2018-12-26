@@ -1,4 +1,4 @@
-package com.lch.menote.user.ui
+package com.lch.menote.user.ui;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -28,7 +28,7 @@ public class RegisterFragment extends BaseFragment {
     private CommonTitleView common_title;
     private View register_widget;
 
-    private RegisterViewModel mRegisterViewModel;
+    private final RegisterViewModel mRegisterViewModel = new RegisterViewModel();
     private ProgressDialog mLoadingDialog;
     private EditText user_account_edit;
     private EditText user_pwd_edit;
@@ -36,7 +36,6 @@ public class RegisterFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mRegisterViewModel = new RegisterViewModel(null, null, null);
         mLoadingDialog = new ProgressDialog(getActivity());
 
     }

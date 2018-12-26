@@ -3,9 +3,8 @@ package com.lch.menote.user.viewmodel;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.lch.menote.file.data.RemoteFileSource;
-import com.lch.menote.user.datainterface.LocalUserDataSource;
-import com.lch.menote.user.datainterface.RemoteUserDataSource;
+import com.lch.menote.file.FileModuleInjector;
+import com.lch.menote.user.UserModuleInjector;
 import com.lch.menote.user.domain.RegisterUseCase;
 import com.lch.menote.user.route.User;
 import com.lch.netkit.common.mvc.ControllerCallback;
@@ -20,11 +19,9 @@ public class RegisterViewModel {
     public MutableLiveData<Boolean> loading = new MutableLiveData<>();
     public MutableLiveData<String> failMsg = new MutableLiveData<>();
     public MutableLiveData<Void> successEvent = new MutableLiveData<>();
-    private final RegisterUseCase mRegisterUseCase;
+    private final RegisterUseCase mRegisterUseCase = new RegisterUseCase(UserModuleInjector.getINS().provideRemoteUserDataSource(),
+            UserModuleInjector.getINS().provideLocalUserDataSource(), FileModuleInjector.getINS().provideRemoteFileSource());
 
-    public RegisterViewModel(RemoteUserDataSource remoteUserDataSource, LocalUserDataSource localUserDataSource, RemoteFileSource remoteFileSource) {
-        mRegisterUseCase = new RegisterUseCase(remoteUserDataSource, localUserDataSource, remoteFileSource);
-    }
 
     public void onRegister(String userName, String userPwd, String headPath) {
         loading.postValue(true);

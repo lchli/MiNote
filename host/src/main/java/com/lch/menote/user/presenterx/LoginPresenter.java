@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.lch.menote.user.datainterface.LocalUserDataSource;
+import com.lch.menote.user.datainterface.UserSessionDataSource;
 import com.lch.menote.user.datainterface.RemoteUserDataSource;
 import com.lch.menote.user.domain.LoginUseCase;
 import com.lch.menote.user.route.User;
@@ -29,7 +29,7 @@ public class LoginPresenter {
     private final View view;
     private final LoginUseCase mLoginUseCase;
 
-    public LoginPresenter(RemoteUserDataSource remoteUserDataSource, LocalUserDataSource localUserDataSource, @NonNull View view) {
+    public LoginPresenter(RemoteUserDataSource remoteUserDataSource, UserSessionDataSource localUserDataSource, @NonNull View view) {
         this.view = view;
         mLoginUseCase = new LoginUseCase(remoteUserDataSource, localUserDataSource);
     }

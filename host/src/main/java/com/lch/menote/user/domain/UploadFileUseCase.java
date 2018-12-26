@@ -1,6 +1,6 @@
 package com.lch.menote.user.domain;
 
-import com.lch.menote.file.data.RemoteFileSource;
+import com.lch.menote.file.datainterface.RemoteFileSource;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.mvc.UseCase;
 

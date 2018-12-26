@@ -3,9 +3,9 @@ package com.lch.menote.user.datainterface;
 import com.lch.menote.user.route.User;
 import com.lch.netkit.common.mvc.ResponseValue;
 
-public interface LocalUserDataSource {
+public interface UserSessionDataSource {
 
-    ResponseValue<User> updateUser(User user);
+    void saveUser(User user);
 
     ResponseValue<User> getUser();
 }

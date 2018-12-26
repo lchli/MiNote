@@ -8,7 +8,7 @@ import com.lch.menote.note.domain.response.UploadFileResponse;
 import com.lch.menote.user.dataimpl.mem.MemUserRepo;
 import com.lch.menote.user.dataimpl.net.NetUserRepo;
 import com.lch.menote.user.dataimpl.sp.SpUserRepo;
-import com.lch.menote.user.model.LoginResponse;
+import com.lch.menote.user.dataimpl.response.LoginResponse;
 import com.lch.menote.user.route.User;
 import com.lch.menote.utils.RequestUtils;
 import com.lch.netkit.NetKit;
