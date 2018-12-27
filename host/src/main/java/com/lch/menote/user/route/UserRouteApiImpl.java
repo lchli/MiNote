@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 
 import com.lch.menote.user.ui.LockPwdActivity;
-import com.lch.menote.user.dataimpl.mem.MemUserRepo;
+import com.lch.menote.user.dataimpl.MemPwdSource;
 import com.lch.menote.user.dataimpl.sp.SpUserRepo;
 import com.lch.menote.user.ui.UserFragmentContainer;
 import com.lch.netkit.common.tool.Navigator;
@@ -23,7 +23,7 @@ import java.util.Map;
     public static final String SP = "user-sp";
 
     private Context mContext;
-    private MemUserRepo mMemUserRepo = new MemUserRepo();
+    private MemPwdSource mMemUserRepo = new MemPwdSource();
     private SpUserRepo mSpUserRepo = new SpUserRepo();
 
     @Override

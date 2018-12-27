@@ -12,14 +12,15 @@ import com.lch.menote.home.route.HomeRouteApiImpl;
 import com.lch.menote.note.route.NoteRouteApiImpl;
 import com.lch.menote.user.UserModuleFactory;
 import com.lch.menote.user.UserModuleInjector;
+import com.lch.menote.user.dataimpl.NetAppUpdateInfoSource;
 import com.lch.menote.user.dataimpl.NetUserDataSource;
 import com.lch.menote.user.dataimpl.SpUserDataSource;
-import com.lch.menote.user.datainterface.UserSessionDataSource;
+import com.lch.menote.user.datainterface.AppUpdateInfoDataSource;
 import com.lch.menote.user.datainterface.RemoteUserDataSource;
+import com.lch.menote.user.datainterface.UserSessionDataSource;
 import com.lch.menote.user.route.UserRouteApiImpl;
-import com.lch.netkit.NetKit;
 import com.lch.netkit.common.tool.ContextProvider;
-import com.lch.route.noaop.lib.RouteEngine;
+import com.lch.netkit.v2.NetKit;
 
 
 /**
@@ -47,6 +48,11 @@ public class HostApp extends Application {
             @Override
             public RemoteUserDataSource provideRemoteUserDataSource() {
                 return new NetUserDataSource();
+            }
+
+            @Override
+            public AppUpdateInfoDataSource provideAppUpdateInfoDataSource() {
+                return new NetAppUpdateInfoSource();
             }
         });
 

@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.lch.menote.ApiConstants;
 import com.lch.menote.note.domain.response.UploadFileResponse;
-import com.lch.menote.user.dataimpl.mem.MemUserRepo;
+import com.lch.menote.user.dataimpl.MemPwdSource;
 import com.lch.menote.user.dataimpl.net.NetUserRepo;
 import com.lch.menote.user.dataimpl.sp.SpUserRepo;
 import com.lch.menote.user.dataimpl.response.LoginResponse;
@@ -24,11 +24,11 @@ import com.lch.netkit.string.Parser;
 /**
  * Created by lichenghang on 2018/5/27.
  */
-
+@Deprecated
 public class UserController {
 
     private NetUserRepo netUserRepo = new NetUserRepo();
-    private MemUserRepo mMemUserRepo = new MemUserRepo();
+    private MemPwdSource mMemUserRepo = new MemPwdSource();
     private SpUserRepo mSpUserRepo = new SpUserRepo();
 
     public void register(final String userName, final String userPwd, final String userHeadUrl,
@@ -323,35 +323,5 @@ public class UserController {
         });
     }
 
-    public void saveUserSession(final User user, final ControllerCallback<Void> cb) {
-        TaskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                final ResponseValue<Void> res = mSpUserRepo.saveUser(user);
 
-                UiHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        cb.onComplete(res);
-                    }
-                });
-            }
-        });
-    }
-
-    public void clearUserSession(final ControllerCallback<Void> cb) {
-        TaskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                final ResponseValue<Void> res = mSpUserRepo.removeCurrentUser();
-
-                UiHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        cb.onComplete(res);
-                    }
-                });
-            }
-        });
-    }
 }

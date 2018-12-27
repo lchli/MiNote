@@ -43,14 +43,14 @@
             android:textSize="16dp" />
     </LinearLayout>
 
-    <com.lch.menote.user.ui.UserCenterListItem
+    <com.lch.menote.user.widget.UserCenterListItem
         android:id="@+id/app_version_widget"
         style="@style/UserCenterListLayout"
         android:layout_marginTop="10dp"
         app:UserCenterListItem_icon="@drawable/ic_app_version"
         app:UserCenterListItem_text="版本号：1.0" />
 
-    <com.lch.menote.user.ui.UserCenterListItem
+    <com.lch.menote.user.widget.UserCenterListItem
         android:id="@+id/check_update_widget"
         style="@style/UserCenterListLayout"
         app:UserCenterListItem_icon="@drawable/ic_check_update"
@@ -58,7 +58,7 @@
 
         />
 
-    <com.lch.menote.user.ui.UserCenterListItem
+    <com.lch.menote.user.widget.UserCenterListItem
         android:id="@+id/about_us_widget"
         style="@style/UserCenterListLayout"
         app:UserCenterListItem_icon="@drawable/ic_about_us"
@@ -67,7 +67,7 @@
 
         />
 
-    <com.lch.menote.user.ui.UserCenterListItem
+    <com.lch.menote.user.widget.UserCenterListItem
         android:id="@+id/logout_widget"
         style="@style/UserCenterListLayout"
         app:UserCenterListItem_icon="@drawable/ic_logout"

@@ -2,9 +2,9 @@ package com.lch.menote.user.ui;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,23 +17,16 @@ import com.bilibili.boxing.Boxing;
 import com.bilibili.boxing.model.config.BoxingConfig;
 import com.bilibili.boxing.model.entity.BaseMedia;
 import com.bilibili.boxing_impl.ui.BoxingActivity;
-import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.lch.menote.ApiConstants;
 import com.lch.menote.R;
-import com.lch.menote.app.ApkController;
-import com.lch.menote.app.model.ApkResponse;
 import com.lch.menote.note.route.NoteRouteApi;
-import com.lch.menote.user.controller.UserController;
 import com.lch.menote.user.route.RouteCall;
-import com.lch.menote.user.route.User;
 import com.lch.menote.user.viewmodel.UserCenterViewModel;
+import com.lch.menote.user.widget.UserCenterListItem;
 import com.lch.menote.utils.DialogTool;
 import com.lch.netkit.common.base.BaseFragment;
-import com.lch.netkit.common.mvc.ControllerCallback;
-import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.ListUtils;
 import com.lch.netkit.common.tool.VF;
 
@@ -48,15 +41,21 @@ import androidx.lifecycle.Observer;
 public class UserFragmentUi extends BaseFragment {
     private static final int SELECT_IMG_RQUEST = 1;
 
-    private UserController mUserController = new UserController();
     private TextView user_nick;
     private TextView user_contact;
     private UserCenterListItem logout_widget;
     private UserCenterListItem app_version_widget;
     private UserCenterListItem check_update_widget;
     private ImageView user_portrait;
-    private ApkController apkController = new ApkController();
-    private final UserCenterViewModel userCenterViewModel = new UserCenterViewModel();
+    private UserCenterViewModel userCenterViewModel;
+    private ProgressDialog mLoadingDialog;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        userCenterViewModel = new UserCenterViewModel(getActivity());
+        mLoadingDialog = new ProgressDialog(getActivity());
+    }
 
     @Nullable
     @Override
@@ -74,20 +73,54 @@ public class UserFragmentUi extends BaseFragment {
         user_contact = VF.f(view, R.id.user_contact);
         check_update_widget = VF.f(view, R.id.check_update_widget);
 
+        userCenterViewModel.userNickTextVM.observeForever(new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                user_nick.setText(s);
+            }
+        });
+        userCenterViewModel.logoutTextVM.observeForever(new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                logout_widget.setText(s);
+            }
+        });
+        userCenterViewModel.userContactTextVM.observeForever(new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                user_contact.setText(s);
+            }
+        });
+        userCenterViewModel.headImagePathVM.observeForever(new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                Glide.with(getActivity()).load(s).apply(RequestOptions
+                        .placeholderOf(R.drawable.add_portrait)).into(user_portrait);
+            }
+        });
+        userCenterViewModel.headImageResVM.observeForever(new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                user_portrait.setImageResource(integer);
+            }
+        });
+        userCenterViewModel.appVersionTextVM.observeForever(new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                app_version_widget.setText(s);
+            }
+        });
+        userCenterViewModel.appUpdateResult.observeForever(new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                ToastUtils.showShort(s);
+            }
+        });
+
         check_update_widget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                apkController.checkUpdate(AppUtils.getAppVersionCode(), new ControllerCallback<ApkResponse>() {
-                    @Override
-                    public void onComplete(@NonNull ResponseValue<ApkResponse> responseValue) {
-                        if (responseValue.hasError() || responseValue.data == null || responseValue.data.status != ApiConstants.RESPONSE_CODE_SUCCESS) {
-                            ToastUtils.showShort(responseValue.errMsg());
-                            return;
-                        }
-                        ToastUtils.showShort("已有新版本，请到应用宝市场下载！");
-
-                    }
-                });
+                userCenterViewModel.onCheckAppUpdate();
             }
         });
 
@@ -102,44 +135,10 @@ public class UserFragmentUi extends BaseFragment {
             }
         });
 
-        app_version_widget.setText(getString(R.string.app_version_pattern, AppUtils.getAppVersionName()));
-
         logout_widget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logout_widget.setEnabled(false);
-
-                mUserController.getUserSession(new ControllerCallback<User>() {
-                    @Override
-                    public void onComplete(@NonNull ResponseValue<User> responseValue) {
-                        logout_widget.setEnabled(true);
-
-                        if (responseValue.data == null) {
-                            UserFragmentContainer parent = (UserFragmentContainer) getParentFragment();
-                            if (parent != null) {
-                                parent.toLogin(true);
-                            }
-
-                        } else {
-
-                            mUserController.clearUserSession(new ControllerCallback<Void>() {
-                                @Override
-                                public void onComplete(@NonNull ResponseValue<Void> responseValue) {
-                                    NoteRouteApi mod = RouteCall.getNoteModule();
-                                    if (mod != null) {
-                                        mod.onUserLogout(null);
-                                    }
-
-                                    refreshUi();
-                                }
-                            });
-
-                        }
-
-                    }
-                });
-
-
+                userCenterViewModel.onLogoutOrInButtonClick();
             }
         });
 
@@ -157,75 +156,28 @@ public class UserFragmentUi extends BaseFragment {
             }
         });
 
-        userCenterViewModel.uploadHeadSuccessEvent.observeForever(new Observer<String>() {
-            @Override
-            public void onChanged(String headUrl) {
-                Glide.with(getActivity()).load(headUrl).apply(RequestOptions
-                        .placeholderOf(R.drawable.add_portrait)).into(user_portrait);
-            }
-        });
-
-        userCenterViewModel.updateContactSuccessEvent.observeForever(new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                user_contact.setText("联系方式:" + s);
-            }
-        });
-        userCenterViewModel.getUserSessionSuccessEvent.observeForever(new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                if (user == null) {
-                    user_nick.setText(getString(R.string.not_login));
-                    logout_widget.setText(getString(R.string.click_to_login));
-                    user_contact.setText("");
-                    user_portrait.setImageResource(R.drawable.add_portrait);
-                } else {
-                    user_nick.setText(user.name);
-
-                    if (TextUtils.isEmpty(user.userContact)) {
-                        user_contact.setText("联系方式:未填写");
-                    } else {
-                        user_contact.setText("联系方式:" + user.userContact);
-                    }
-
-                    Glide.with(getActivity()).load(user.headUrl).apply(RequestOptions
-                            .placeholderOf(R.drawable.add_portrait)).into(user_portrait);
-
-                    logout_widget.setText(getString(R.string.logout));
-                }
-            }
-        });
         userCenterViewModel.failMsg.observeForever(new Observer<String>() {
             @Override
             public void onChanged(String s) {
                 ToastUtils.showLong(s);
             }
         });
+
         userCenterViewModel.loading.observeForever(new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    mLoadingDialog.show();
+                } else {
+                    mLoadingDialog.dismiss();
+                }
 
             }
         });
-        userCenterViewModel.nickClickEvent.observeForever(new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (!aBoolean) {
-                    UserFragmentContainer parent = (UserFragmentContainer) getParentFragment();
-                    if (parent != null) {
-                        parent.toLogin(true);
-                    }
-                }
-            }
-        });
-        userCenterViewModel.logoutClickEvent.observeForever(new Observer<Void>() {
-            @Override
-            public void onChanged(Void v) {
-                NoteRouteApi mod = RouteCall.getNoteModule();
-                if (mod != null) {
-                    mod.onUserLogout(null);
-                }
 
+        userCenterViewModel.gotoLoginAction.observeForever(new Observer<Void>() {
+            @Override
+            public void onChanged(Void aVoid) {
                 UserFragmentContainer parent = (UserFragmentContainer) getParentFragment();
                 if (parent != null) {
                     parent.toLogin(true);
@@ -233,10 +185,14 @@ public class UserFragmentUi extends BaseFragment {
 
             }
         });
-        userCenterViewModel.gotoLoginAction.observeForever(new Observer<Void>() {
+
+        userCenterViewModel.onLogoutAction.observeForever(new Observer<Void>() {
             @Override
             public void onChanged(Void aVoid) {
-
+                NoteRouteApi mod = RouteCall.getNoteModule();
+                if (mod != null) {
+                    mod.onUserLogout(null);
+                }
             }
         });
 
@@ -275,4 +231,6 @@ public class UserFragmentUi extends BaseFragment {
             }
         }
     }
+
+
 }

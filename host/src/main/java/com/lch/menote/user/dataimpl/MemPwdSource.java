@@ -1,9 +1,10 @@
-package com.lch.menote.user.dataimpl.mem;
+package com.lch.menote.user.dataimpl;
 
 import com.blankj.utilcode.util.EncryptUtils;
+import com.lch.menote.user.datainterface.PwdSource;
 import com.lch.netkit.common.mvc.ResponseValue;
 
-public class MemUserRepo {
+public class MemPwdSource implements PwdSource {
 
     private static String lockPwd = "";
 

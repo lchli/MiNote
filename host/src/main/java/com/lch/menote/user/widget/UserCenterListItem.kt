@@ -1,4 +1,4 @@
-package com.lch.menote.user.ui
+package com.lch.menote.user.widget
 
 import android.content.Context
 import android.util.AttributeSet
