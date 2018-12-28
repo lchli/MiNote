@@ -1,6 +1,7 @@
 package com.lch.menote.file.datainterface;
 
-import com.lch.netkit.common.mvc.ResponseValue;
+
+import com.lchli.arch.clean.ResponseValue;
 
 import java.io.File;
 

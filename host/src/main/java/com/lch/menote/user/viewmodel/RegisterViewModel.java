@@ -7,7 +7,7 @@ import com.lch.menote.file.FileModuleInjector;
 import com.lch.menote.user.UserModuleInjector;
 import com.lch.menote.user.domain.RegisterUseCase;
 import com.lch.menote.user.route.User;
-import com.lch.netkit.common.mvc.ControllerCallback;
+import com.lchli.arch.clean.ControllerCallback;
 
 import androidx.lifecycle.MutableLiveData;
 

@@ -1,6 +1,7 @@
 package com.lch.menote.user.datainterface;
 
-import com.lch.netkit.common.mvc.ResponseValue;
+
+import com.lchli.arch.clean.ResponseValue;
 
 /**
  * Created by Administrator on 2018/12/27.

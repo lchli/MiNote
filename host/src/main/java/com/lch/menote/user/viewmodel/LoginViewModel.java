@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import com.lch.menote.user.UserModuleInjector;
 import com.lch.menote.user.domain.LoginUseCase;
 import com.lch.menote.user.route.User;
-import com.lch.netkit.common.mvc.ControllerCallback;
+import com.lchli.arch.clean.ControllerCallback;
 
 import androidx.lifecycle.MutableLiveData;
 

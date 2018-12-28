@@ -3,11 +3,11 @@ package com.lch.menote.user.domain;
 import android.text.TextUtils;
 
 import com.lch.menote.file.datainterface.RemoteFileSource;
-import com.lch.menote.user.datainterface.UserSessionDataSource;
 import com.lch.menote.user.datainterface.RemoteUserDataSource;
+import com.lch.menote.user.datainterface.UserSessionDataSource;
 import com.lch.menote.user.route.User;
-import com.lch.netkit.common.mvc.ResponseValue;
-import com.lch.netkit.common.mvc.UseCase;
+import com.lchli.arch.clean.ResponseValue;
+import com.lchli.arch.clean.UseCase;
 
 import java.io.File;
 

@@ -9,10 +9,11 @@ import com.lch.menote.note.ui.CloudNoteUi
 import com.lch.menote.note.ui.HotNoteUi
 import com.lch.menote.note.ui.LocalNoteUi
 import com.lch.menote.user.ui.UserFragmentContainer
-import com.lch.netkit.common.base.BaseCompatActivity
-import com.lch.netkit.common.base.BaseFragment
-import com.lch.netkit.common.base.FragmentAdapter
-import com.lch.netkit.common.tool.ResUtils
+import com.lchli.utils.base.BaseCompatActivity
+import com.lchli.utils.base.BaseFragment
+import com.lchli.utils.base.FragmentAdapter
+import com.lchli.utils.tool.ResUtils
+
 import kotlinx.android.synthetic.main.activity_home.*
 
 

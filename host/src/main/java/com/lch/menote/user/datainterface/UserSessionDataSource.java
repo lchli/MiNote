@@ -1,7 +1,7 @@
 package com.lch.menote.user.datainterface;
 
 import com.lch.menote.user.route.User;
-import com.lch.netkit.common.mvc.ResponseValue;
+import com.lchli.arch.clean.ResponseValue;
 
 public interface UserSessionDataSource {
 
