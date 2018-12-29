@@ -21,6 +21,7 @@ import com.lch.menote.user.datainterface.UserSessionDataSource;
 import com.lch.menote.user.route.UserRouteApiImpl;
 import com.lch.netkit.common.tool.ContextProvider;
 import com.lch.netkit.v2.NetKit;
+import com.lchli.imgloader.ImgLoaderManager;
 
 
 /**
@@ -70,6 +71,8 @@ public class HostApp extends Application {
         BoxingMediaLoader.getInstance().init(new IBoxingMediaLoaderImpl());
 
         RouteEngine.INSTANCE.init(this, HomeRouteApiImpl.class, NoteRouteApiImpl.class, UserRouteApiImpl.class);
+
+        ImgLoaderManager.getINS().init(this, null);
 
 
     }
