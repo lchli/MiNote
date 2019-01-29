@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
 import com.lch.menote.kotlinext.evalFontHeight
-import com.lch.menote.note.domain.MusicData
+import com.lch.menote.note.model.MusicData
 
 
 /**

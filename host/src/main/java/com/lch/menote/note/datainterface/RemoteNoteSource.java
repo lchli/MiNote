@@ -1,6 +1,6 @@
 package com.lch.menote.note.datainterface;
 
-import com.lch.menote.note.domain.NoteModel;
+import com.lch.menote.note.model.NoteModel;
 import com.lchli.arch.clean.ResponseValue;
 
 import org.jetbrains.annotations.NotNull;
@@ -19,12 +19,13 @@ public interface RemoteNoteSource {
         public static final String DIRECTION_ASC = "asc";
         public static final String DIRECTION_DESC = "desc";
 
-        private String tag;
-        private String title;
-        private String uid;
-        private String isPublic;
-        private int page = 0;
-        private int pageSize = 20;
+        public String tag;
+        public String title;
+        public String uid;
+        public String userId;
+        public String isPublic;
+        public int page = 0;
+        public int pageSize = 20;
 
         private JSONArray jsonArray = new JSONArray();
 
@@ -59,6 +60,11 @@ public interface RemoteNoteSource {
 
         public NetNoteQuery setUid(String uid) {
             this.uid = uid;
+            return this;
+        }
+
+        public NetNoteQuery setUserId(String userId) {
+            this.userId = userId;
             return this;
         }
 

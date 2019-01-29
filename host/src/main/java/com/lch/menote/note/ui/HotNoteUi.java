@@ -15,7 +15,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.lch.menote.R;
 import com.lch.menote.kotlinext.ContextExtKt;
 import com.lch.menote.note.controller.HotNoteController;
-import com.lch.menote.note.domain.CloudNoteListChangedEvent;
+import com.lch.menote.note.events.CloudNoteListChangedEvent;
 import com.lch.netkit.common.base.BaseFragment;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;

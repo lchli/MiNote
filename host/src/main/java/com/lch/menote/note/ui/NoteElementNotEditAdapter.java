@@ -20,7 +20,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.lch.audio_player.AudioPlayer;
 import com.lch.audio_player.ui.SimpleAudioView;
 import com.lch.menote.R;
-import com.lch.menote.note.domain.NoteElement;
+import com.lch.menote.note.model.NoteElement;
 import com.lch.menote.utils.VideoPlayUtil;
 import com.lch.netkit.common.base.AbsAdapter;
 import com.lch.netkit.common.tool.VF;
@@ -32,7 +32,6 @@ import com.lch.video_player.ui.SimpleVideoView;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import tv.danmaku.ijk.media.player.IMediaPlayer;

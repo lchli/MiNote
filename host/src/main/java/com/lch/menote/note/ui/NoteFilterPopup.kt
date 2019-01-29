@@ -8,7 +8,7 @@ import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
 import com.lch.menote.R
-import com.lch.menote.note.domain.NoteFilterData
+import com.lch.menote.note.model.NoteFilterData
 
 /**
  * Created by lichenghang on 2016/4/27.

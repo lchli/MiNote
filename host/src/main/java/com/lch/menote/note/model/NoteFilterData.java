@@ -1,4 +1,4 @@
-package com.lch.menote.note.domain;
+package com.lch.menote.note.model;
 
 /**
  * Created by lchli on 2016/8/16.

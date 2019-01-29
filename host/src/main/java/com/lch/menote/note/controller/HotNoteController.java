@@ -2,10 +2,10 @@ package com.lch.menote.note.controller;
 
 import android.content.Context;
 
-import com.lch.menote.note.data.net.NetNoteRepo;
-import com.lch.menote.note.domain.HeadData;
-import com.lch.menote.note.domain.NoteModel;
-import com.lch.menote.note.domain.response.QueryNoteResponse;
+import com.lch.menote.note.data.NetNoteRepo;
+import com.lch.menote.note.model.HeadData;
+import com.lch.menote.note.model.NoteModel;
+import com.lch.menote.note.data.response.QueryNoteResponse;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.ListUtils;

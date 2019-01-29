@@ -1,4 +1,4 @@
-package com.lch.menote.note.domain
+package com.lch.menote.note.model
 
 import com.lchli.pinedrecyclerlistview.library.ListSectionData
 

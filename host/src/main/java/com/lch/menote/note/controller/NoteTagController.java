@@ -1,7 +1,7 @@
 package com.lch.menote.note.controller;
 
 
-import com.lch.menote.note.data.sp.SpNoteTagRepo;
+import com.lch.menote.note.data.SpNoteTagRepo;
 import com.lch.netkit.common.mvc.ControllerCallback;
 import com.lch.netkit.common.mvc.ResponseValue;
 import com.lch.netkit.common.tool.TaskExecutor;

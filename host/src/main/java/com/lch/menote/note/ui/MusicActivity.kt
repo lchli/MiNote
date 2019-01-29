@@ -14,8 +14,11 @@ import com.lch.menote.kotlinext.launchActivity
 import com.lch.menote.kotlinext.log
 import com.lch.menote.kotlinext.saveViewBmpToSdcard
 import com.lch.menote.note.controller.LocalNoteController
-import com.lch.menote.note.domain.*
-import com.lch.menote.note.domain.entity.Note
+import com.lch.menote.note.data.entity.Note
+import com.lch.menote.note.events.LocalNoteListChangedEvent
+import com.lch.menote.note.model.LinkData
+import com.lch.menote.note.model.MusicData
+import com.lch.menote.note.model.NoteModel
 import com.lch.netkit.common.tool.AliJsonHelper
 import com.lch.netkit.common.tool.AppListItemAnimatorUtils
 import com.lch.netkit.common.tool.EventBusUtils
@@ -60,7 +63,7 @@ class MusicActivity : AppCompatActivity() {
 
         val note = intent.getSerializableExtra(EXTRA_NOTE) as? NoteModel
         if (note != null) {
-            val oldDatas: List<MusicData>? = AliJsonHelper.parseArray(note.content,MusicData::class.java)
+            val oldDatas: List<MusicData>? = AliJsonHelper.parseArray(note.content, MusicData::class.java)
             if (oldDatas != null) {
                 datas.addAll(oldDatas)
             }

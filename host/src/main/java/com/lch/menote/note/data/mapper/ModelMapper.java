@@ -1,7 +1,7 @@
-package com.lch.menote.note.helper;
+package com.lch.menote.note.data.mapper;
 
-import com.lch.menote.note.domain.entity.Note;
-import com.lch.menote.note.domain.NoteModel;
+import com.lch.menote.note.data.entity.Note;
+import com.lch.menote.note.model.NoteModel;
 
 /**
  * Created by lichenghang on 2018/5/27.

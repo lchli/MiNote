@@ -14,40 +14,25 @@ import com.lch.audio_player.AudioPlayer;
 import com.lch.audio_player.LchAudioPlayer;
 import com.lch.menote.R;
 import com.lch.menote.note.controller.CloudNoteController;
-import com.lch.menote.note.domain.CloudNoteListChangedEvent;
-import com.lch.menote.note.domain.NoteElement;
-import com.lch.menote.note.domain.NoteModel;
+import com.lch.menote.note.events.CloudNoteListChangedEvent;
+import com.lch.menote.note.model.NoteElement;
+import com.lch.menote.note.model.NoteModel;
 import com.lch.menote.note.route.RouteCall;
 import com.lch.menote.user.route.User;
 import com.lch.menote.user.route.UserRouteApi;
-import com.lch.netkit.common.base.BaseCompatActivity;
-import com.lch.netkit.common.mvc.ControllerCallback;
-import com.lch.netkit.common.mvc.ResponseValue;
-import com.lch.netkit.common.tool.AliJsonHelper;
-import com.lch.netkit.common.tool.EventBusUtils;
-import com.lch.netkit.common.tool.ListUtils;
-import com.lch.netkit.common.tool.VF;
 import com.lch.video_player.LchVideoPlayer;
 import com.lch.video_player.VideoPlayer;
+import com.lchli.arch.clean.ControllerCallback;
+import com.lchli.arch.clean.ResponseValue;
+import com.lchli.utils.base.BaseCompatActivity;
+import com.lchli.utils.tool.AliJsonHelper;
+import com.lchli.utils.tool.EventBusUtils;
+import com.lchli.utils.tool.ListUtils;
+import com.lchli.utils.tool.VF;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 public class LocalNoteDetailUi extends BaseCompatActivity {
-
-
-    public static class Patch {
-
-        public  void dispath(String method,Object this$,Object[] args){
-            switch (method){
-                case "onCreate":
-                    LocalNoteDetailUi thiz= (LocalNoteDetailUi) this$;
-                    thiz.noteController= new CloudNoteController(thiz);
-
-                    break;
-            }
-        }
-    }
 
     private static final int LAUNCH_FROM_LOCAL_NOTE = 1;
     private static final int LAUNCH_FROM_CLOUD_NOTE = 2;
@@ -61,7 +46,6 @@ public class LocalNoteDetailUi extends BaseCompatActivity {
     private CloudNoteController noteController;
     private MenuItem likeMenu;
 
-    private static Patch patch;
 
 
     public static void launchFromLocal(Context context, NoteModel note) {
@@ -83,21 +67,6 @@ public class LocalNoteDetailUi extends BaseCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if(patch!=null){
-            patch.dispath("onCreate",this,new Object[]{savedInstanceState});
-            return;
-        }
-//        try {
-//            Object o=Class.forName(getClass().getName()+"$override").newInstance();
-//            Method m = o.getClass().getDeclaredMethod("onCreate", Bundle.class);
-//            m.setAccessible(true);
-//
-//            m.invoke(o,)
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
 
         noteController = new CloudNoteController(this);
         videoPlayer = LchVideoPlayer.newPlayer(getApplicationContext());

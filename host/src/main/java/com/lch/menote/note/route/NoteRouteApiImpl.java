@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 
 import com.lch.menote.ConstantUtil;
 import com.lch.menote.note.data.db.DaoSessionManager;
-import com.lch.menote.note.domain.CloudNoteListChangedEvent;
+import com.lch.menote.note.events.CloudNoteListChangedEvent;
 import com.lch.menote.note.ui.CloudNoteUi;
 import com.lch.menote.note.ui.LocalNoteUi;
 import com.lch.netkit.common.tool.EventBusUtils;

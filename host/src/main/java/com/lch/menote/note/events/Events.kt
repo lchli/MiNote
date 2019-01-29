@@ -1,4 +1,4 @@
-package com.lch.menote.note.domain
+package com.lch.menote.note.events
 
 /**
  * Created by lichenghang on 2017/10/3.

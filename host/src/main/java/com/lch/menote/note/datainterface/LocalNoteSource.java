@@ -1,6 +1,6 @@
 package com.lch.menote.note.datainterface;
 
-import com.lch.menote.note.domain.NoteModel;
+import com.lch.menote.note.model.NoteModel;
 import com.lchli.arch.clean.ResponseValue;
 
 import java.util.List;

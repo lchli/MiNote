@@ -5,7 +5,7 @@ import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
-import com.lch.menote.note.domain.MusicData
+import com.lch.menote.note.model.MusicData
 import com.lchli.pinedrecyclerlistview.library.pinnedRecyclerView.BaseRecyclerAdapter
 
 /**

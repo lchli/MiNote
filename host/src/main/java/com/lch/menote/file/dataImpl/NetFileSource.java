@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.lch.menote.ApiConstants;
 import com.lch.menote.file.datainterface.RemoteFileSource;
-import com.lch.menote.note.domain.response.UploadFileResponse;
+import com.lch.menote.note.data.response.UploadFileResponse;
 import com.lch.menote.utils.RequestUtils;
 import com.lch.netkit.v2.NetKit;
 import com.lch.netkit.v2.common.NetworkResponse;

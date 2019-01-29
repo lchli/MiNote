@@ -1,27 +1,20 @@
 package com.lch.menote.note.ui;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.lch.menote.R;
-import com.lch.menote.note.controller.CloudNoteController;
-import com.lch.menote.note.domain.CloudNoteListChangedEvent;
-import com.lch.menote.note.domain.NoteModel;
+import com.lch.menote.note.model.NoteModel;
+import com.lch.menote.note.presenter.CloudNotePresenter;
 import com.lch.menote.user.ui.UserInfoActivity;
-import com.lchli.arch.clean.ControllerCallback;
-import com.lchli.arch.clean.ResponseValue;
 import com.lchli.utils.base.AbsAdapter;
 import com.lchli.utils.tool.AppListItemAnimatorUtils;
 import com.lchli.utils.tool.DialogUtils;
-import com.lchli.utils.tool.EventBusUtils;
 import com.lchli.utils.tool.TimeUtils;
 import com.lchli.utils.tool.VF;
 import com.orhanobut.dialogplus.DialogPlus;
@@ -33,12 +26,13 @@ import com.orhanobut.dialogplus.OnItemClickListener;
 
 public class CloudNoteListAdapter extends AbsAdapter<NoteModel> {
 
-    private final CloudNoteController noteController;
+    private CloudNotePresenter noteController;
     private final Activity activity;
 
-    public CloudNoteListAdapter(CloudNoteController noteController, Activity activity) {
-        this.noteController = noteController;
+    public CloudNoteListAdapter(Activity activity, CloudNotePresenter presenter) {
+
         this.activity = activity;
+        noteController = presenter;
     }
 
     @Override
@@ -83,21 +77,7 @@ public class CloudNoteListAdapter extends AbsAdapter<NoteModel> {
                     public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
                         dialog.dismiss();
 
-                        noteController.deleteNetNote(model.uid, new ControllerCallback<Void>() {
-
-                            @Override
-                            public void onSuccess(@Nullable Void aVoid) {
-                                EventBusUtils.post(new CloudNoteListChangedEvent());
-                            }
-
-                            @Override
-                            public void onError(int code, String msg) {
-                                ToastUtils.showShort(msg);
-                            }
-
-
-                        });
-
+                        noteController.deleteNote(model.uid);
 
                     }
                 }, "删除");

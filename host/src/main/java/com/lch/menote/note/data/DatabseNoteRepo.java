@@ -6,10 +6,10 @@ import android.text.TextUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.lch.menote.note.data.db.DaoSessionManager;
 import com.lch.menote.note.data.db.gen.NoteDao;
+import com.lch.menote.note.data.mapper.ModelMapper;
 import com.lch.menote.note.datainterface.LocalNoteSource;
-import com.lch.menote.note.domain.NoteModel;
-import com.lch.menote.note.domain.entity.Note;
-import com.lch.menote.note.helper.ModelMapper;
+import com.lch.menote.note.model.NoteModel;
+import com.lch.menote.note.data.entity.Note;
 import com.lchli.arch.clean.ResponseValue;
 
 import org.greenrobot.greendao.query.QueryBuilder;

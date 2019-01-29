@@ -5,11 +5,11 @@ import android.text.TextUtils;
 
 import com.lch.menote.ApiConstants;
 import com.lch.menote.R;
-import com.lch.menote.note.data.net.NetNoteRepo;
-import com.lch.menote.note.domain.NoteElement;
-import com.lch.menote.note.domain.NoteModel;
-import com.lch.menote.note.domain.response.QueryNoteResponse;
-import com.lch.menote.note.domain.response.UploadFileResponse;
+import com.lch.menote.note.data.NetNoteRepo;
+import com.lch.menote.note.model.NoteElement;
+import com.lch.menote.note.model.NoteModel;
+import com.lch.menote.note.data.response.QueryNoteResponse;
+import com.lch.menote.note.data.response.UploadFileResponse;
 import com.lch.menote.note.route.RouteCall;
 import com.lch.menote.user.dataimpl.sp.SpUserRepo;
 import com.lch.menote.user.route.User;

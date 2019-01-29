@@ -1,7 +1,7 @@
 package com.lch.menote.note.controller;
 
 import com.lch.menote.note.data.MemNoteElementRepo;
-import com.lch.menote.note.domain.NoteElement;
+import com.lch.menote.note.model.NoteElement;
 
 import java.util.List;
 

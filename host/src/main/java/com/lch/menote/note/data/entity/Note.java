@@ -1,4 +1,4 @@
-package com.lch.menote.note.domain.entity;
+package com.lch.menote.note.data.entity;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;

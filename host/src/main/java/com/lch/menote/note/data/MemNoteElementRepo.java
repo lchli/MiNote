@@ -1,6 +1,6 @@
 package com.lch.menote.note.data;
 
-import com.lch.menote.note.domain.NoteElement;
+import com.lch.menote.note.model.NoteElement;
 
 import java.util.ArrayList;
 import java.util.List;

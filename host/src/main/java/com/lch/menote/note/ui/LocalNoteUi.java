@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import com.lch.menote.R;
 import com.lch.menote.note.controller.LocalNoteController;
 import com.lch.menote.note.data.DatabseNoteRepo;
-import com.lch.menote.note.domain.LocalNoteListChangedEvent;
+import com.lch.menote.note.events.LocalNoteListChangedEvent;
 import com.lchli.arch.clean.ControllerCallback;
 import com.lchli.arch.clean.ResponseValue;
 import com.lchli.pinedrecyclerlistview.library.pinnedRecyclerView.PinnedRecyclerView;
