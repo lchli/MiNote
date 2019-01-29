@@ -2,7 +2,8 @@ package com.lch.menote.user.dataimpl;
 
 import com.blankj.utilcode.util.EncryptUtils;
 import com.lch.menote.user.datainterface.PwdSource;
-import com.lch.netkit.common.mvc.ResponseValue;
+import com.lchli.arch.clean.ResponseValue;
+
 
 public class MemPwdSource implements PwdSource {
 

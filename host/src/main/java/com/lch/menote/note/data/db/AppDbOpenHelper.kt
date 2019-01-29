@@ -8,7 +8,7 @@ import android.util.Log
 import com.apkfuns.logutils.LogUtils
 import com.lch.menote.note.data.db.gen.DaoMaster
 import com.lch.menote.ConstantUtil
-import com.lch.netkit.common.tool.ExtFileUtils
+import com.lchli.utils.tool.ExtFileUtils
 import org.apache.commons.io.FileUtils
 import org.greenrobot.greendao.database.Database
 import java.io.File

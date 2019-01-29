@@ -11,23 +11,22 @@ import android.widget.EditText;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.lch.menote.R;
-import com.lch.menote.user.route.RouteCall;
-import com.lch.menote.user.viewmodel.LoginViewModel;
-import com.lch.netkit.common.base.BaseFragment;
-import com.lch.netkit.common.tool.VF;
-import com.lch.netkit.common.widget.CommonTitleView;
+import com.lch.menote.user.presenterx.LoginPresenter;
+import com.lchli.utils.base.BaseFragment;
+import com.lchli.utils.tool.VF;
+import com.lchli.utils.widget.CommonTitleView;
 
-import androidx.lifecycle.Observer;
+import java.lang.ref.WeakReference;
 
 
 /**
  * Created by lchli on 2016/8/10.
  */
-public class LoginFragment extends BaseFragment {
+public class LoginFragment extends BaseFragment implements LoginPresenter.MvpView {
 
     private CommonTitleView common_title;
     private View login_widget;
-    private final LoginViewModel mLoginViewModel = new LoginViewModel();
+    private LoginPresenter mLoginViewModel;
     private ProgressDialog mLoadingDialog;
     private EditText user_account_edit;
     private EditText user_pwd_edit;
@@ -36,6 +35,7 @@ public class LoginFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLoadingDialog = new ProgressDialog(getActivity());
+        mLoginViewModel = new LoginPresenter(new ViewProxy(this));
     }
 
     @Nullable
@@ -71,38 +71,72 @@ public class LoginFragment extends BaseFragment {
         login_widget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mLoginViewModel.onLogin(user_account_edit.getText().toString(), user_pwd_edit.getText().toString());
+                mLoginViewModel.login(user_account_edit.getText().toString(), user_pwd_edit.getText().toString());
             }
         });
+    }
 
+    @Override
+    public void showLoading() {
+        mLoadingDialog.show();
+    }
 
-        mLoginViewModel.loading.observeForever(new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-                    mLoadingDialog.show();
-                } else {
-                    mLoadingDialog.dismiss();
-                }
-            }
-        });
-        mLoginViewModel.failMsg.observeForever(new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                ToastUtils.showLong(s);
-            }
-        });
-        mLoginViewModel.successEvent.observeForever(new Observer<Void>() {
-            @Override
-            public void onChanged(Void aVoid) {
-                RouteCall.getNoteModule().onUserLogin(null);
+    @Override
+    public void showFail(String msg) {
+        ToastUtils.showLong(msg);
+    }
 
-                UserFragmentContainer container = (UserFragmentContainer) getParentFragment();
-                container.toUserCenter(false);
-            }
-        });
+    @Override
+    public void toUserCenter() {
+        UserFragmentContainer p = (UserFragmentContainer) getParentFragment();
+        p.toUserCenter(false);
+    }
 
+    @Override
+    public void dismissLoading() {
+        mLoadingDialog.dismiss();
     }
 
 
+    private static class ViewProxy implements LoginPresenter.MvpView {
+
+        private final WeakReference<LoginPresenter.MvpView> uiRef;
+
+        private ViewProxy(LoginPresenter.MvpView activity) {
+            this.uiRef = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void showLoading() {
+            final LoginPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.showLoading();
+            }
+        }
+
+        @Override
+        public void dismissLoading() {
+            final LoginPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.dismissLoading();
+            }
+        }
+
+        @Override
+        public void toUserCenter() {
+            final LoginPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.toUserCenter();
+            }
+        }
+
+        @Override
+        public void showFail(String msg) {
+            final LoginPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.showFail(msg);
+            }
+        }
+
+    }
 }

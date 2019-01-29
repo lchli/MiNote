@@ -13,7 +13,7 @@ public interface RemoteUserDataSource {
 
     ResponseValue<User> getUser(String userId, String sessionUid, String sessionToken);
 
-    public static class UpdateUserParams {
+      class UpdateUserParams {
         public String name;
         public String pwd;
         public String headUrl;

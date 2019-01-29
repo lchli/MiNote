@@ -3,9 +3,7 @@ package com.lch.menote.user.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,23 +11,23 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.lch.menote.R;
-import com.lch.menote.user.controller.UserController;
-import com.lch.menote.user.route.User;
-import com.lch.netkit.common.base.BaseCompatActivity;
-import com.lch.netkit.common.mvc.ControllerCallback;
-import com.lch.netkit.common.mvc.ResponseValue;
-import com.lch.netkit.common.tool.VF;
+import com.lch.menote.user.presenterx.UserInfoPresenter;
+import com.lchli.utils.base.BaseCompatActivity;
+import com.lchli.utils.tool.VF;
+
+import java.lang.ref.WeakReference;
+
 
 /**
  * Created by lichenghang on 2018/6/3.
  */
 
-public class UserInfoActivity extends BaseCompatActivity {
+public class UserInfoActivity extends BaseCompatActivity implements UserInfoPresenter.MvpView {
 
     private TextView user_nick;
     private TextView user_contact;
     private ImageView user_portrait;
-    private UserController userController = new UserController();
+    private UserInfoPresenter userInfoPresenter;
 
     public static void launch(String userId, Context context) {
 
@@ -43,6 +41,7 @@ public class UserInfoActivity extends BaseCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        userInfoPresenter = new UserInfoPresenter(new ViewProxy(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
 
@@ -52,34 +51,97 @@ public class UserInfoActivity extends BaseCompatActivity {
 
         String userId = getIntent().getStringExtra("userId");
 
-        if (TextUtils.isEmpty(userId)) {
-            ToastUtils.showShort("用户id不存在");
-            return;
-        }
-
-        userController.getById(userId, new ControllerCallback<User>() {
-            @Override
-            public void onComplete(@NonNull ResponseValue<User> responseValue) {
-                if (responseValue.hasError() || responseValue.data == null) {
-                    ToastUtils.showShort(responseValue.errMsg());
-                    return;
-                }
-
-                user_nick.setText(responseValue.data.name);
-
-                if (TextUtils.isEmpty(responseValue.data.userContact)) {
-                    user_contact.setText("联系方式:未填写");
-                } else {
-                    user_contact.setText("联系方式:" + responseValue.data.userContact);
-                }
-
-                Glide.with(UserInfoActivity.this).load(responseValue.data.headUrl).apply(RequestOptions
-                        .placeholderOf(R.drawable.add_portrait)).into(user_portrait);
-
-            }
-        });
+        userInfoPresenter.getUserInfo(userId);
 
     }
 
+    @Override
+    public void showLoading() {
 
+    }
+
+    @Override
+    public void dismissLoading() {
+
+    }
+
+    @Override
+    public void showFail(String msg) {
+        ToastUtils.showShort(msg);
+    }
+
+    @Override
+    public void showHead(String headImgUrl) {
+        Glide.with(UserInfoActivity.this).load(headImgUrl).apply(RequestOptions
+                .placeholderOf(R.drawable.add_portrait)).into(user_portrait);
+    }
+
+    @Override
+    public void showContactText(String text) {
+        user_contact.setText(text);
+    }
+
+    @Override
+    public void showNick(String text) {
+        user_nick.setText(text);
+    }
+
+
+    private static class ViewProxy implements UserInfoPresenter.MvpView {
+
+        private final WeakReference<UserInfoPresenter.MvpView> uiRef;
+
+        private ViewProxy(UserInfoPresenter.MvpView activity) {
+            this.uiRef = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void showLoading() {
+            final UserInfoPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.showLoading();
+            }
+        }
+
+        @Override
+        public void dismissLoading() {
+            final UserInfoPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.dismissLoading();
+            }
+        }
+
+        @Override
+        public void showHead(String headImgUrl) {
+            final UserInfoPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.showHead(headImgUrl);
+            }
+        }
+
+        @Override
+        public void showContactText(String text) {
+            final UserInfoPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.showContactText(text);
+            }
+        }
+
+        @Override
+        public void showNick(String text) {
+            final UserInfoPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.showNick(text);
+            }
+        }
+
+        @Override
+        public void showFail(String msg) {
+            final UserInfoPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.showFail(msg);
+            }
+        }
+
+    }
 }

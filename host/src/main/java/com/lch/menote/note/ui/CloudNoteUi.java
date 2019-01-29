@@ -17,11 +17,11 @@ import com.lch.menote.note.controller.CloudNoteController;
 import com.lch.menote.note.data.net.NetNoteRepo;
 import com.lch.menote.note.domain.CloudNoteListChangedEvent;
 import com.lch.menote.note.domain.NoteModel;
-import com.lch.netkit.common.base.BaseFragment;
-import com.lch.netkit.common.mvc.ControllerCallback;
-import com.lch.netkit.common.mvc.ResponseValue;
-import com.lch.netkit.common.tool.EventBusUtils;
-import com.lch.netkit.common.tool.VF;
+import com.lchli.arch.clean.ControllerCallback;
+import com.lchli.arch.clean.ResponseValue;
+import com.lchli.utils.base.BaseFragment;
+import com.lchli.utils.tool.EventBusUtils;
+import com.lchli.utils.tool.VF;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

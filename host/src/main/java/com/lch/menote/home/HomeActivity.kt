@@ -6,14 +6,12 @@ import android.support.v4.view.ViewPager
 import com.lch.menote.R
 import com.lch.menote.home.route.RouteCall
 import com.lch.menote.note.ui.CloudNoteUi
-import com.lch.menote.note.ui.HotNoteUi
 import com.lch.menote.note.ui.LocalNoteUi
 import com.lch.menote.user.ui.UserFragmentContainer
 import com.lchli.utils.base.BaseCompatActivity
 import com.lchli.utils.base.BaseFragment
 import com.lchli.utils.base.FragmentAdapter
 import com.lchli.utils.tool.ResUtils
-
 import kotlinx.android.synthetic.main.activity_home.*
 
 
@@ -25,14 +23,8 @@ class HomeActivity : BaseCompatActivity() {
         setContentView(R.layout.activity_home)
         val adapter = FragmentAdapter(supportFragmentManager)
 
-
-        adapter.addFragment(HotNoteUi(), "热榜")
-
-        adapter.addFragment(LocalNoteUi(), getString(R.string.local_note))
-
         adapter.addFragment(CloudNoteUi(), getString(R.string.cloud_note))
-
-
+        adapter.addFragment(LocalNoteUi(), getString(R.string.local_note))
         adapter.addFragment(UserFragmentContainer(), ResUtils.parseString(R.string.user))
 
         viewpager.adapter = adapter

@@ -1,59 +1,24 @@
-package com.lch.menote.note.data.db;
+package com.lch.menote.note.data;
 
 import android.content.Context;
 import android.text.TextUtils;
 
 import com.blankj.utilcode.util.ToastUtils;
+import com.lch.menote.note.data.db.DaoSessionManager;
 import com.lch.menote.note.data.db.gen.NoteDao;
-import com.lch.menote.note.domain.entity.Note;
+import com.lch.menote.note.datainterface.LocalNoteSource;
 import com.lch.menote.note.domain.NoteModel;
-import com.lch.menote.note.domain.response.QueryNoteResponse;
+import com.lch.menote.note.domain.entity.Note;
 import com.lch.menote.note.helper.ModelMapper;
-import com.lch.netkit.common.mvc.MvcError;
-import com.lch.netkit.common.mvc.ResponseValue;
+import com.lchli.arch.clean.ResponseValue;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.lch.menote.note.data.db.DatabseNoteRepo.LocalNoteQuery.SORT_ASC;
 
-public class DatabseNoteRepo  {
-
-    public static class LocalNoteQuery {
-        public static final String SORT_ASC="asc";
-        public static final String SORT_DESC="desc";
-        private String sortDiretion=SORT_ASC;
-        private String tag;
-        private String title;
-        private String useId;
-
-        public static LocalNoteQuery newInstance() {
-            return new LocalNoteQuery();
-        }
-
-        public LocalNoteQuery setSortDiretion(String sortDiretion) {
-            this.sortDiretion = sortDiretion;
-            return this;
-        }
-
-
-        public LocalNoteQuery setTag(String tag) {
-            this.tag = tag;
-            return this;
-        }
-
-        public LocalNoteQuery setTitle(String title) {
-            this.title = title;
-            return this;
-        }
-
-        public LocalNoteQuery setUseId(String useId) {
-            this.useId = useId;
-            return this;
-        }
-    }
+public class DatabseNoteRepo implements LocalNoteSource {
 
     private Context context;
 
@@ -61,8 +26,9 @@ public class DatabseNoteRepo  {
         this.context = context.getApplicationContext();
     }
 
-    public ResponseValue<QueryNoteResponse> queryNotes(LocalNoteQuery query) {
-        ResponseValue<QueryNoteResponse> res = new ResponseValue<>();
+    @Override
+    public ResponseValue<List<NoteModel>> queryNotes(LocalNoteQuery query) {
+        ResponseValue<List<NoteModel>> res = new ResponseValue<>();
 
         try {
 
@@ -75,13 +41,12 @@ public class DatabseNoteRepo  {
                 builder.where(NoteDao.Properties.Type.eq(query.tag));
             }
 
-            if (SORT_ASC.equals(query.sortDiretion)) {
+            if (LocalNoteQuery.SORT_ASC.equals(query.sortDiretion)) {
                 builder.orderAsc(NoteDao.Properties.Type).orderAsc(NoteDao.Properties.LastModifyTime);
             } else {
                 builder.orderAsc(NoteDao.Properties.Type).orderDesc(NoteDao.Properties.LastModifyTime);
             }
 
-            QueryNoteResponse r = new QueryNoteResponse();
             ArrayList<NoteModel> models = new ArrayList<>();
 
             List<Note> notes = builder.list();
@@ -91,43 +56,42 @@ public class DatabseNoteRepo  {
                 }
             }
 
-            r.data = models;
-
-            res.data = r;
+            res.data = models;
 
         } catch (Exception e) {
             e.printStackTrace();
             detectLockError(e);
-            res.err = new MvcError(e.getMessage());
+            res.setErrorMsg(e.getMessage());
         }
 
         return res;
     }
 
+    @Override
     public ResponseValue<Void> save(NoteModel note) {
         ResponseValue<Void> ret = new ResponseValue<>();
 
         try {
-
             DaoSessionManager.noteDao(context).insertOrReplace(ModelMapper.from(note));
         } catch (Exception e) {
             e.printStackTrace();
             detectLockError(e);
-            ret.setErrMsg(e.getMessage());
+            ret.setErrorMsg(e.getMessage());
         }
 
         return ret;
     }
 
-    public ResponseValue<Void> delete(Note note) {
+    @Override
+    public ResponseValue<Void> delete(String noteId) {
         ResponseValue<Void> ret = new ResponseValue<>();
 
         try {
-            DaoSessionManager.noteDao(context).delete(note);
+            DaoSessionManager.noteDao(context).deleteByKey(noteId);
         } catch (Exception e) {
             e.printStackTrace();
             detectLockError(e);
-            ret.setErrMsg(e.getMessage());
+            ret.setErrorMsg(e.getMessage());
         }
 
         return ret;

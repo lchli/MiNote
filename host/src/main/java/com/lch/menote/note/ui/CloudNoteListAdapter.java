@@ -2,6 +2,7 @@ package com.lch.menote.note.ui;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -15,14 +16,14 @@ import com.lch.menote.note.controller.CloudNoteController;
 import com.lch.menote.note.domain.CloudNoteListChangedEvent;
 import com.lch.menote.note.domain.NoteModel;
 import com.lch.menote.user.ui.UserInfoActivity;
-import com.lch.netkit.common.base.AbsAdapter;
-import com.lch.netkit.common.mvc.ControllerCallback;
-import com.lch.netkit.common.mvc.ResponseValue;
-import com.lch.netkit.common.tool.AppListItemAnimatorUtils;
-import com.lch.netkit.common.tool.DialogUtils;
-import com.lch.netkit.common.tool.EventBusUtils;
-import com.lch.netkit.common.tool.TimeUtils;
-import com.lch.netkit.common.tool.VF;
+import com.lchli.arch.clean.ControllerCallback;
+import com.lchli.arch.clean.ResponseValue;
+import com.lchli.utils.base.AbsAdapter;
+import com.lchli.utils.tool.AppListItemAnimatorUtils;
+import com.lchli.utils.tool.DialogUtils;
+import com.lchli.utils.tool.EventBusUtils;
+import com.lchli.utils.tool.TimeUtils;
+import com.lchli.utils.tool.VF;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.OnItemClickListener;
 
@@ -83,15 +84,18 @@ public class CloudNoteListAdapter extends AbsAdapter<NoteModel> {
                         dialog.dismiss();
 
                         noteController.deleteNetNote(model.uid, new ControllerCallback<Void>() {
-                            @Override
-                            public void onComplete(@NonNull ResponseValue<Void> responseValue) {
-                                if (responseValue.hasError()) {
-                                    ToastUtils.showShort(responseValue.errMsg());
-                                    return;
-                                }
 
+                            @Override
+                            public void onSuccess(@Nullable Void aVoid) {
                                 EventBusUtils.post(new CloudNoteListChangedEvent());
                             }
+
+                            @Override
+                            public void onError(int code, String msg) {
+                                ToastUtils.showShort(msg);
+                            }
+
+
                         });
 
 

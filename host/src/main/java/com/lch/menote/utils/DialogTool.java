@@ -4,12 +4,17 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.lch.menote.R;
-import com.lch.netkit.common.tool.VF;
+import com.lchli.utils.tool.VF;
+import com.orhanobut.dialogplus.DialogPlus;
+import com.orhanobut.dialogplus.OnItemClickListener;
+
+import java.util.List;
 
 /**
  * Created by lichenghang on 2018/6/8.
@@ -18,7 +23,7 @@ import com.lch.netkit.common.tool.VF;
 public final class DialogTool {
 
     public interface InputDialogListener {
-        void onConfirm(Dialog dialog,String inputText);
+        void onConfirm(Dialog dialog, String inputText);
     }
 
     public static Dialog showInputDialog(Activity activity, String title, @NonNull final InputDialogListener confirmClickLsn) {
@@ -34,12 +39,24 @@ public final class DialogTool {
         btOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                confirmClickLsn.onConfirm(d,etInput.getText().toString());
+                confirmClickLsn.onConfirm(d, etInput.getText().toString());
             }
         });
 
         d.show();
 
         return d;
+    }
+
+
+    public static DialogPlus showListDialog(Activity activity,  boolean expand, List<String> items,OnItemClickListener listener) {
+        ArrayAdapter adp = new ArrayAdapter<String>(activity, android.R.layout.simple_expandable_list_item_1, items);
+        DialogPlus dia = DialogPlus.newDialog(activity)
+                .setAdapter(adp)
+                .setOnItemClickListener(listener)
+                .setExpanded(expand)
+                .create();
+        dia.show();
+        return dia;
     }
 }

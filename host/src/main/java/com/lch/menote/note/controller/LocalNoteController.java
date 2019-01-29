@@ -2,7 +2,7 @@ package com.lch.menote.note.controller;
 
 import android.content.Context;
 
-import com.lch.menote.note.data.db.DatabseNoteRepo;
+import com.lch.menote.note.data.DatabseNoteRepo;
 import com.lch.menote.note.domain.NoteModel;
 import com.lch.menote.note.domain.NotePinedData;
 import com.lch.menote.note.domain.response.QueryNoteResponse;

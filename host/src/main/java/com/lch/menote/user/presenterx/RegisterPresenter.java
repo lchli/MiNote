@@ -1,34 +1,44 @@
-package com.lch.menote.user.viewmodel;
+package com.lch.menote.user.presenterx;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.lch.menote.file.FileModuleInjector;
+import com.lch.menote.note.route.NoteRouteApi;
 import com.lch.menote.user.UserModuleInjector;
 import com.lch.menote.user.domain.RegisterUseCase;
+import com.lch.menote.user.route.RouteCall;
 import com.lch.menote.user.route.User;
 import com.lchli.arch.clean.ControllerCallback;
 
-import androidx.lifecycle.MutableLiveData;
-
 /**
- * Created by Administrator on 2018/12/25.
+ * presenter负责将model转换成视图需要的viewmodel
  */
+public class RegisterPresenter {
 
-public class RegisterViewModel {
-    public MutableLiveData<Boolean> loading = new MutableLiveData<>();
-    public MutableLiveData<String> failMsg = new MutableLiveData<>();
-    public MutableLiveData<Void> successEvent = new MutableLiveData<>();
+    public interface MvpView {
+        void showLoading();
+
+        void dismissLoading();
+
+        void showFail(String msg);
+
+        void toUserCenter();
+
+    }
+
+    private final MvpView view;
     private final RegisterUseCase mRegisterUseCase = new RegisterUseCase(UserModuleInjector.getINS().provideRemoteUserDataSource(),
             UserModuleInjector.getINS().provideLocalUserDataSource(), FileModuleInjector.getINS().provideRemoteFileSource());
 
+    public RegisterPresenter(@NonNull MvpView view) {
+        this.view = view;
+    }
 
-    public void onRegister(String userName, String userPwd, String headPath) {
-        loading.postValue(true);
-
+    public void register(String userName, String userPwd, String headPath) {
         if (TextUtils.isEmpty(userName) || TextUtils.isEmpty(userPwd)) {
-            failMsg.postValue("empty.");
-            loading.postValue(false);
+            view.showFail("empty.");
             return;
         }
 
@@ -37,25 +47,31 @@ public class RegisterViewModel {
         p.userPwd = userPwd;
         p.userHeadPath = headPath;
 
+        view.showLoading();
         mRegisterUseCase.invokeAsync(p, new ControllerCallback<User>() {
             @Override
             public void onSuccess(@Nullable User user) {
-                loading.postValue(false);
+                view.dismissLoading();
 
                 if (user == null) {
-                    failMsg.postValue("user is null.");
+                    view.showFail("user is null.");
                     return;
                 }
+                NoteRouteApi m = RouteCall.getNoteModule();
+                if (m != null) {
+                    m.onUserLogin(null);
+                }
 
-                successEvent.postValue(null);
+                view.toUserCenter();
             }
 
             @Override
             public void onError(int i, String s) {
-                loading.postValue(false);
-                failMsg.postValue(s);
+                view.showFail(s);
+                view.dismissLoading();
             }
         });
-
     }
+
+
 }

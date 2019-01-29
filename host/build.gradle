@@ -113,25 +113,20 @@ dependencies {
 
     api "com.bigkoo:convenientbanner:$convenientbanner_version"
     api "com.orhanobut:dialogplus:$dialogplus_version@aar"
-    api "com.blankj:utilcode:$utilcode_version"
+    api "com.blankj:utilcode:1.9.8"
 
     api "com.andrognito.patternlockview:patternlockview:$patternlockview_version"
     api "com.squareup.okhttp3:okhttp:$okhttp_version"
     api "com.squareup.retrofit2:retrofit:$retrofit2_version"
     api "com.squareup.retrofit2:converter-gson:$retrofit2_version"
-    api "com.github.lchli:NetKit:3.0.0"
+    api "com.github.lchli:NetKit:3.1.0"
     api "com.github.lchli:Utils:1.0.0"
-    api "com.github.lchli:Arch:1.0.0"
-    api "com.github.lchli:ImgLoader:1.0.0"
+    api "com.github.lchli:Arch:1.0.7"
+    api "com.github.lchli:ImgLoader:1.0.2"
     api "com.github.lchli:LchAudioPlayer:$rootProject.ext.lch_audioPlayer_version"
     api "com.github.lchli:LchVideoPlayer:1.1.0"
     api "com.github.lchli:boxing:$rootProject.ext.boxing_version"
 
     api 'com.laputapp:laputapp-pulltorefresh:2.1.1'
-
-    // Architecture Components
-    implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-livedata:$rootProject.lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-viewmodel:$rootProject.lifecycleVersion"
 
 }

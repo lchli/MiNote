@@ -12,7 +12,7 @@ import com.lchli.arch.clean.UseCase;
 public class LoginUseCase extends UseCase<LoginUseCase.LoginParams, User> {
 
     private final UserSessionDataSource localUserDataSource;
-    private RemoteUserDataSource dataSource;
+    private final RemoteUserDataSource dataSource;
 
 
     public static class LoginParams {

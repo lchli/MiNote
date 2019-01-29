@@ -2,6 +2,8 @@ package com.lch.menote.utils;
 
 import com.blankj.utilcode.util.EncryptUtils;
 import com.lch.menote.ApiConstants;
+import com.lch.menote.user.UserApiManager;
+import com.lch.menote.user.route.User;
 import com.lch.netkit.v2.apirequest.ApiRequestParams;
 import com.lch.netkit.v2.filerequest.UploadFileParams;
 
@@ -22,6 +24,12 @@ public final class RequestUtils {
         params.addHeader("ts", ts);
         params.addHeader("sign", RequestUtils.buildHeaderSign(ts));
 
+        User se = UserApiManager.getINS().getSession();
+        if (se != null) {
+            params.addParam("sessionUserId", se.uid);
+            params.addParam("sessionUserToken", se.token);
+        }
+
         return params;
     }
 
@@ -31,6 +39,12 @@ public final class RequestUtils {
         String ts = System.currentTimeMillis() + "";
         params.addHeader("ts", ts);
         params.addHeader("sign", RequestUtils.buildHeaderSign(ts));
+
+        User se = UserApiManager.getINS().getSession();
+        if (se != null) {
+            params.addParam("sessionUserId", se.uid);
+            params.addParam("sessionUserToken", se.token);
+        }
 
         return params;
     }

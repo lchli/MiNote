@@ -10,15 +10,15 @@ import android.view.ViewGroup;
 
 import com.lch.menote.R;
 import com.lch.menote.note.controller.LocalNoteController;
-import com.lch.menote.note.data.db.DatabseNoteRepo;
+import com.lch.menote.note.data.DatabseNoteRepo;
 import com.lch.menote.note.domain.LocalNoteListChangedEvent;
-import com.lch.netkit.common.base.BaseFragment;
-import com.lch.netkit.common.mvc.ControllerCallback;
-import com.lch.netkit.common.mvc.ResponseValue;
-import com.lch.netkit.common.tool.EventBusUtils;
-import com.lch.netkit.common.tool.VF;
-import com.lch.netkit.common.widget.CommonEmptyView;
+import com.lchli.arch.clean.ControllerCallback;
+import com.lchli.arch.clean.ResponseValue;
 import com.lchli.pinedrecyclerlistview.library.pinnedRecyclerView.PinnedRecyclerView;
+import com.lchli.utils.base.BaseFragment;
+import com.lchli.utils.tool.EventBusUtils;
+import com.lchli.utils.tool.VF;
+import com.lchli.utils.widget.CommonEmptyView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

@@ -1,6 +1,7 @@
 package com.lch.menote.user;
 
 import com.lch.menote.user.datainterface.AppUpdateInfoDataSource;
+import com.lch.menote.user.datainterface.PwdSource;
 import com.lch.menote.user.datainterface.RemoteUserDataSource;
 import com.lch.menote.user.datainterface.UserSessionDataSource;
 
@@ -15,4 +16,6 @@ public interface UserModuleFactory {
     RemoteUserDataSource provideRemoteUserDataSource();
 
     AppUpdateInfoDataSource provideAppUpdateInfoDataSource();
+
+    PwdSource providePwdSource();
 }

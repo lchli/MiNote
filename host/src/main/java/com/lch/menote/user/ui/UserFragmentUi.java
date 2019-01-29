@@ -21,24 +21,22 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.lch.menote.R;
-import com.lch.menote.note.route.NoteRouteApi;
-import com.lch.menote.user.route.RouteCall;
-import com.lch.menote.user.viewmodel.UserCenterViewModel;
+import com.lch.menote.user.presenterx.UserCenterPresenter;
 import com.lch.menote.user.widget.UserCenterListItem;
 import com.lch.menote.utils.DialogTool;
-import com.lch.netkit.common.base.BaseFragment;
-import com.lch.netkit.common.tool.ListUtils;
-import com.lch.netkit.common.tool.VF;
+import com.lchli.utils.base.BaseFragment;
+import com.lchli.utils.tool.ListUtils;
+import com.lchli.utils.tool.VF;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
-import androidx.lifecycle.Observer;
 
 /**
  * Created by lichenghang on 2018/6/3.
  */
 
-public class UserFragmentUi extends BaseFragment {
+public class UserFragmentUi extends BaseFragment implements UserCenterPresenter.MvpView {
     private static final int SELECT_IMG_RQUEST = 1;
 
     private TextView user_nick;
@@ -47,13 +45,13 @@ public class UserFragmentUi extends BaseFragment {
     private UserCenterListItem app_version_widget;
     private UserCenterListItem check_update_widget;
     private ImageView user_portrait;
-    private UserCenterViewModel userCenterViewModel;
+    private UserCenterPresenter userCenterViewModel;
     private ProgressDialog mLoadingDialog;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userCenterViewModel = new UserCenterViewModel(getActivity());
+        userCenterViewModel = new UserCenterPresenter(getActivity(), new ViewProxy(this));
         mLoadingDialog = new ProgressDialog(getActivity());
     }
 
@@ -72,50 +70,6 @@ public class UserFragmentUi extends BaseFragment {
         user_portrait = VF.f(view, R.id.user_portrait);
         user_contact = VF.f(view, R.id.user_contact);
         check_update_widget = VF.f(view, R.id.check_update_widget);
-
-        userCenterViewModel.userNickTextVM.observeForever(new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                user_nick.setText(s);
-            }
-        });
-        userCenterViewModel.logoutTextVM.observeForever(new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                logout_widget.setText(s);
-            }
-        });
-        userCenterViewModel.userContactTextVM.observeForever(new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                user_contact.setText(s);
-            }
-        });
-        userCenterViewModel.headImagePathVM.observeForever(new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                Glide.with(getActivity()).load(s).apply(RequestOptions
-                        .placeholderOf(R.drawable.add_portrait)).into(user_portrait);
-            }
-        });
-        userCenterViewModel.headImageResVM.observeForever(new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                user_portrait.setImageResource(integer);
-            }
-        });
-        userCenterViewModel.appVersionTextVM.observeForever(new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                app_version_widget.setText(s);
-            }
-        });
-        userCenterViewModel.appUpdateResult.observeForever(new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                ToastUtils.showShort(s);
-            }
-        });
 
         check_update_widget.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,47 +110,6 @@ public class UserFragmentUi extends BaseFragment {
             }
         });
 
-        userCenterViewModel.failMsg.observeForever(new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                ToastUtils.showLong(s);
-            }
-        });
-
-        userCenterViewModel.loading.observeForever(new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-                    mLoadingDialog.show();
-                } else {
-                    mLoadingDialog.dismiss();
-                }
-
-            }
-        });
-
-        userCenterViewModel.gotoLoginAction.observeForever(new Observer<Void>() {
-            @Override
-            public void onChanged(Void aVoid) {
-                UserFragmentContainer parent = (UserFragmentContainer) getParentFragment();
-                if (parent != null) {
-                    parent.toLogin(true);
-                }
-
-            }
-        });
-
-        userCenterViewModel.onLogoutAction.observeForever(new Observer<Void>() {
-            @Override
-            public void onChanged(Void aVoid) {
-                NoteRouteApi mod = RouteCall.getNoteModule();
-                if (mod != null) {
-                    mod.onUserLogout(null);
-                }
-            }
-        });
-
-
         userCenterViewModel.onLoadUserInfo();
     }
 
@@ -216,7 +129,6 @@ public class UserFragmentUi extends BaseFragment {
             }
         });
 
-
     }
 
 
@@ -232,5 +144,161 @@ public class UserFragmentUi extends BaseFragment {
         }
     }
 
+    @Override
+    public void showLoading() {
+        mLoadingDialog.show();
+    }
+
+    @Override
+    public void dismissLoading() {
+        mLoadingDialog.dismiss();
+    }
+
+    @Override
+    public void showFail(String msg) {
+        ToastUtils.showLong(msg);
+    }
+
+    @Override
+    public void toLogin() {
+        UserFragmentContainer parent = (UserFragmentContainer) getParentFragment();
+        if (parent != null) {
+            parent.toLogin(true);
+        }
+    }
+
+    @Override
+    public void showHead(String headImgUrl) {
+        Glide.with(getActivity()).load(headImgUrl).apply(RequestOptions
+                .placeholderOf(R.drawable.add_portrait)).into(user_portrait);
+    }
+
+    @Override
+    public void showHead(int resId) {
+        user_portrait.setImageResource(resId);
+    }
+
+    @Override
+    public void showContactText(String text) {
+        user_contact.setText(text);
+    }
+
+    @Override
+    public void showAppVersion(String text) {
+        app_version_widget.setText(text);
+    }
+
+    @Override
+    public void showNick(String text) {
+        user_nick.setText(text);
+    }
+
+    @Override
+    public void showAppUpdateResult(String text) {
+        ToastUtils.showShort(text);
+    }
+
+    @Override
+    public void showLogout(String text) {
+        logout_widget.setText(text);
+    }
+
+    private static class ViewProxy implements UserCenterPresenter.MvpView {
+
+        private final WeakReference<UserCenterPresenter.MvpView> uiRef;
+
+        private ViewProxy(UserCenterPresenter.MvpView activity) {
+            this.uiRef = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void showLoading() {
+            final UserCenterPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.showLoading();
+            }
+        }
+
+        @Override
+        public void dismissLoading() {
+            final UserCenterPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.dismissLoading();
+            }
+        }
+
+        @Override
+        public void toLogin() {
+            final UserCenterPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.toLogin();
+            }
+        }
+
+        @Override
+        public void showHead(String headImgUrl) {
+            final UserCenterPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.showHead(headImgUrl);
+            }
+        }
+
+        @Override
+        public void showHead(int resId) {
+            final UserCenterPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.showHead(resId);
+            }
+        }
+
+        @Override
+        public void showContactText(String text) {
+            final UserCenterPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.showContactText(text);
+            }
+        }
+
+        @Override
+        public void showAppVersion(String text) {
+            final UserCenterPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.showAppVersion(text);
+            }
+        }
+
+        @Override
+        public void showNick(String text) {
+            final UserCenterPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.showNick(text);
+            }
+        }
+
+        @Override
+        public void showAppUpdateResult(String text) {
+            final UserCenterPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.showAppUpdateResult(text);
+            }
+        }
+
+        @Override
+        public void showLogout(String text) {
+            final UserCenterPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.showLogout(text);
+            }
+        }
+
+        @Override
+        public void showFail(String msg) {
+            final UserCenterPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.showFail(msg);
+            }
+        }
+
+    }
 
 }

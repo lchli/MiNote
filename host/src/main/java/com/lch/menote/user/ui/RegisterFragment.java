@@ -10,25 +10,23 @@ import android.widget.EditText;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.lch.menote.R;
-import com.lch.menote.note.route.NoteRouteApi;
-import com.lch.menote.user.route.RouteCall;
-import com.lch.menote.user.viewmodel.RegisterViewModel;
-import com.lch.netkit.common.base.BaseFragment;
-import com.lch.netkit.common.tool.VF;
-import com.lch.netkit.common.widget.CommonTitleView;
+import com.lch.menote.user.presenterx.RegisterPresenter;
+import com.lchli.utils.base.BaseFragment;
+import com.lchli.utils.tool.VF;
+import com.lchli.utils.widget.CommonTitleView;
 
-import androidx.lifecycle.Observer;
+import java.lang.ref.WeakReference;
 
 
 /**
  * Created by lchli on 2016/8/10.
  */
-public class RegisterFragment extends BaseFragment {
+public class RegisterFragment extends BaseFragment implements RegisterPresenter.MvpView {
 
     private CommonTitleView common_title;
     private View register_widget;
 
-    private final RegisterViewModel mRegisterViewModel = new RegisterViewModel();
+    private RegisterPresenter mRegisterViewModel;
     private ProgressDialog mLoadingDialog;
     private EditText user_account_edit;
     private EditText user_pwd_edit;
@@ -37,7 +35,7 @@ public class RegisterFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLoadingDialog = new ProgressDialog(getActivity());
-
+        mRegisterViewModel = new RegisterPresenter(new ViewProxy(this));
     }
 
     @Nullable
@@ -72,40 +70,74 @@ public class RegisterFragment extends BaseFragment {
         register_widget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mRegisterViewModel.onRegister(user_account_edit.getText().toString(), user_pwd_edit.getText().toString(), null);
-            }
-        });
-
-        mRegisterViewModel.loading.observeForever(new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-                    mLoadingDialog.show();
-                } else {
-                    mLoadingDialog.dismiss();
-                }
-            }
-        });
-        mRegisterViewModel.failMsg.observeForever(new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                ToastUtils.showLong(s);
-            }
-        });
-        mRegisterViewModel.successEvent.observeForever(new Observer<Void>() {
-            @Override
-            public void onChanged(Void aVoid) {
-                NoteRouteApi m = RouteCall.getNoteModule();
-                if (m != null) {
-                    m.onUserLogin(null);
-                }
-
-                UserFragmentContainer p = (UserFragmentContainer) getParentFragment();
-                p.toUserCenter(false);
+                mRegisterViewModel.register(user_account_edit.getText().toString(), user_pwd_edit.getText().toString(), null);
             }
         });
 
     }
 
 
+    @Override
+    public void showLoading() {
+        mLoadingDialog.show();
+    }
+
+    @Override
+    public void showFail(String msg) {
+        ToastUtils.showLong(msg);
+    }
+
+    @Override
+    public void toUserCenter() {
+        UserFragmentContainer p = (UserFragmentContainer) getParentFragment();
+        p.toUserCenter(false);
+    }
+
+    @Override
+    public void dismissLoading() {
+        mLoadingDialog.dismiss();
+    }
+
+
+    private static class ViewProxy implements RegisterPresenter.MvpView {
+
+        private final WeakReference<RegisterPresenter.MvpView> uiRef;
+
+        private ViewProxy(RegisterPresenter.MvpView activity) {
+            this.uiRef = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void showLoading() {
+            final RegisterPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.showLoading();
+            }
+        }
+
+        @Override
+        public void dismissLoading() {
+            final RegisterPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.dismissLoading();
+            }
+        }
+
+        @Override
+        public void toUserCenter() {
+            final RegisterPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.toUserCenter();
+            }
+        }
+
+        @Override
+        public void showFail(String msg) {
+            final RegisterPresenter.MvpView ui = uiRef.get();
+            if (ui != null) {
+                ui.showFail(msg);
+            }
+        }
+
+    }
 }

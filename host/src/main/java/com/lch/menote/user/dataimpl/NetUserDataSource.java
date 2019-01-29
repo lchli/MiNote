@@ -5,12 +5,12 @@ import com.lch.menote.user.dataimpl.response.LoginResponse;
 import com.lch.menote.user.datainterface.RemoteUserDataSource;
 import com.lch.menote.user.route.User;
 import com.lch.menote.utils.RequestUtils;
-import com.lch.netkit.common.mvc.ResponseValue;
-import com.lch.netkit.common.tool.AliJsonHelper;
 import com.lch.netkit.v2.NetKit;
 import com.lch.netkit.v2.apirequest.ApiRequestParams;
 import com.lch.netkit.v2.common.NetworkResponse;
 import com.lch.netkit.v2.parser.Parser;
+import com.lchli.arch.clean.ResponseValue;
+import com.lchli.utils.tool.AliJsonHelper;
 
 /**
  * 数据访问接口，应该使用业务模型model或普通参数作为传递。
@@ -35,13 +35,11 @@ public class NetUserDataSource implements RemoteUserDataSource {
         });
 
         if (res.hasError()) {
-            ret.code = res.httpCode;
             ret.setErrorMsg(res.getErrorMsg());
             return ret;
         }
 
         if (res.data == null || res.data.data == null) {
-            ret.code = res.httpCode;
             ret.setErrorMsg("return data is null.");
             return ret;
         }
@@ -69,13 +67,11 @@ public class NetUserDataSource implements RemoteUserDataSource {
         });
 
         if (res.hasError()) {
-            ret.code = res.httpCode;
             ret.setErrorMsg(res.getErrorMsg());
             return ret;
         }
 
         if (res.data == null || res.data.data == null) {
-            ret.code = res.httpCode;
             ret.setErrorMsg("return data is null.");
             return ret;
         }
@@ -108,13 +104,11 @@ public class NetUserDataSource implements RemoteUserDataSource {
         });
 
         if (res.hasError()) {
-            ret.code = res.httpCode;
             ret.setErrorMsg(res.getErrorMsg());
             return ret;
         }
 
         if (res.data == null || res.data.data == null) {
-            ret.code = res.httpCode;
             ret.setErrorMsg("return data is null.");
             return ret;
         }
@@ -142,13 +136,11 @@ public class NetUserDataSource implements RemoteUserDataSource {
         });
 
         if (res.hasError()) {
-            ret.code = res.httpCode;
             ret.setErrorMsg(res.getErrorMsg());
             return ret;
         }
 
         if (res.data == null || res.data.data == null) {
-            ret.code = res.httpCode;
             ret.setErrorMsg("return data is null.");
             return ret;
         }

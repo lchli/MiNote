@@ -1,4 +1,4 @@
-package com.lch.menote.note.data.mem;
+package com.lch.menote.note.data;
 
 import com.lch.menote.note.domain.NoteElement;
 

@@ -4,42 +4,40 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.lch.menote.user.datainterface.UserSessionDataSource;
-import com.lch.menote.user.datainterface.RemoteUserDataSource;
+import com.lch.menote.note.route.NoteRouteApi;
+import com.lch.menote.user.UserModuleInjector;
 import com.lch.menote.user.domain.LoginUseCase;
+import com.lch.menote.user.route.RouteCall;
 import com.lch.menote.user.route.User;
-import com.lch.netkit.common.mvc.ControllerCallback;
+import com.lchli.arch.clean.ControllerCallback;
 
 /**
  * presenter负责将model转换成视图需要的viewmodel
  */
 public class LoginPresenter {
 
-    public interface View {
-        void renderLoading();
+    public interface MvpView {
+        void showLoading();
 
         void dismissLoading();
 
-        void renderLoginSuccess();
+        void showFail(String msg);
 
-        void renderLoginFail(String msg);
+        void toUserCenter();
 
     }
 
-    private final View view;
-    private final LoginUseCase mLoginUseCase;
+    private final MvpView view;
+    private final LoginUseCase mLoginUseCase = new LoginUseCase(UserModuleInjector.getINS().provideRemoteUserDataSource(), UserModuleInjector.getINS().provideLocalUserDataSource());
 
-    public LoginPresenter(RemoteUserDataSource remoteUserDataSource, UserSessionDataSource localUserDataSource, @NonNull View view) {
+    public LoginPresenter(@NonNull MvpView view) {
         this.view = view;
-        mLoginUseCase = new LoginUseCase(remoteUserDataSource, localUserDataSource);
     }
 
     public void login(String userName, String userPwd) {
-        view.renderLoading();
 
         if (TextUtils.isEmpty(userName) || TextUtils.isEmpty(userPwd)) {
-            view.renderLoginFail("empty.");
-            view.dismissLoading();
+            view.showFail("empty.");
             return;
         }
 
@@ -47,22 +45,28 @@ public class LoginPresenter {
         p.userName = userName;
         p.userPwd = userPwd;
 
+        view.showLoading();
         mLoginUseCase.invokeAsync(p, new ControllerCallback<User>() {
             @Override
             public void onSuccess(@Nullable User user) {
                 view.dismissLoading();
 
                 if (user == null) {
-                    view.renderLoginFail("user is null.");
+                    view.showFail("user is null.");
                     return;
                 }
 
-                view.renderLoginSuccess();
+                NoteRouteApi m = RouteCall.getNoteModule();
+                if (m != null) {
+                    m.onUserLogin(null);
+                }
+
+                view.toUserCenter();
             }
 
             @Override
             public void onError(int i, String s) {
-                view.renderLoginFail(s);
+                view.showFail(s);
                 view.dismissLoading();
             }
         });
