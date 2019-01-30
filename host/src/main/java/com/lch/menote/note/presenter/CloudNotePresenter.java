@@ -4,12 +4,10 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 
 import com.lch.menote.R;
-import com.lch.menote.note.NoteModuleInjector;
 import com.lch.menote.note.data.NetNoteRepo;
-import com.lch.menote.note.domain.DeleteCloudNoteCase;
-import com.lch.menote.note.domain.GetCloudNotesCase;
 import com.lch.menote.note.events.CloudNoteListChangedEvent;
 import com.lch.menote.note.model.NoteModel;
+import com.lch.menote.note.service.CloudNoteService;
 import com.lch.menote.user.UserApiManager;
 import com.lchli.arch.clean.ControllerCallback;
 import com.lchli.utils.tool.EventBusUtils;
@@ -18,7 +16,8 @@ import com.lchli.utils.tool.ListUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-/**Presenter很难被复用。
+/**
+ * Presenter很难被复用。
  * Created by lichenghang on 2019/1/29.
  */
 
@@ -38,10 +37,6 @@ public class CloudNotePresenter {
         void showEmpty();
     }
 
-
-    private final GetCloudNotesCase getCloudNotesCase = new GetCloudNotesCase(NoteModuleInjector.getINS().provideRemoteNoteSource());
-    private final DeleteCloudNoteCase deleteCloudNoteCase = new DeleteCloudNoteCase(NoteModuleInjector.getINS().provideRemoteNoteSource());
-
     private int page;
     private static final int PAGE_SIZE = 20;
     private List<NoteModel> all = new ArrayList<>();
@@ -50,6 +45,7 @@ public class CloudNotePresenter {
             .addSort("updateTime", NetNoteRepo.NetNoteQuery.DIRECTION_ASC);
     private Context context;
     private MvpView view;
+    private final CloudNoteService cloudNoteService = new CloudNoteService();
 
 
     public CloudNotePresenter(Context context, MvpView view) {
@@ -78,12 +74,8 @@ public class CloudNotePresenter {
     }
 
     public void deleteNote(String noteId) {
-
-        DeleteCloudNoteCase.Param param = new DeleteCloudNoteCase.Param();
-        param.noteId = noteId;
-
         view.showLoading();
-        deleteCloudNoteCase.invokeAsync(param, new ControllerCallback<Void>() {
+        cloudNoteService.deleteNote(noteId, new ControllerCallback<Void>() {
             @Override
             public void onSuccess(@Nullable Void aVoid) {
                 view.dismissLoading();
@@ -111,7 +103,8 @@ public class CloudNotePresenter {
         mQuery.setPage(page).setPageSize(PAGE_SIZE);
 
         view.showLoading();
-        getCloudNotesCase.invokeAsync(mQuery, new ControllerCallback<List<NoteModel>>() {
+
+        cloudNoteService.getCloudNotes(mQuery, new ControllerCallback<List<NoteModel>>() {
             @Override
             public void onSuccess(@Nullable List<NoteModel> noteModels) {
                 view.dismissLoading();
