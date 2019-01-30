@@ -1,5 +1,8 @@
 package com.lch.menote.user;
 
+import android.content.Context;
+import android.support.v4.app.Fragment;
+
 import com.lch.menote.user.route.User;
 
 /**
@@ -26,5 +29,28 @@ public final class UserApiManager implements UserApi {
         return userApi.getSession();
     }
 
+    @Override
+    public Fragment indexPage() {
+        return userApi.indexPage();
+    }
 
+    @Override
+    public void lockPwdPage(Context context) {
+        userApi.lockPwdPage(context);
+    }
+
+    @Override
+    public String getLockPwd() {
+        return userApi.getLockPwd();
+    }
+
+    @Override
+    public void onAppBackground() {
+        userApi.onAppBackground();
+    }
+
+    @Override
+    public User queryUser(String userId) {
+        return userApi.queryUser(userId);
+    }
 }

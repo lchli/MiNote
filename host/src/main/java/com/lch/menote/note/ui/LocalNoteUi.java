@@ -1,19 +1,16 @@
 package com.lch.menote.note.ui;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.lch.menote.R;
-import com.lch.menote.note.controller.LocalNoteController;
-import com.lch.menote.note.data.DatabseNoteRepo;
 import com.lch.menote.note.events.LocalNoteListChangedEvent;
-import com.lchli.arch.clean.ControllerCallback;
-import com.lchli.arch.clean.ResponseValue;
+import com.lch.menote.note.presenter.LocalNoteListPresenter;
 import com.lchli.pinedrecyclerlistview.library.pinnedRecyclerView.PinnedRecyclerView;
 import com.lchli.utils.base.BaseFragment;
 import com.lchli.utils.tool.EventBusUtils;
@@ -29,19 +26,19 @@ import java.util.List;
  * Created by lichenghang on 2018/5/20.
  */
 
-public class LocalNoteUi extends BaseFragment {
+public class LocalNoteUi extends BaseFragment implements LocalNoteListPresenter.MvpView {
 
     private LocalNoteListAdp notesAdp;
     private CommonEmptyView empty_widget;
     private PinnedRecyclerView moduleListRecyclerView;
-    private LocalNoteController noteController;
+    private LocalNoteListPresenter localNoteListPresenter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBusUtils.register(this);
-        noteController = new LocalNoteController(getActivity());
-        notesAdp = new LocalNoteListAdp(getActivity(), noteController);
+        notesAdp = new LocalNoteListAdp(getActivity());
+        localNoteListPresenter = new LocalNoteListPresenter(this);
     }
 
     @Override
@@ -81,18 +78,31 @@ public class LocalNoteUi extends BaseFragment {
 
 
     private void queryNotesAsync() {
-        DatabseNoteRepo.LocalNoteQuery query = DatabseNoteRepo.LocalNoteQuery.newInstance();
+        localNoteListPresenter.getLocalNotesWithCat();
+    }
 
-        noteController.getLocalNotesWithCat(query, new ControllerCallback<List<Object>>() {
-            @Override
-            public void onComplete(@NonNull ResponseValue<List<Object>> responseValue) {
-                if (responseValue.hasError()) {
-                    com.blankj.utilcode.util.ToastUtils.showShort(responseValue.errMsg());
-                } else {
-                    notesAdp.refresh(responseValue.data);
-                }
-            }
-        });
+    @Override
+    public void showListNotes(List<Object> datas) {
+        notesAdp.refresh(datas);
+    }
+
+    @Override
+    public void showFail(String msg) {
+        ToastUtils.showShort(msg);
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void dismissLoading() {
+
+    }
+
+    @Override
+    public void showEmpty() {
 
     }
 }

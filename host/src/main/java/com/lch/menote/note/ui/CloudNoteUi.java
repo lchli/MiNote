@@ -11,6 +11,7 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.lch.menote.R;
+import com.lch.menote.note.data.NetNoteRepo;
 import com.lch.menote.note.events.CloudNoteListChangedEvent;
 import com.lch.menote.note.model.NoteModel;
 import com.lch.menote.note.presenter.CloudNotePresenter;
@@ -88,7 +89,8 @@ public class CloudNoteUi extends BaseFragment implements CloudNotePresenter.MvpV
 
 
     private void queryNotesAsync() {
-        cloudNotePresenter.refresh();
+        cloudNotePresenter.refresh( NetNoteRepo.NetNoteQuery.newInstance()
+                .addSort("updateTime", NetNoteRepo.NetNoteQuery.DIRECTION_ASC));
     }
 
     private void loadmore() {

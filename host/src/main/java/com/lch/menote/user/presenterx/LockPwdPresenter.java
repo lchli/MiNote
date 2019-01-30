@@ -1,12 +1,12 @@
 package com.lch.menote.user.presenterx;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.lch.menote.home.route.HomeRouteApi;
+import com.lch.menote.home.HomeApiManager;
 import com.lch.menote.user.UserModuleInjector;
 import com.lch.menote.user.domain.SaveLockPwdCase;
-import com.lch.menote.user.route.RouteCall;
 import com.lchli.arch.clean.ControllerCallback;
 
 /**
@@ -27,9 +27,11 @@ public class LockPwdPresenter {
 
     private final MvpView view;
     private final SaveLockPwdCase saveLockPwdCase = new SaveLockPwdCase(UserModuleInjector.getINS().providePwdSource());
+    private Context context;
 
-    public LockPwdPresenter(@NonNull MvpView view) {
+    public LockPwdPresenter(Context context, @NonNull MvpView view) {
         this.view = view;
+        this.context = context;
     }
 
     public void onSavePwd(String pwd) {
@@ -42,10 +44,7 @@ public class LockPwdPresenter {
             public void onSuccess(@Nullable Void v) {
                 view.dismissLoading();
 
-                HomeRouteApi m = RouteCall.getHomeModule();
-                if (m != null) {
-                    m.launchHome(null);
-                }
+                HomeApiManager.getINS().launchHome(context);
 
                 view.finishUi();
             }

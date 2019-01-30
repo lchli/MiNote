@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,21 +19,20 @@ import com.bumptech.glide.request.RequestOptions;
 import com.lch.menote.R;
 import com.lch.menote.note.controller.CloudNoteController;
 import com.lch.menote.note.controller.LocalNoteController;
+import com.lch.menote.note.data.entity.Note;
 import com.lch.menote.note.events.CloudNoteListChangedEvent;
 import com.lch.menote.note.events.LocalNoteListChangedEvent;
-import com.lch.menote.note.data.entity.Note;
 import com.lch.menote.note.model.NoteModel;
 import com.lch.menote.note.model.NotePinedData;
-import com.lch.netkit.common.mvc.ControllerCallback;
-import com.lch.netkit.common.mvc.ResponseValue;
-import com.lch.netkit.common.tool.AppListItemAnimatorUtils;
-import com.lch.netkit.common.tool.ContextProvider;
-import com.lch.netkit.common.tool.DialogUtils;
-import com.lch.netkit.common.tool.EventBusUtils;
-import com.lch.netkit.common.tool.TimeUtils;
-import com.lch.netkit.common.tool.VF;
+import com.lchli.arch.clean.ControllerCallback;
 import com.lchli.pinedrecyclerlistview.library.ListSectionData;
 import com.lchli.pinedrecyclerlistview.library.pinnedRecyclerView.PinnedRecyclerAdapter;
+import com.lchli.utils.tool.AppListItemAnimatorUtils;
+import com.lchli.utils.tool.ContextProvider;
+import com.lchli.utils.tool.DialogUtils;
+import com.lchli.utils.tool.EventBusUtils;
+import com.lchli.utils.tool.TimeUtils;
+import com.lchli.utils.tool.VF;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.OnItemClickListener;
 
@@ -47,16 +46,12 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter {
 
     private final Bitmap def = BitmapFactory.decodeResource(ContextProvider.context().getResources(), R.drawable.ic_add_note);
     private Activity activity;
-    private LocalNoteController noteController;
-    private CloudNoteController cloudNoteController;
+    private CloudNoteController cloudNoteController = new CloudNoteController();
+    private LocalNoteController localNoteController = new LocalNoteController();
 
 
-    public LocalNoteListAdp(Activity activity, LocalNoteController noteController) {
+    public LocalNoteListAdp(Activity activity) {
         this.activity = activity;
-        this.noteController = noteController;
-        cloudNoteController=new CloudNoteController(activity);
-
-
     }
 
     @Override
@@ -161,16 +156,18 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter {
                     public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
                         dialog.dismiss();
 
-                        noteController.deleteLocalNote(data, new ControllerCallback<Void>() {
-                            @Override
-                            public void onComplete(@NonNull ResponseValue<Void> responseValue) {
-                                if (responseValue.hasError()) {
-                                    ToastUtils.showShort(responseValue.errMsg());
-                                    return;
-                                }
+                        localNoteController.deleteLocalNote(data.uid, new ControllerCallback<Void>() {
 
+                            @Override
+                            public void onSuccess(@Nullable Void aVoid) {
                                 EventBusUtils.post(new LocalNoteListChangedEvent());
                             }
+
+                            @Override
+                            public void onError(int code, String msg) {
+                                ToastUtils.showShort(msg);
+                            }
+
                         });
 
 
@@ -186,17 +183,19 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter {
             @Override
             public void onClick(View v) {
                 cloudNoteController.saveNoteToNet(data, new ControllerCallback<Void>() {
-                    @Override
-                    public void onComplete(@NonNull ResponseValue<Void> responseValue) {
-                        if (responseValue.hasError()) {
-                            ToastUtils.showShort(responseValue.errMsg() + "");
-                            return;
-                        }
 
+                    @Override
+                    public void onSuccess(@Nullable Void aVoid) {
                         ToastUtils.showShort(context.getString(R.string.upload_note_success));
 
                         EventBusUtils.post(new CloudNoteListChangedEvent());
                     }
+
+                    @Override
+                    public void onError(int code, String msg) {
+                        ToastUtils.showShort(msg);
+                    }
+
                 });
             }
         });
@@ -216,7 +215,6 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter {
 
         return VIEW_TYPE_ITEM;
     }
-
 
 
     private class ViewHolder extends RecyclerView.ViewHolder {

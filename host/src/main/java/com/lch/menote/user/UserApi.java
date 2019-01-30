@@ -1,5 +1,8 @@
 package com.lch.menote.user;
 
+import android.content.Context;
+import android.support.v4.app.Fragment;
+
 import com.lch.menote.user.route.User;
 
 /**
@@ -9,5 +12,15 @@ import com.lch.menote.user.route.User;
 public interface UserApi {
 
     User getSession();
+
+    Fragment indexPage();
+
+    void lockPwdPage(Context context);
+
+    String getLockPwd();
+
+    void onAppBackground();
+
+    User queryUser(String userId);
 
 }

@@ -4,9 +4,10 @@ import android.support.annotation.NonNull;
 
 import com.lch.menote.ApiConstants;
 import com.lch.menote.model.BaseResponse;
+import com.lch.menote.note.data.response.QueryNoteResponse;
+import com.lch.menote.note.data.response.SingleNoteResponse;
 import com.lch.menote.note.datainterface.RemoteNoteSource;
 import com.lch.menote.note.model.NoteModel;
-import com.lch.menote.note.data.response.QueryNoteResponse;
 import com.lch.menote.utils.RequestUtils;
 import com.lch.netkit.v2.NetKit;
 import com.lch.netkit.v2.apirequest.ApiRequestParams;
@@ -138,17 +139,17 @@ public class NetNoteRepo implements RemoteNoteSource {
 
 
     @Override
-    public ResponseValue<Void> likeNote(String noteId) {
-        ResponseValue<Void> ret = new ResponseValue<>();
+    public ResponseValue<NoteModel> likeNote(String noteId) {
+        ResponseValue<NoteModel> ret = new ResponseValue<>();
 
         ApiRequestParams params = RequestUtils.minoteStringRequestParams()
                 .setUrl(ApiConstants.LIKE_NOTE)
                 .addParam("noteId", noteId);
 
-        NetworkResponse<BaseResponse> res = NetKit.apiRequest().syncPost(params, new Parser<BaseResponse>() {
+        NetworkResponse<SingleNoteResponse> res = NetKit.apiRequest().syncPost(params, new Parser<SingleNoteResponse>() {
             @Override
-            public BaseResponse parse(String s) {
-                return AliJsonHelper.parseObject(s, BaseResponse.class);
+            public SingleNoteResponse parse(String s) {
+                return AliJsonHelper.parseObject(s, SingleNoteResponse.class);
             }
         });
 
@@ -167,7 +168,44 @@ public class NetNoteRepo implements RemoteNoteSource {
             return ret;
         }
 
+        ret.setData(res.data.data);
+
         return ret;
 
+    }
+
+    @Override
+    public ResponseValue<NoteModel> publicNote(String noteId) {
+        ResponseValue<NoteModel> ret = new ResponseValue<>();
+
+        ApiRequestParams params = RequestUtils.minoteStringRequestParams()
+                .setUrl(ApiConstants.PUBLIC_NOTE)
+                .addParam("noteId", noteId);
+
+        NetworkResponse<SingleNoteResponse> res = NetKit.apiRequest().syncPost(params, new Parser<SingleNoteResponse>() {
+            @Override
+            public SingleNoteResponse parse(String s) {
+                return AliJsonHelper.parseObject(s, SingleNoteResponse.class);
+            }
+        });
+
+        if (res.hasError()) {
+            ret.setErrorMsg(res.getErrorMsg());
+            return ret;
+        }
+
+        if (res.data == null) {
+            ret.setErrorMsg("ret data is null");
+            return ret;
+        }
+
+        if (res.data.status != ApiConstants.RESPONSE_CODE_SUCCESS) {
+            ret.setErrorMsg(res.data.message);
+            return ret;
+        }
+
+        ret.setData(res.data.data);
+
+        return ret;
     }
 }

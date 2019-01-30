@@ -94,5 +94,6 @@ public interface RemoteNoteSource {
 
     ResponseValue<Void> delete(@NotNull String noteId);
 
-    ResponseValue<Void> likeNote(String noteId);
+    ResponseValue<NoteModel> likeNote(String noteId);
+    ResponseValue<NoteModel> publicNote(String noteId);
 }

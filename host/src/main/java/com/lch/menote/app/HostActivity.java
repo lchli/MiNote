@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.blankj.utilcode.util.PermissionUtils;
-import com.lch.menote.user.route.UserRouteApi;
+import com.lch.menote.user.UserApiManager;
 
 public class HostActivity extends AppCompatActivity {
 
@@ -18,10 +18,7 @@ public class HostActivity extends AppCompatActivity {
         PermissionUtils.requestPermissions(this, 99, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new PermissionUtils.OnPermissionListener() {
             @Override
             public void onPermissionGranted() {
-                UserRouteApi m = RouteCall.getUserModule();
-                if (m != null) {
-                    m.lockPwdPage(null);
-                }
+                UserApiManager.getINS().lockPwdPage(getApplicationContext());
 
                 finish();
             }

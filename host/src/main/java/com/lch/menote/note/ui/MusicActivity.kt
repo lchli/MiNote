@@ -19,10 +19,12 @@ import com.lch.menote.note.events.LocalNoteListChangedEvent
 import com.lch.menote.note.model.LinkData
 import com.lch.menote.note.model.MusicData
 import com.lch.menote.note.model.NoteModel
-import com.lch.netkit.common.tool.AliJsonHelper
-import com.lch.netkit.common.tool.AppListItemAnimatorUtils
-import com.lch.netkit.common.tool.EventBusUtils
-import com.lch.netkit.common.tool.UUIDUtils
+import com.lchli.arch.clean.ControllerCallback
+import com.lchli.utils.tool.AliJsonHelper
+import com.lchli.utils.tool.AppListItemAnimatorUtils
+import com.lchli.utils.tool.EventBusUtils
+import com.lchli.utils.tool.UUIDUtils
+
 import kotlinx.android.synthetic.main.activity_edit_music.*
 
 class MusicActivity : AppCompatActivity() {
@@ -50,7 +52,7 @@ class MusicActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mLocalNoteController = LocalNoteController(applicationContext)
+        mLocalNoteController = LocalNoteController()
 
         setContentView(R.layout.activity_edit_music)
 
@@ -190,15 +192,19 @@ class MusicActivity : AppCompatActivity() {
         note.content = content
         note.category = Note.CAT_MUSIC
 
-        mLocalNoteController.saveLocalNote(note, {
-            if (it.hasError()) {
-                ToastUtils.showLong(it.errMsg())
-            } else {
+        mLocalNoteController.saveLocalNote(note, object : ControllerCallback<Void> {
+
+            override fun onError(code: Int, msg: String?) {
+                ToastUtils.showLong(msg)
+            }
+
+            override fun onSuccess(data: Void?) {
                 EventBusUtils.post(LocalNoteListChangedEvent())
 
                 finish()
             }
         })
+
 
     }
 

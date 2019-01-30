@@ -14,7 +14,7 @@ import java.lang.reflect.Proxy;
 
 public final class MvpViewUtils {
 
-    public static <T> T newProxy(T mvpView) {
+    public static <T> T newUiThreadProxy(final T mvpView) {
         return (T) Proxy.newProxyInstance(mvpView.getClass().getClassLoader(), mvpView.getClass().getInterfaces(), new InvocationHandler() {
             @Override
             public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
@@ -23,14 +23,14 @@ public final class MvpViewUtils {
                         @Override
                         public void run() {
                             try {
-                                method.invoke(proxy, args);
+                                method.invoke(mvpView, args);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
                     });
                 } else {
-                    method.invoke(proxy, args);
+                    method.invoke(mvpView, args);
                 }
 
                 return null;

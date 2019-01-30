@@ -2,10 +2,9 @@ package com.lch.menote.note.controller;
 
 
 import com.lch.menote.note.data.SpNoteTagRepo;
-import com.lch.netkit.common.mvc.ControllerCallback;
-import com.lch.netkit.common.mvc.ResponseValue;
-import com.lch.netkit.common.tool.TaskExecutor;
-import com.lch.netkit.common.tool.UiHandler;
+import com.lchli.arch.clean.ControllerCallback;
+import com.lchli.arch.clean.ResponseValue;
+import com.lchli.arch.clean.UseCase;
 
 import java.util.List;
 
@@ -14,47 +13,32 @@ public class NoteTagController {
     private SpNoteTagRepo mSpNoteTagRepo = new SpNoteTagRepo();
 
     public void addTag(final String tag, final ControllerCallback<Void> cb) {
-        TaskExecutor.execute(new Runnable() {
+        new UseCase<Void, Void>() {
             @Override
-            public void run() {
-                final ResponseValue<Void> res = mSpNoteTagRepo.addTag(tag);
-                UiHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        cb.onComplete(res);
-                    }
-                });
+            protected ResponseValue<Void> execute(Void parameters) {
+                return mSpNoteTagRepo.addTag(tag);
             }
-        });
+        }.invokeAsync(null, cb);
+
     }
 
     public void deleteTag(final String tag, final ControllerCallback<Void> cb) {
-        TaskExecutor.execute(new Runnable() {
+        new UseCase<Void, Void>() {
             @Override
-            public void run() {
-                final ResponseValue<Void> res = mSpNoteTagRepo.removeTag(tag);
-                UiHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        cb.onComplete(res);
-                    }
-                });
+            protected ResponseValue<Void> execute(Void parameters) {
+                return mSpNoteTagRepo.removeTag(tag);
             }
-        });
+        }.invokeAsync(null, cb);
+
     }
 
     public void getAllTag(final ControllerCallback<List<String>> cb) {
-        TaskExecutor.execute(new Runnable() {
+        new UseCase<Void, List<String>>() {
             @Override
-            public void run() {
-                final ResponseValue<List<String>> res = mSpNoteTagRepo.getAllTag();
-                UiHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        cb.onComplete(res);
-                    }
-                });
+            protected ResponseValue<List<String>> execute(Void parameters) {
+                return mSpNoteTagRepo.getAllTag();
             }
-        });
+        }.invokeAsync(null, cb);
+
     }
 }

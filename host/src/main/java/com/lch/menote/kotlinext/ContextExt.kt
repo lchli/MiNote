@@ -9,7 +9,7 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.lch.menote.BuildConfig
-import com.lch.netkit.common.tool.UiHandler
+import com.lchli.utils.tool.UiHandler
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.OnItemClickListener
 

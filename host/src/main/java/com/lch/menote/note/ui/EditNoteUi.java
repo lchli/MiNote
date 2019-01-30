@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
@@ -33,7 +32,6 @@ import com.lch.menote.utils.DialogTool;
 import com.lch.video_player.LchVideoPlayer;
 import com.lch.video_player.VideoPlayer;
 import com.lchli.arch.clean.ControllerCallback;
-import com.lchli.arch.clean.ResponseValue;
 import com.lchli.utils.base.BaseCompatActivity;
 import com.lchli.utils.tool.AliJsonHelper;
 import com.lchli.utils.tool.DialogUtils;
@@ -106,7 +104,7 @@ public class EditNoteUi extends BaseCompatActivity {
             }
         });
 
-        noteController = new LocalNoteController(this);
+        noteController = new LocalNoteController();
         noteElementAdapter = new NoteElementAdapter(new NoteElementAdapter.Callback() {
             @Override
             public void showOperation(int position, boolean isPlayingVideo, boolean isPlayingAudio) {
@@ -169,16 +167,19 @@ public class EditNoteUi extends BaseCompatActivity {
                 note.content = AliJsonHelper.toJSONString(content);
 
                 noteController.saveLocalNote(note, new ControllerCallback<Void>() {
+
                     @Override
-                    public void onComplete(@NonNull ResponseValue<Void> responseValue) {
-                        if (responseValue.hasError()) {
-                            ToastUtils.showShort(responseValue.errMsg());
-                            return;
-                        }
+                    public void onSuccess(@Nullable Void aVoid) {
                         EventBusUtils.post(new LocalNoteListChangedEvent());
 
                         finish();
                     }
+
+                    @Override
+                    public void onError(int code, String msg) {
+                        ToastUtils.showShort(msg);
+                    }
+
                 });
 
             }
@@ -188,17 +189,13 @@ public class EditNoteUi extends BaseCompatActivity {
             @Override
             public void onClick(View v) {
                 mNoteTagController.getAllTag(new ControllerCallback<List<String>>() {
-                    @Override
-                    public void onComplete(@NonNull ResponseValue<List<String>> responseValue) {
-                        if (responseValue.hasError()) {
-                            ToastUtils.showShort(responseValue.errMsg());
-                            return;
-                        }
 
+                    @Override
+                    public void onSuccess(@Nullable List<String> strings) {
                         final List<String> datas = new ArrayList<>();
                         datas.add("添加新标签");
-                        if (responseValue.data != null) {
-                            datas.addAll(responseValue.data);
+                        if (strings != null) {
+                            datas.addAll(strings);
                         }
 
                         DialogUtils.showTextListDialogPlus(EditNoteUi.this, new OnItemClickListener() {
@@ -216,6 +213,12 @@ public class EditNoteUi extends BaseCompatActivity {
                             }
                         }, datas);
                     }
+
+                    @Override
+                    public void onError(int code, String msg) {
+                        ToastUtils.showShort(msg);
+                    }
+
                 });
 
             }
@@ -233,16 +236,19 @@ public class EditNoteUi extends BaseCompatActivity {
                     return;
                 }
                 mNoteTagController.addTag(newtag, new ControllerCallback<Void>() {
-                    @Override
-                    public void onComplete(@NonNull ResponseValue<Void> responseValue) {
-                        if (responseValue.hasError()) {
-                            ToastUtils.showShort(responseValue.errMsg());
-                        } else {
-                            dialog.dismiss();
-                            ToastUtils.showShort("添加成功");
-                        }
 
+                    @Override
+                    public void onSuccess(@Nullable Void aVoid) {
+                        dialog.dismiss();
+                        ToastUtils.showShort("添加成功");
                     }
+
+                    @Override
+                    public void onError(int code, String msg) {
+                        ToastUtils.showShort(msg);
+                    }
+
+
                 });
             }
         });

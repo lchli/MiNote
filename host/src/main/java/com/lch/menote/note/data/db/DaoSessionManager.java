@@ -2,12 +2,11 @@ package com.lch.menote.note.data.db;
 
 import android.content.Context;
 
+import com.lch.menote.ConstantUtil;
 import com.lch.menote.note.data.db.gen.DaoMaster;
 import com.lch.menote.note.data.db.gen.DaoSession;
 import com.lch.menote.note.data.db.gen.NoteDao;
-import com.lch.menote.ConstantUtil;
-import com.lch.menote.note.route.RouteCall;
-import com.lch.menote.user.route.UserRouteApi;
+import com.lch.menote.user.UserApiManager;
 
 public final class DaoSessionManager {
 
@@ -16,12 +15,8 @@ public final class DaoSessionManager {
     private static DaoSession daoSession(Context context) {
         if (noteDaoSession == null) {
             AppDbOpenHelper helper = new AppDbOpenHelper(context, ConstantUtil.NOTE_DB, true);
-            UserRouteApi userMod = RouteCall.getUserModule();
-            String pwd = null;
 
-            if (userMod != null) {
-                pwd = userMod.getLockPwd(null);
-            }
+            String pwd = UserApiManager.getINS().getLockPwd();
 
             noteDaoSession = new DaoMaster(helper.getEncryptedWritableDb(pwd)).newSession();
         }

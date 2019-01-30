@@ -5,10 +5,9 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.lch.menote.file.FileModuleInjector;
-import com.lch.menote.note.route.NoteRouteApi;
+import com.lch.menote.note.NoteApiManager;
 import com.lch.menote.user.UserModuleInjector;
 import com.lch.menote.user.domain.RegisterUseCase;
-import com.lch.menote.user.route.RouteCall;
 import com.lch.menote.user.route.User;
 import com.lchli.arch.clean.ControllerCallback;
 
@@ -57,10 +56,7 @@ public class RegisterPresenter {
                     view.showFail("user is null.");
                     return;
                 }
-                NoteRouteApi m = RouteCall.getNoteModule();
-                if (m != null) {
-                    m.onUserLogin(null);
-                }
+                NoteApiManager.getINS().onUserLogin();
 
                 view.toUserCenter();
             }

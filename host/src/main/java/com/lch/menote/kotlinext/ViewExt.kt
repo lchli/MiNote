@@ -8,8 +8,8 @@ import android.os.Environment
 import android.view.View
 import android.view.ViewGroup
 import com.blankj.utilcode.util.ToastUtils
-import com.lch.netkit.common.tool.BitmapScaleUtil
-import com.lch.netkit.common.tool.UUIDUtils
+import com.lchli.utils.tool.BitmapScaleUtil
+import com.lchli.utils.tool.UUIDUtils
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch

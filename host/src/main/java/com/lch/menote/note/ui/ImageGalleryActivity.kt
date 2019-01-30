@@ -11,7 +11,7 @@ import com.bigkoo.convenientbanner.holder.CBViewHolderCreator
 import com.bigkoo.convenientbanner.holder.Holder
 import com.bumptech.glide.Glide
 import com.lch.menote.R
-import com.lch.netkit.common.base.BaseCompatActivity
+import com.lchli.utils.base.BaseCompatActivity
 import kotlinx.android.synthetic.main.activity_image_gallery.*
 import java.util.*
 
@@ -49,7 +49,7 @@ class ImageGalleryActivity : BaseCompatActivity() {
         }
 
         override fun UpdateUI(context: Context, position: Int, path: String) {
-            Glide.with(context).load(path).into(imageView)
+            Glide.with(context).load(path).into(imageView!!)
         }
     }
 

@@ -18,7 +18,7 @@ import com.lchli.utils.tool.ListUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/**Presenter很难被复用。
  * Created by lichenghang on 2019/1/29.
  */
 
@@ -57,7 +57,8 @@ public class CloudNotePresenter {
         this.view = view;
     }
 
-    public void refresh() {
+    public void refresh(NetNoteRepo.NetNoteQuery query) {
+        mQuery = query;
         isHaveMore = true;
         all.clear();
         page = 0;
@@ -143,5 +144,39 @@ public class CloudNotePresenter {
         });
 
 
+    }
+
+    public void destroyView() {
+        view = new MvpView() {
+            @Override
+            public void showListNotes(List<NoteModel> datas) {
+
+            }
+
+            @Override
+            public void showFail(String msg) {
+
+            }
+
+            @Override
+            public void showLoading() {
+
+            }
+
+            @Override
+            public void dismissLoading() {
+
+            }
+
+            @Override
+            public void showNoMore() {
+
+            }
+
+            @Override
+            public void showEmpty() {
+
+            }
+        };
     }
 }

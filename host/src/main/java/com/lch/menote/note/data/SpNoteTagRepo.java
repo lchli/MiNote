@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.lch.menote.note.datainterface.NoteTagSource;
-import com.lch.menote.note.route.NoteRouteApiImpl;
+import com.lch.menote.note.NoteRouteApiImpl;
 import com.lchli.arch.clean.ResponseValue;
 import com.lchli.utils.tool.AliJsonHelper;
 

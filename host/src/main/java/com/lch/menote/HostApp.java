@@ -8,10 +8,22 @@ import com.lch.menote.file.FileModuleFactory;
 import com.lch.menote.file.FileModuleInjector;
 import com.lch.menote.file.dataImpl.NetFileSource;
 import com.lch.menote.file.datainterface.RemoteFileSource;
-import com.lch.menote.user.UserApiImpl;
+import com.lch.menote.home.HomeApiImpl;
+import com.lch.menote.home.HomeApiManager;
+import com.lch.menote.note.NoteApiManager;
+import com.lch.menote.note.NoteModuleFactory;
+import com.lch.menote.note.NoteModuleInjector;
+import com.lch.menote.note.NoteRouteApiImpl;
+import com.lch.menote.note.data.DatabseNoteRepo;
+import com.lch.menote.note.data.NetNoteRepo;
+import com.lch.menote.note.data.SpNoteTagRepo;
+import com.lch.menote.note.datainterface.LocalNoteSource;
+import com.lch.menote.note.datainterface.NoteTagSource;
+import com.lch.menote.note.datainterface.RemoteNoteSource;
 import com.lch.menote.user.UserApiManager;
 import com.lch.menote.user.UserModuleFactory;
 import com.lch.menote.user.UserModuleInjector;
+import com.lch.menote.user.UserRouteApiImpl;
 import com.lch.menote.user.dataimpl.MemPwdSource;
 import com.lch.menote.user.dataimpl.NetAppUpdateInfoSource;
 import com.lch.menote.user.dataimpl.NetUserDataSource;
@@ -73,8 +85,7 @@ public class HostApp extends Application {
                 return new MemPwdSource();
             }
         });
-        UserApiManager.getINS().initImpl(new UserApiImpl());
-
+        UserApiManager.getINS().initImpl(new UserRouteApiImpl());
 
         FileModuleInjector.getINS().initModuleFactory(new FileModuleFactory() {
             @Override
@@ -82,6 +93,26 @@ public class HostApp extends Application {
                 return new NetFileSource();
             }
         });
+
+        NoteModuleInjector.getINS().initModuleFactory(new NoteModuleFactory() {
+            @Override
+            public LocalNoteSource provideLocalNoteSource() {
+                return new DatabseNoteRepo(getApplicationContext());
+            }
+
+            @Override
+            public NoteTagSource provideNoteTagSource() {
+                return new SpNoteTagRepo();
+            }
+
+            @Override
+            public RemoteNoteSource provideRemoteNoteSource() {
+                return new NetNoteRepo();
+            }
+        });
+        NoteApiManager.getINS().initImpl(new NoteRouteApiImpl());
+
+        HomeApiManager.getINS().initImpl(new HomeApiImpl());
 
 
     }

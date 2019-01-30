@@ -36,8 +36,8 @@ class NoteFilterPopup(private val mContext: Context) : PopupWindow(mContext) {
                 R.layout.popup_note_filter, null)
         setContentView(contentView)
 
-        btFilter = contentView.findViewById(R.id.btFilter) as TextView
-        tagEdit = contentView.findViewById(R.id.tag_edit) as TextView
+        btFilter = contentView.findViewById(R.id.btFilter)
+        tagEdit = contentView.findViewById(R.id.tag_edit)
 
 
     }

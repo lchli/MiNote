@@ -9,9 +9,8 @@ import com.andrognito.patternlockview.PatternLockView;
 import com.andrognito.patternlockview.listener.PatternLockViewListener;
 import com.blankj.utilcode.util.ToastUtils;
 import com.lch.menote.R;
-import com.lch.menote.note.route.NoteRouteApi;
+import com.lch.menote.note.NoteApiManager;
 import com.lch.menote.user.presenterx.LockPwdPresenter;
-import com.lch.menote.user.route.RouteCall;
 import com.lch.menote.utils.DialogTool;
 import com.lchli.utils.base.BaseCompatActivity;
 import com.orhanobut.dialogplus.DialogPlus;
@@ -32,7 +31,7 @@ public class LockPwdActivity extends BaseCompatActivity implements LockPwdPresen
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mUserController = new LockPwdPresenter(new ViewProxy(this));
+        mUserController = new LockPwdPresenter(this,new ViewProxy(this));
 
         setContentView(R.layout.activity_pwd);
         tvResetPwd = f(R.id.tvResetPwd);
@@ -101,8 +100,7 @@ public class LockPwdActivity extends BaseCompatActivity implements LockPwdPresen
                             dialog.dismiss();
 
                             if (position == 1) {
-                                NoteRouteApi mod = RouteCall.getNoteModule();
-                                mod.clearDB(null);
+                                NoteApiManager.getINS().clearDB();
                                 ToastUtils.showShort("重置成功");
                             }
                         }

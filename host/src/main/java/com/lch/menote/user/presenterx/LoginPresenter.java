@@ -4,10 +4,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.lch.menote.note.route.NoteRouteApi;
+import com.lch.menote.note.NoteApiManager;
 import com.lch.menote.user.UserModuleInjector;
 import com.lch.menote.user.domain.LoginUseCase;
-import com.lch.menote.user.route.RouteCall;
 import com.lch.menote.user.route.User;
 import com.lchli.arch.clean.ControllerCallback;
 
@@ -56,10 +55,7 @@ public class LoginPresenter {
                     return;
                 }
 
-                NoteRouteApi m = RouteCall.getNoteModule();
-                if (m != null) {
-                    m.onUserLogin(null);
-                }
+                NoteApiManager.getINS().onUserLogin();
 
                 view.toUserCenter();
             }

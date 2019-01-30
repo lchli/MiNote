@@ -16,7 +16,7 @@
             android:layout_weight="1"
             />
 
-        <com.lch.netkit.common.widget.CommonEmptyView
+        <com.lchli.utils.widget.CommonEmptyView
             android:id="@+id/empty_widget"
             android:layout_width="match_parent"
             android:layout_height="0dp"

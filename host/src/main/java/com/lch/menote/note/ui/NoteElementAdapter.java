@@ -24,12 +24,12 @@ import com.lch.audio_player.AudioPlayer;
 import com.lch.audio_player.ui.SimpleAudioView;
 import com.lch.menote.R;
 import com.lch.menote.note.model.NoteElement;
-import com.lch.netkit.common.base.AbsAdapter;
-import com.lch.netkit.common.tool.VF;
 import com.lch.video_player.VideoPlayer;
 import com.lch.video_player.helper.VideoHelper;
 import com.lch.video_player.model.BAFTimedText;
 import com.lch.video_player.ui.SimpleVideoView;
+import com.lchli.utils.base.AbsAdapter;
+import com.lchli.utils.tool.VF;
 
 import org.jetbrains.annotations.NotNull;
 

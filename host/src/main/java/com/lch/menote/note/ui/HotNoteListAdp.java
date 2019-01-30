@@ -12,15 +12,16 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.lch.menote.R;
-import com.lch.menote.note.model.HeadData;
 import com.lch.menote.note.data.entity.Note;
+import com.lch.menote.note.model.HeadData;
 import com.lch.menote.note.model.NoteModel;
 import com.lch.menote.user.ui.UserInfoActivity;
-import com.lch.netkit.common.base.AbsAdapter;
-import com.lch.netkit.common.tool.AppListItemAnimatorUtils;
-import com.lch.netkit.common.tool.ContextProvider;
-import com.lch.netkit.common.tool.TimeUtils;
-import com.lch.netkit.common.tool.VF;
+import com.lchli.utils.base.AbsAdapter;
+import com.lchli.utils.tool.AppListItemAnimatorUtils;
+import com.lchli.utils.tool.ContextProvider;
+import com.lchli.utils.tool.TimeUtils;
+import com.lchli.utils.tool.VF;
+
 
 /**
  * Created by lichenghang on 2018/5/27.

@@ -7,14 +7,13 @@ import android.text.TextUtils;
 import com.blankj.utilcode.util.AppUtils;
 import com.lch.menote.R;
 import com.lch.menote.file.FileModuleInjector;
-import com.lch.menote.note.route.NoteRouteApi;
+import com.lch.menote.note.NoteApiManager;
 import com.lch.menote.user.UserModuleInjector;
 import com.lch.menote.user.domain.CheckAppUpdateCase;
 import com.lch.menote.user.domain.ClearUserSessionCase;
 import com.lch.menote.user.domain.GetUserSessionCase;
 import com.lch.menote.user.domain.UpdateUserContactCase;
 import com.lch.menote.user.domain.UpdateUserHeadIconCase;
-import com.lch.menote.user.route.RouteCall;
 import com.lch.menote.user.route.User;
 import com.lch.menote.utils.MvpViewUtils;
 import com.lchli.arch.clean.ControllerCallback;
@@ -68,7 +67,7 @@ public class UserCenterPresenter {
 
     public UserCenterPresenter(Context context, MvpView view) {
         this.context = context;
-        this.view = MvpViewUtils.newProxy(view);
+        this.view = MvpViewUtils.newUiThreadProxy(view);
     }
 
     public void onModifyUserHead(String headPath) {
@@ -209,10 +208,7 @@ public class UserCenterPresenter {
 
                 view.dismissLoading();
 
-                NoteRouteApi mod = RouteCall.getNoteModule();
-                if (mod != null) {
-                    mod.onUserLogout(null);
-                }
+                NoteApiManager.getINS().onUserLogout();
 
                 view.showNick(context.getString(R.string.not_login));
                 view.showLogout(context.getString(R.string.click_to_login));

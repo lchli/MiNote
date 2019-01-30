@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import com.lch.menote.R
-import com.lch.menote.home.route.RouteCall
+import com.lch.menote.note.NoteApiManager
 import com.lch.menote.note.ui.CloudNoteUi
 import com.lch.menote.note.ui.LocalNoteUi
 import com.lch.menote.user.ui.UserFragmentContainer
@@ -74,7 +74,7 @@ class HomeActivity : BaseCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        RouteCall.getNoteModule()?.onAppBackground(null)
+        NoteApiManager.getINS().onAppBackground()
     }
 
 }

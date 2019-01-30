@@ -3,7 +3,7 @@ package com.lch.menote.user.dataimpl;
 import com.blankj.utilcode.util.SPUtils;
 import com.lch.menote.user.datainterface.UserSessionDataSource;
 import com.lch.menote.user.route.User;
-import com.lch.menote.user.route.UserRouteApiImpl;
+import com.lch.menote.user.UserRouteApiImpl;
 import com.lchli.arch.clean.ResponseValue;
 import com.lchli.utils.tool.AliJsonHelper;
 

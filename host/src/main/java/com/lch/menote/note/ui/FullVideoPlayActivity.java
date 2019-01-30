@@ -15,12 +15,12 @@ import android.widget.SeekBar;
 import com.blankj.utilcode.util.ToastUtils;
 import com.lch.menote.R;
 import com.lch.menote.utils.VideoPlayUtil;
-import com.lch.netkit.common.base.BaseCompatActivity;
 import com.lch.video_player.LchVideoPlayer;
 import com.lch.video_player.VideoPlayer;
 import com.lch.video_player.helper.VideoHelper;
 import com.lch.video_player.model.BAFTimedText;
 import com.lch.video_player.ui.SimpleVideoView;
+import com.lchli.utils.base.BaseCompatActivity;
 
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 
