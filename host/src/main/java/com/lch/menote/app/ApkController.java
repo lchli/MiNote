@@ -1,7 +1,7 @@
 package com.lch.menote.app;
 
 import com.lch.menote.app.model.ApkResponse;
-import com.lch.menote.utils.MvpViewUtils;
+import com.lch.menote.utils.MvpUtils;
 import com.lch.netkit.v2.common.NetworkResponse;
 import com.lchli.arch.clean.ControllerCallback;
 import com.lchli.utils.tool.TaskExecutor;
@@ -16,7 +16,7 @@ public class ApkController {
     private ApkRepo apkRepo = new ApkRepo();
 
     public void checkUpdate(final int currentVersionCode, final ControllerCallback<ApkResponse> callback) {
-        final ControllerCallback<ApkResponse> cb= MvpViewUtils.newUiThreadProxy(callback);
+        final ControllerCallback<ApkResponse> cb= MvpUtils.newUiThreadProxy(callback);
 
         TaskExecutor.execute(new Runnable() {
             @Override

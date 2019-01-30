@@ -1,4 +1,4 @@
-package com.lch.menote.note.controller;
+package com.lch.menote.note.service;
 
 
 import com.lch.menote.note.data.SpNoteTagRepo;
@@ -8,7 +8,7 @@ import com.lchli.arch.clean.UseCase;
 
 import java.util.List;
 
-public class NoteTagController {
+public class NoteTagService {
 
     private SpNoteTagRepo mSpNoteTagRepo = new SpNoteTagRepo();
 

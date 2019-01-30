@@ -17,8 +17,8 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.lch.menote.R;
-import com.lch.menote.note.controller.CloudNoteController;
-import com.lch.menote.note.controller.LocalNoteController;
+import com.lch.menote.note.service.CloudNoteService;
+import com.lch.menote.note.service.LocalNoteService;
 import com.lch.menote.note.data.entity.Note;
 import com.lch.menote.note.events.CloudNoteListChangedEvent;
 import com.lch.menote.note.events.LocalNoteListChangedEvent;
@@ -46,8 +46,8 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter {
 
     private final Bitmap def = BitmapFactory.decodeResource(ContextProvider.context().getResources(), R.drawable.ic_add_note);
     private Activity activity;
-    private CloudNoteController cloudNoteController = new CloudNoteController();
-    private LocalNoteController localNoteController = new LocalNoteController();
+    private final CloudNoteService cloudNoteController = new CloudNoteService();
+    private final LocalNoteService localNoteController = new LocalNoteService();
 
 
     public LocalNoteListAdp(Activity activity) {

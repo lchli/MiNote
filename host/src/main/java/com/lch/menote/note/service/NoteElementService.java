@@ -1,4 +1,4 @@
-package com.lch.menote.note.controller;
+package com.lch.menote.note.service;
 
 import com.lch.menote.note.data.MemNoteElementRepo;
 import com.lch.menote.note.model.NoteElement;
@@ -9,7 +9,7 @@ import java.util.List;
  * Created by lichenghang on 2018/5/20.
  */
 
-public class NoteElementController {
+public class NoteElementService {
 
     private MemNoteElementRepo memNoteElementSource = new MemNoteElementRepo();
 

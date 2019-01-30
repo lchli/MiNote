@@ -8,10 +8,11 @@ import com.lchli.arch.clean.ResponseValue;
 import com.lchli.arch.clean.UseCase;
 
 /**
- * Created by Administrator on 2019/1/30.
+ * Created by lichenghang on 2018/5/19.
  */
 
 public class LocalNoteService {
+
 
     private final LocalNoteSource localNoteSource = NoteModuleInjector.getINS().provideLocalNoteSource();
 
@@ -33,4 +34,6 @@ public class LocalNoteService {
         }.invokeAsync(noteId, cb);
 
     }
+
+
 }

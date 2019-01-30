@@ -21,9 +21,9 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.lch.audio_player.AudioPlayer;
 import com.lch.audio_player.LchAudioPlayer;
 import com.lch.menote.R;
-import com.lch.menote.note.controller.LocalNoteController;
-import com.lch.menote.note.controller.NoteElementController;
-import com.lch.menote.note.controller.NoteTagController;
+import com.lch.menote.note.service.LocalNoteService;
+import com.lch.menote.note.service.NoteElementService;
+import com.lch.menote.note.service.NoteTagService;
 import com.lch.menote.note.events.LocalNoteListChangedEvent;
 import com.lch.menote.note.helper.NoteUtils;
 import com.lch.menote.note.model.NoteElement;
@@ -66,8 +66,8 @@ public class EditNoteUi extends BaseCompatActivity {
     private TextView tv_note_category;
     private EditText et_note_title;
     private NoteElementAdapter noteElementAdapter;
-    private NoteElementController noteElementController = new NoteElementController();
-    private LocalNoteController noteController;
+    private NoteElementService noteElementController = new NoteElementService();
+    private LocalNoteService noteController;
     private NoteModel oldNote;
     private String courseUUID;
     private String courseDir;
@@ -75,7 +75,7 @@ public class EditNoteUi extends BaseCompatActivity {
     private AudioPlayer audioPlayer = LchAudioPlayer.newAudioPlayer();
     private VideoPlayer videoPlayer;
     private String currentTag = "默认";
-    private NoteTagController mNoteTagController = new NoteTagController();
+    private NoteTagService mNoteTagController = new NoteTagService();
 
     public static void launch(Context context, NoteModel note) {
         Intent it = new Intent(context, EditNoteUi.class);
@@ -104,7 +104,7 @@ public class EditNoteUi extends BaseCompatActivity {
             }
         });
 
-        noteController = new LocalNoteController();
+        noteController = new LocalNoteService();
         noteElementAdapter = new NoteElementAdapter(new NoteElementAdapter.Callback() {
             @Override
             public void showOperation(int position, boolean isPlayingVideo, boolean isPlayingAudio) {

@@ -12,7 +12,7 @@ import com.lch.menote.note.model.NoteElement;
 import com.lch.menote.note.model.NoteModel;
 import com.lch.menote.user.UserApiManager;
 import com.lch.menote.user.route.User;
-import com.lch.menote.utils.MvpViewUtils;
+import com.lch.menote.utils.MvpUtils;
 import com.lch.menote.utils.RequestUtils;
 import com.lch.netkit.v2.NetKit;
 import com.lch.netkit.v2.common.NetworkResponse;
@@ -30,13 +30,23 @@ import com.lchli.utils.tool.TaskExecutor;
 import java.util.List;
 
 /**
- * 复用逻辑。
- * Created by Administrator on 2019/1/30.
+ * Created by lichenghang on 2018/5/19.
  */
 
 public class CloudNoteService {
 
+
     private final RemoteNoteSource remoteNoteSource = NoteModuleInjector.getINS().provideRemoteNoteSource();
+
+    public void getCloudNotes(final NetNoteRepo.NetNoteQuery query, ControllerCallback<List<NoteModel>> cb) {
+        new UseCase<Void, List<NoteModel>>() {
+            @Override
+            protected ResponseValue<List<NoteModel>> execute(Void parameters) {
+                return remoteNoteSource.queryNotes(query);
+            }
+        }.invokeAsync(null, cb);
+    }
+
 
     public void deleteNote(final String noteId, final ControllerCallback<Void> cb) {
         new UseCase<Void, Void>() {
@@ -52,23 +62,15 @@ public class CloudNoteService {
         saveNoteToNetImpl(note, cb);
     }
 
-    public void uploadNote(final NoteModel note, final ControllerCallback<Void> cb) {
+
+    public void saveNoteToNet(final NoteModel note, final ControllerCallback<Void> cb) {
         note.uid = null;//server will generate uid.
         saveNoteToNetImpl(note, cb);
     }
 
-    public void getCloudNotes(final NetNoteRepo.NetNoteQuery query, ControllerCallback<List<NoteModel>> cb) {
-        new UseCase<Void, List<NoteModel>>() {
-            @Override
-            protected ResponseValue<List<NoteModel>> execute(Void parameters) {
-                return remoteNoteSource.queryNotes(query);
-            }
-        }.invokeAsync(null, cb);
-    }
-
 
     private void saveNoteToNetImpl(final NoteModel note, final ControllerCallback<Void> callback) {
-        final ControllerCallback<Void> cb = MvpViewUtils.newUiThreadProxy(callback);
+        final ControllerCallback<Void> cb = MvpUtils.newUiThreadProxy(callback);
 
         if (note == null) {
             cb.onError(0, "note is null.");
@@ -90,11 +92,14 @@ public class CloudNoteService {
                     return;
                 }
 
+
                 boolean isHasFile = false;
 
                 for (NoteElement e : elms) {
                     if (!e.type.equals(NoteElement.TYPE_TEXT)) {
                         UploadFileParams param = RequestUtils.minoteUploadFileParams()
+                                .addParam("userId", se.uid)
+                                .addParam("userToken", se.token)
                                 .setUrl(ApiConstants.UPLOAD_FILE)
                                 .addFile(new FileOptions().setFileKey("file").setFilePath(e.path));
 
@@ -125,6 +130,7 @@ public class CloudNoteService {
                     }
                 }//for
 
+
                 if (isHasFile) {
                     note.content = AliJsonHelper.toJSONString(elms);
                 }
@@ -142,4 +148,6 @@ public class CloudNoteService {
         });
 
     }
+
+
 }

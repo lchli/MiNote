@@ -14,7 +14,7 @@ import com.lch.menote.R;
 import com.lch.menote.note.data.NetNoteRepo;
 import com.lch.menote.note.events.CloudNoteListChangedEvent;
 import com.lch.menote.note.model.NoteModel;
-import com.lch.menote.note.presenter.CloudNotePresenter;
+import com.lch.menote.note.presenter.CloudNoteListPresenter;
 import com.lchli.utils.base.BaseFragment;
 import com.lchli.utils.tool.EventBusUtils;
 import com.lchli.utils.tool.VF;
@@ -29,17 +29,17 @@ import java.util.List;
  * Created by lichenghang on 2018/5/20.
  */
 
-public class CloudNoteUi extends BaseFragment implements CloudNotePresenter.MvpView {
+public class CloudNoteUi extends BaseFragment implements CloudNoteListPresenter.MvpView {
 
     private CloudNoteListAdapter notesAdp;
     private PullToRefreshListView moduleListRecyclerView;
-    private CloudNotePresenter cloudNotePresenter;
+    private CloudNoteListPresenter cloudNotePresenter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBusUtils.register(this);
-        cloudNotePresenter = new CloudNotePresenter(getActivity(), new ViewProxy(this));
+        cloudNotePresenter = new CloudNoteListPresenter(getActivity(), new ViewProxy(this));
 
         notesAdp = new CloudNoteListAdapter(getActivity(), cloudNotePresenter);
 
@@ -127,17 +127,17 @@ public class CloudNoteUi extends BaseFragment implements CloudNotePresenter.MvpV
 
     }
 
-    private static class ViewProxy implements CloudNotePresenter.MvpView {
+    private static class ViewProxy implements CloudNoteListPresenter.MvpView {
 
-        private final WeakReference<CloudNotePresenter.MvpView> uiRef;
+        private final WeakReference<CloudNoteListPresenter.MvpView> uiRef;
 
-        private ViewProxy(CloudNotePresenter.MvpView activity) {
+        private ViewProxy(CloudNoteListPresenter.MvpView activity) {
             this.uiRef = new WeakReference<>(activity);
         }
 
         @Override
         public void showLoading() {
-            final CloudNotePresenter.MvpView ui = uiRef.get();
+            final CloudNoteListPresenter.MvpView ui = uiRef.get();
             if (ui != null) {
                 ui.showLoading();
             }
@@ -145,7 +145,7 @@ public class CloudNoteUi extends BaseFragment implements CloudNotePresenter.MvpV
 
         @Override
         public void dismissLoading() {
-            final CloudNotePresenter.MvpView ui = uiRef.get();
+            final CloudNoteListPresenter.MvpView ui = uiRef.get();
             if (ui != null) {
                 ui.dismissLoading();
             }
@@ -153,7 +153,7 @@ public class CloudNoteUi extends BaseFragment implements CloudNotePresenter.MvpV
 
         @Override
         public void showListNotes(List<NoteModel> datas) {
-            final CloudNotePresenter.MvpView ui = uiRef.get();
+            final CloudNoteListPresenter.MvpView ui = uiRef.get();
             if (ui != null) {
                 ui.showListNotes(datas);
             }
@@ -161,7 +161,7 @@ public class CloudNoteUi extends BaseFragment implements CloudNotePresenter.MvpV
 
         @Override
         public void showNoMore() {
-            final CloudNotePresenter.MvpView ui = uiRef.get();
+            final CloudNoteListPresenter.MvpView ui = uiRef.get();
             if (ui != null) {
                 ui.showNoMore();
             }
@@ -169,7 +169,7 @@ public class CloudNoteUi extends BaseFragment implements CloudNotePresenter.MvpV
 
         @Override
         public void showEmpty() {
-            final CloudNotePresenter.MvpView ui = uiRef.get();
+            final CloudNoteListPresenter.MvpView ui = uiRef.get();
             if (ui != null) {
                 ui.showEmpty();
             }
@@ -177,7 +177,7 @@ public class CloudNoteUi extends BaseFragment implements CloudNotePresenter.MvpV
 
         @Override
         public void showFail(String msg) {
-            final CloudNotePresenter.MvpView ui = uiRef.get();
+            final CloudNoteListPresenter.MvpView ui = uiRef.get();
             if (ui != null) {
                 ui.showFail(msg);
             }

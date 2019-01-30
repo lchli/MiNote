@@ -13,7 +13,7 @@ import com.lch.menote.R
 import com.lch.menote.kotlinext.launchActivity
 import com.lch.menote.kotlinext.log
 import com.lch.menote.kotlinext.saveViewBmpToSdcard
-import com.lch.menote.note.controller.LocalNoteController
+import com.lch.menote.note.service.LocalNoteService
 import com.lch.menote.note.data.entity.Note
 import com.lch.menote.note.events.LocalNoteListChangedEvent
 import com.lch.menote.note.model.LinkData
@@ -30,7 +30,7 @@ import kotlinx.android.synthetic.main.activity_edit_music.*
 class MusicActivity : AppCompatActivity() {
 
     private lateinit var mMusicAdapter: MusicAdapter
-    private lateinit var mLocalNoteController: LocalNoteController
+    private lateinit var mLocalNoteController: LocalNoteService
     private val datas = mutableListOf<MusicData>()
     private var controllViewTotalHeight = -1
     private var courseUUID: String? = null
@@ -52,7 +52,7 @@ class MusicActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mLocalNoteController = LocalNoteController()
+        mLocalNoteController = LocalNoteService()
 
         setContentView(R.layout.activity_edit_music)
 

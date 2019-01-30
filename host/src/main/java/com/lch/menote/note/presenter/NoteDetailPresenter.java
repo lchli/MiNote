@@ -13,7 +13,7 @@ import com.lch.menote.note.model.NoteModel;
 import com.lch.menote.note.ui.EditNoteUi;
 import com.lch.menote.user.UserApiManager;
 import com.lch.menote.user.route.User;
-import com.lch.menote.utils.MvpViewUtils;
+import com.lch.menote.utils.MvpUtils;
 import com.lchli.arch.clean.ResponseValue;
 import com.lchli.arch.clean.UseCase;
 import com.lchli.utils.tool.AliJsonHelper;
@@ -60,7 +60,7 @@ public class NoteDetailPresenter {
 
     public NoteDetailPresenter(Context context, MvpView view) {
         this.context = context;
-        this.view = MvpViewUtils.newUiThreadProxy(view);
+        this.view = MvpUtils.newUiThreadProxy(view);
     }
 
 

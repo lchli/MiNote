@@ -16,7 +16,7 @@ import com.lch.menote.kotlinext.ContextExtKt;
 import com.lch.menote.note.datainterface.RemoteNoteSource;
 import com.lch.menote.note.events.CloudNoteListChangedEvent;
 import com.lch.menote.note.model.NoteModel;
-import com.lch.menote.note.presenter.CloudNotePresenter;
+import com.lch.menote.note.presenter.CloudNoteListPresenter;
 import com.lchli.utils.base.BaseFragment;
 import com.lchli.utils.tool.EventBusUtils;
 import com.lchli.utils.tool.Navigator;
@@ -36,20 +36,20 @@ import java.util.List;
  * Created by lichenghang on 2018/5/20.
  */
 
-public class HotNoteUi extends BaseFragment implements CloudNotePresenter.MvpView {
+public class HotNoteUi extends BaseFragment implements CloudNoteListPresenter.MvpView {
 
     private HotNoteListAdp notesAdp;
     private CommonEmptyView empty_widget;
     private PullToRefreshListView moduleListRecyclerView;
     private FloatingActionButton fab;
-    private CloudNotePresenter cloudNotePresenter;
+    private CloudNoteListPresenter cloudNotePresenter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBusUtils.register(this);
         notesAdp = new HotNoteListAdp();
-        cloudNotePresenter = new CloudNotePresenter(getActivity(), this);
+        cloudNotePresenter = new CloudNoteListPresenter(getActivity(), this);
     }
 
     @Override

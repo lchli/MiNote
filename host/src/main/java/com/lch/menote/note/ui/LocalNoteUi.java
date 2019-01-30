@@ -11,6 +11,7 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.lch.menote.R;
 import com.lch.menote.note.events.LocalNoteListChangedEvent;
 import com.lch.menote.note.presenter.LocalNoteListPresenter;
+import com.lch.menote.utils.MvpUtils;
 import com.lchli.pinedrecyclerlistview.library.pinnedRecyclerView.PinnedRecyclerView;
 import com.lchli.utils.base.BaseFragment;
 import com.lchli.utils.tool.EventBusUtils;
@@ -38,7 +39,7 @@ public class LocalNoteUi extends BaseFragment implements LocalNoteListPresenter.
         super.onCreate(savedInstanceState);
         EventBusUtils.register(this);
         notesAdp = new LocalNoteListAdp(getActivity());
-        localNoteListPresenter = new LocalNoteListPresenter(this);
+        localNoteListPresenter = new LocalNoteListPresenter(MvpUtils.newUiThreadWeakProxy(this));
     }
 
     @Override

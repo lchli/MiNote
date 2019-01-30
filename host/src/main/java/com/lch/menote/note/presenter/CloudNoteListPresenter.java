@@ -4,10 +4,10 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 
 import com.lch.menote.R;
+import com.lch.menote.note.service.CloudNoteService;
 import com.lch.menote.note.data.NetNoteRepo;
 import com.lch.menote.note.events.CloudNoteListChangedEvent;
 import com.lch.menote.note.model.NoteModel;
-import com.lch.menote.note.service.CloudNoteService;
 import com.lch.menote.user.UserApiManager;
 import com.lchli.arch.clean.ControllerCallback;
 import com.lchli.utils.tool.EventBusUtils;
@@ -21,7 +21,7 @@ import java.util.List;
  * Created by lichenghang on 2019/1/29.
  */
 
-public class CloudNotePresenter {
+public class CloudNoteListPresenter {
 
     public interface MvpView {
         void showListNotes(List<NoteModel> datas);
@@ -48,7 +48,7 @@ public class CloudNotePresenter {
     private final CloudNoteService cloudNoteService = new CloudNoteService();
 
 
-    public CloudNotePresenter(Context context, MvpView view) {
+    public CloudNoteListPresenter(Context context, MvpView view) {
         this.context = context;
         this.view = view;
     }

@@ -15,7 +15,7 @@ import com.lch.menote.user.domain.GetUserSessionCase;
 import com.lch.menote.user.domain.UpdateUserContactCase;
 import com.lch.menote.user.domain.UpdateUserHeadIconCase;
 import com.lch.menote.user.route.User;
-import com.lch.menote.utils.MvpViewUtils;
+import com.lch.menote.utils.MvpUtils;
 import com.lchli.arch.clean.ControllerCallback;
 import com.lchli.arch.clean.ResponseValue;
 import com.lchli.arch.clean.UseCase;
@@ -67,7 +67,7 @@ public class UserCenterPresenter {
 
     public UserCenterPresenter(Context context, MvpView view) {
         this.context = context;
-        this.view = MvpViewUtils.newUiThreadProxy(view);
+        this.view = MvpUtils.newUiThreadProxy(view);
     }
 
     public void onModifyUserHead(String headPath) {

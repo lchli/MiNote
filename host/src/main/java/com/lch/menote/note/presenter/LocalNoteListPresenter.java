@@ -5,7 +5,6 @@ import com.lch.menote.note.datainterface.LocalNoteSource;
 import com.lch.menote.note.model.NoteModel;
 import com.lch.menote.note.model.NotePinedData;
 import com.lch.menote.note.ui.LocalNoteListAdp;
-import com.lch.menote.utils.MvpViewUtils;
 import com.lchli.arch.clean.ResponseValue;
 import com.lchli.arch.clean.UseCase;
 import com.lchli.utils.tool.ListUtils;
@@ -37,7 +36,7 @@ public class LocalNoteListPresenter {
 
 
     public LocalNoteListPresenter(MvpView view) {
-        this.view = MvpViewUtils.newUiThreadProxy(view);
+        this.view = view;
     }
 
     public void getLocalNotesWithCat() {
@@ -80,33 +79,5 @@ public class LocalNoteListPresenter {
         });
     }
 
-    public void destroyView() {
-        view = new MvpView() {
-            @Override
-            public void showListNotes(List<Object> datas) {
-
-            }
-
-            @Override
-            public void showFail(String msg) {
-
-            }
-
-            @Override
-            public void showLoading() {
-
-            }
-
-            @Override
-            public void dismissLoading() {
-
-            }
-
-            @Override
-            public void showEmpty() {
-
-            }
-        };
-    }
 
 }
