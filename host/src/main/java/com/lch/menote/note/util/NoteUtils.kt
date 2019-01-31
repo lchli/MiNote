@@ -1,4 +1,4 @@
-package com.lch.menote.note.helper
+package com.lch.menote.note.util
 
 import com.lch.menote.ConstantUtil
 import org.apache.commons.io.FileUtils

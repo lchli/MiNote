@@ -10,8 +10,6 @@ public interface NoteApi {
 
     Fragment localFrament();
 
-    Fragment cloudFragment();
-
     void clearDB();
 
     void onAppBackground();

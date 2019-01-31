@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import com.lch.menote.ConstantUtil;
 import com.lch.menote.note.data.db.DaoSessionManager;
 import com.lch.menote.note.events.CloudNoteListChangedEvent;
-import com.lch.menote.note.ui.CloudNoteUi;
 import com.lch.menote.note.ui.LocalNoteUi;
 import com.lchli.utils.tool.EventBusUtils;
 
@@ -24,11 +23,6 @@ public class NoteRouteApiImpl implements NoteApi {
     @Override
     public Fragment localFrament() {
         return new LocalNoteUi();
-    }
-
-    @Override
-    public Fragment cloudFragment() {
-        return new CloudNoteUi();
     }
 
     @Override

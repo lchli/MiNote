@@ -46,6 +46,7 @@
         </provider>
 
         <activity android:name=".note.ui.FullVideoPlayActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".note.ui.MyCloudNoteUi" />
     </application>
 
 </manifest>

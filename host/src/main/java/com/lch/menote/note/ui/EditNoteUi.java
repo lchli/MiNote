@@ -21,31 +21,20 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.lch.audio_player.AudioPlayer;
 import com.lch.audio_player.LchAudioPlayer;
 import com.lch.menote.R;
-import com.lch.menote.note.service.LocalNoteService;
-import com.lch.menote.note.service.NoteElementService;
-import com.lch.menote.note.service.NoteTagService;
-import com.lch.menote.note.events.LocalNoteListChangedEvent;
-import com.lch.menote.note.helper.NoteUtils;
 import com.lch.menote.note.model.NoteElement;
 import com.lch.menote.note.model.NoteModel;
+import com.lch.menote.note.presenter.EditNotePresenter;
 import com.lch.menote.utils.DialogTool;
+import com.lch.menote.utils.MvpUtils;
 import com.lch.video_player.LchVideoPlayer;
 import com.lch.video_player.VideoPlayer;
-import com.lchli.arch.clean.ControllerCallback;
 import com.lchli.utils.base.BaseCompatActivity;
-import com.lchli.utils.tool.AliJsonHelper;
 import com.lchli.utils.tool.DialogUtils;
-import com.lchli.utils.tool.EventBusUtils;
 import com.lchli.utils.tool.ListUtils;
-import com.lchli.utils.tool.UUIDUtils;
 import com.lchli.utils.tool.VF;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.OnItemClickListener;
 
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +43,7 @@ import java.util.List;
  * Created by lichenghang on 2018/5/20.
  */
 
-public class EditNoteUi extends BaseCompatActivity {
+public class EditNoteUi extends BaseCompatActivity implements EditNotePresenter.MvpView {
     private static final int SELECT_IMG_RQUEST = 1;
     private static final int SELECT_VIDEO_RQUEST = 2;
     private static final int SELECT_AUDIO_RQUEST = 3;
@@ -66,16 +55,10 @@ public class EditNoteUi extends BaseCompatActivity {
     private TextView tv_note_category;
     private EditText et_note_title;
     private NoteElementAdapter noteElementAdapter;
-    private NoteElementService noteElementController = new NoteElementService();
-    private LocalNoteService noteController;
-    private NoteModel oldNote;
-    private String courseUUID;
-    private String courseDir;
     private int mPositionToModify = 0;
     private AudioPlayer audioPlayer = LchAudioPlayer.newAudioPlayer();
     private VideoPlayer videoPlayer;
-    private String currentTag = "默认";
-    private NoteTagService mNoteTagController = new NoteTagService();
+    private EditNotePresenter editNotePresenter;
 
     public static void launch(Context context, NoteModel note) {
         Intent it = new Intent(context, EditNoteUi.class);
@@ -88,6 +71,7 @@ public class EditNoteUi extends BaseCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         videoPlayer = LchVideoPlayer.newPlayer(getApplicationContext());
+        editNotePresenter = new EditNotePresenter(this, MvpUtils.newUiThreadWeakProxy(this));
 
         setContentView(R.layout.activity_edit_note);
         noteElementListView = VF.f(this, R.id.imageEditText_content);
@@ -104,39 +88,13 @@ public class EditNoteUi extends BaseCompatActivity {
             }
         });
 
-        noteController = new LocalNoteService();
         noteElementAdapter = new NoteElementAdapter(new NoteElementAdapter.Callback() {
             @Override
             public void showOperation(int position, boolean isPlayingVideo, boolean isPlayingAudio) {
                 operation(position, true, isPlayingVideo, isPlayingAudio);
             }
         }, this, audioPlayer, videoPlayer);
-
         noteElementListView.setAdapter(noteElementAdapter);
-
-        oldNote = (NoteModel) getIntent().getSerializableExtra("note");
-
-        if (oldNote != null) {
-            courseUUID = oldNote.uid;
-            courseDir = oldNote.imagesDir;
-
-            tv_note_category.setText(oldNote.type);
-            et_note_title.setText(oldNote.title);
-            List<NoteElement> oldElements = AliJsonHelper.parseArray(oldNote.content, NoteElement.class);
-            if (oldElements != null) {
-                noteElementController.setElements(oldElements);
-                noteElementAdapter.refresh(oldElements);
-            }
-        } else {
-            courseUUID = UUIDUtils.uuid();
-            courseDir = NoteUtils.INSTANCE.buildNoteDir(courseUUID);
-            try {
-                FileUtils.forceMkdir(new File(courseDir));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
 
         bt_more.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,109 +105,88 @@ public class EditNoteUi extends BaseCompatActivity {
         bt_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String title = et_note_title.getText().toString();
-                if (TextUtils.isEmpty(title)) {
-                    ToastUtils.showShort(R.string.note_title_cannot_empty);
-                    return;
-                }
-                List<NoteElement> content = noteElementController.getElements();
-                if (ListUtils.isEmpty(content)) {
-                    ToastUtils.showShort(R.string.note_content_cannot_empty);
-                    return;
-                }
-
-                final NoteModel note = new NoteModel();
-                note.uid = courseUUID;
-                note.imagesDir = courseDir;
-                note.type = currentTag;
-                note.title = title;
-                note.updateTime = System.currentTimeMillis();
-                note.content = AliJsonHelper.toJSONString(content);
-
-                noteController.saveLocalNote(note, new ControllerCallback<Void>() {
-
-                    @Override
-                    public void onSuccess(@Nullable Void aVoid) {
-                        EventBusUtils.post(new LocalNoteListChangedEvent());
-
-                        finish();
-                    }
-
-                    @Override
-                    public void onError(int code, String msg) {
-                        ToastUtils.showShort(msg);
-                    }
-
-                });
-
+                editNotePresenter.onSaveLocalNote(et_note_title.getText().toString());
             }
         });
 
         tv_note_category.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mNoteTagController.getAllTag(new ControllerCallback<List<String>>() {
-
-                    @Override
-                    public void onSuccess(@Nullable List<String> strings) {
-                        final List<String> datas = new ArrayList<>();
-                        datas.add("添加新标签");
-                        if (strings != null) {
-                            datas.addAll(strings);
-                        }
-
-                        DialogUtils.showTextListDialogPlus(EditNoteUi.this, new OnItemClickListener() {
-                            @Override
-                            public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
-                                dialog.dismiss();
-
-                                if (position != 0) {
-                                    currentTag = datas.get(position);
-                                    tv_note_category.setText(currentTag);
-                                } else {
-                                    showAddTagDialog();
-                                }
-
-                            }
-                        }, datas);
-                    }
-
-                    @Override
-                    public void onError(int code, String msg) {
-                        ToastUtils.showShort(msg);
-                    }
-
-                });
-
+                editNotePresenter.onGetAllTag();
             }
         });
 
+
+        editNotePresenter.onInit(getIntent());
+    }
+
+    @Override
+    public void showFail(String msg) {
+        ToastUtils.showShort(msg);
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void dismissLoading() {
+
+    }
+
+    @Override
+    public void finishUi() {
+        finish();
+    }
+
+    @Override
+    public void showCategory(String text) {
+        tv_note_category.setText(text);
+    }
+
+    @Override
+    public void showTitle(String text) {
+        et_note_title.setText(text);
+    }
+
+    @Override
+    public void showContent(List<NoteElement> datas) {
+        noteElementAdapter.refresh(datas);
+    }
+
+    @Override
+    public void showTags(final List<String> datas) {
+        DialogUtils.showTextListDialogPlus(EditNoteUi.this, new OnItemClickListener() {
+            @Override
+            public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
+                dialog.dismiss();
+
+                if (position != 0) {
+                    editNotePresenter.onTagClick(datas.get(position));
+                } else {
+                    showAddTagDialog();
+                }
+
+            }
+        }, datas);
+    }
+
+    @Override
+    public void toast(String msg) {
+        ToastUtils.showShort(msg);
     }
 
     private void showAddTagDialog() {
         DialogTool.showInputDialog(this, "添加标签", new DialogTool.InputDialogListener() {
             @Override
             public void onConfirm(final Dialog dialog, String inputText) {
-                String newtag = inputText;
-
-                if (TextUtils.isEmpty(newtag)) {
+                if (TextUtils.isEmpty(inputText)) {
                     return;
                 }
-                mNoteTagController.addTag(newtag, new ControllerCallback<Void>() {
+                dialog.dismiss();
 
-                    @Override
-                    public void onSuccess(@Nullable Void aVoid) {
-                        dialog.dismiss();
-                        ToastUtils.showShort("添加成功");
-                    }
-
-                    @Override
-                    public void onError(int code, String msg) {
-                        ToastUtils.showShort(msg);
-                    }
-
-
-                });
+                editNotePresenter.onAddTag(inputText);
             }
         });
 
@@ -329,16 +266,12 @@ public class EditNoteUi extends BaseCompatActivity {
         } else if (requestCode == SELECT_VIDEO_RQUEST && resultCode == Activity.RESULT_OK) {
             List<BaseMedia> medias = Boxing.getResult(data);
             if (!ListUtils.isEmpty(medias)) {
-                noteElementController.insertVideo(medias.get(0).getPath(), mPositionToModify);
-
-                noteElementAdapter.refresh(noteElementController.getElements());
+                editNotePresenter.onInsertVideo(medias.get(0).getPath(), mPositionToModify);
             }
         } else if (requestCode == SELECT_AUDIO_RQUEST && resultCode == Activity.RESULT_OK) {
             List<BaseMedia> medias = Boxing.getResult(data);
             if (!ListUtils.isEmpty(medias)) {
-                noteElementController.insertAudio(medias.get(0).getPath(), mPositionToModify);
-
-                noteElementAdapter.refresh(noteElementController.getElements());
+                editNotePresenter.onInsertAudio(medias.get(0).getPath(), mPositionToModify);
             }
         }
     }
@@ -352,15 +285,11 @@ public class EditNoteUi extends BaseCompatActivity {
     }
 
     private void insertTextNoteCase(int position) {
-        noteElementController.insertText(position);
-
-        noteElementAdapter.refresh(noteElementController.getElements());
+        editNotePresenter.onInsertText(position);
     }
 
     private void insertImgNoteCase(int position, String imgPath) {
-        noteElementController.insertImg(imgPath, position);
-
-        noteElementAdapter.refresh(noteElementController.getElements());
+        editNotePresenter.onInsertImg(imgPath, position);
     }
 
 
@@ -372,9 +301,7 @@ public class EditNoteUi extends BaseCompatActivity {
             audioPlayer.reset();
         }
 
-        noteElementController.delete(position);
-
-        noteElementAdapter.refresh(noteElementController.getElements());
+        editNotePresenter.onDeleteElement(position);
     }
 
 }

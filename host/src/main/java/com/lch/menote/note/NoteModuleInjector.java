@@ -1,6 +1,7 @@
 package com.lch.menote.note;
 
 import com.lch.menote.note.datainterface.LocalNoteSource;
+import com.lch.menote.note.datainterface.NoteElementSource;
 import com.lch.menote.note.datainterface.NoteTagSource;
 import com.lch.menote.note.datainterface.RemoteNoteSource;
 
@@ -35,5 +36,10 @@ public final class NoteModuleInjector implements NoteModuleFactory {
     @Override
     public RemoteNoteSource provideRemoteNoteSource() {
         return moduleFactory.provideRemoteNoteSource();
+    }
+
+    @Override
+    public NoteElementSource provideNoteElementSource() {
+        return moduleFactory.provideNoteElementSource();
     }
 }

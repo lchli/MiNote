@@ -1,15 +1,12 @@
 package com.lch.menote.note.presenter;
 
-import com.lch.menote.note.NoteModuleInjector;
+import android.support.annotation.Nullable;
+
 import com.lch.menote.note.datainterface.LocalNoteSource;
-import com.lch.menote.note.model.NoteModel;
-import com.lch.menote.note.model.NotePinedData;
-import com.lch.menote.note.ui.LocalNoteListAdp;
-import com.lchli.arch.clean.ResponseValue;
-import com.lchli.arch.clean.UseCase;
+import com.lch.menote.note.service.LocalNoteService;
+import com.lchli.arch.clean.ControllerCallback;
 import com.lchli.utils.tool.ListUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,9 +27,9 @@ public class LocalNoteListPresenter {
 
     }
 
-    private final LocalNoteSource localNoteSource = NoteModuleInjector.getINS().provideLocalNoteSource();
     private LocalNoteSource.LocalNoteQuery query = LocalNoteSource.LocalNoteQuery.newInstance();
     private MvpView view;
+    private LocalNoteService localNoteService = new LocalNoteService();
 
 
     public LocalNoteListPresenter(MvpView view) {
@@ -42,41 +39,25 @@ public class LocalNoteListPresenter {
     public void getLocalNotesWithCat() {
 
         view.showLoading();
-        UseCase.executeOnDiskIO(new Runnable() {
+        localNoteService.getLocalNotesWithCat(query, new ControllerCallback<List<Object>>() {
             @Override
-            public void run() {
-                try {
-                    ResponseValue<List<NoteModel>> notesRes = localNoteSource.queryNotes(query);
-                    if (notesRes.hasError()) {
-                        view.showFail(notesRes.getErrorMsg());
-                        return;
-                    }
-                    final List<NoteModel> notes = notesRes.data;
-                    if (ListUtils.isEmpty(notes)) {
-                        view.showEmpty();
-                        return;
-                    }
-                    List<Object> all = new ArrayList<>();
-                    String preType = "";
-
-                    for (NoteModel note : notes) {
-                        String currentType = note.type;
-                        if (!preType.equals(currentType)) {
-                            all.add(new NotePinedData(LocalNoteListAdp.VIEW_TYPE_PINED, currentType));
-                            preType = currentType;
-                        }
-
-                        all.add(note);
-                    }
-
-                    view.showListNotes(all);
-                } finally {
-                    view.dismissLoading();
+            public void onSuccess(@Nullable List<Object> objects) {
+                if (ListUtils.isEmpty(objects)) {
+                    view.showEmpty();
+                } else {
+                    view.showListNotes(objects);
                 }
 
+                view.dismissLoading();
+            }
 
+            @Override
+            public void onError(int code, String msg) {
+                view.dismissLoading();
+                view.showFail(msg);
             }
         });
+
     }
 
 

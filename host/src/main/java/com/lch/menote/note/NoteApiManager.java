@@ -26,11 +26,6 @@ public final class NoteApiManager implements NoteApi {
     }
 
     @Override
-    public Fragment cloudFragment() {
-        return null;
-    }
-
-    @Override
     public void clearDB() {
 
     }

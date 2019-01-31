@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.lch.menote.R;
 import com.lch.menote.note.model.NoteModel;
-import com.lch.menote.note.presenter.CloudNoteListPresenter;
+import com.lch.menote.note.presenter.MyCloudNoteListPresenter;
 import com.lch.menote.user.ui.UserInfoActivity;
 import com.lchli.utils.base.AbsAdapter;
 import com.lchli.utils.tool.AppListItemAnimatorUtils;
@@ -26,10 +26,10 @@ import com.orhanobut.dialogplus.OnItemClickListener;
 
 public class CloudNoteListAdapter extends AbsAdapter<NoteModel> {
 
-    private CloudNoteListPresenter noteController;
+    private MyCloudNoteListPresenter noteController;
     private final Activity activity;
 
-    public CloudNoteListAdapter(Activity activity, CloudNoteListPresenter presenter) {
+    public CloudNoteListAdapter(Activity activity, MyCloudNoteListPresenter presenter) {
 
         this.activity = activity;
         noteController = presenter;

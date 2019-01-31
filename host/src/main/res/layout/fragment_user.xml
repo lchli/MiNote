@@ -44,9 +44,15 @@
     </LinearLayout>
 
     <com.lch.menote.user.widget.UserCenterListItem
-        android:id="@+id/app_version_widget"
+        android:id="@+id/myCloudNoteView"
         style="@style/UserCenterListLayout"
         android:layout_marginTop="10dp"
+        app:UserCenterListItem_icon="@drawable/ic_app_version"
+        app:UserCenterListItem_text="我的云笔记" />
+
+    <com.lch.menote.user.widget.UserCenterListItem
+        android:id="@+id/app_version_widget"
+        style="@style/UserCenterListLayout"
         app:UserCenterListItem_icon="@drawable/ic_app_version"
         app:UserCenterListItem_text="版本号：1.0" />
 
@@ -63,7 +69,7 @@
         style="@style/UserCenterListLayout"
         app:UserCenterListItem_icon="@drawable/ic_about_us"
         app:UserCenterListItem_text="关于我们"
-        android:visibility="gone"
+        android:visibility="visible"
 
         />
 

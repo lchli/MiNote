@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.lch.netkit.common.widget.CommonTitleView
+        <com.lchli.utils.widget.CommonTitleView
             android:id="@+id/common_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

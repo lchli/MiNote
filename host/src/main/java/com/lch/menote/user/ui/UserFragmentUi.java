@@ -21,11 +21,13 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.lch.menote.R;
+import com.lch.menote.note.ui.MyCloudNoteUi;
 import com.lch.menote.user.presenterx.UserCenterPresenter;
 import com.lch.menote.user.widget.UserCenterListItem;
 import com.lch.menote.utils.DialogTool;
 import com.lchli.utils.base.BaseFragment;
 import com.lchli.utils.tool.ListUtils;
+import com.lchli.utils.tool.Navigator;
 import com.lchli.utils.tool.VF;
 
 import java.lang.ref.WeakReference;
@@ -44,6 +46,7 @@ public class UserFragmentUi extends BaseFragment implements UserCenterPresenter.
     private UserCenterListItem logout_widget;
     private UserCenterListItem app_version_widget;
     private UserCenterListItem check_update_widget;
+    private UserCenterListItem myCloudNoteView;
     private ImageView user_portrait;
     private UserCenterPresenter userCenterViewModel;
     private ProgressDialog mLoadingDialog;
@@ -70,6 +73,7 @@ public class UserFragmentUi extends BaseFragment implements UserCenterPresenter.
         user_portrait = VF.f(view, R.id.user_portrait);
         user_contact = VF.f(view, R.id.user_contact);
         check_update_widget = VF.f(view, R.id.check_update_widget);
+        myCloudNoteView = VF.f(view, R.id.myCloudNoteView);
 
         check_update_widget.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,6 +111,12 @@ public class UserFragmentUi extends BaseFragment implements UserCenterPresenter.
             @Override
             public void onClick(View v) {
                 userCenterViewModel.onNickButtonClick();
+            }
+        });
+        myCloudNoteView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigator.launchActivity(getActivity(), MyCloudNoteUi.class);
             }
         });
 

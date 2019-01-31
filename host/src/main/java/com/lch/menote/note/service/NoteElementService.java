@@ -1,6 +1,7 @@
 package com.lch.menote.note.service;
 
-import com.lch.menote.note.data.MemNoteElementRepo;
+import com.lch.menote.note.NoteModuleInjector;
+import com.lch.menote.note.datainterface.NoteElementSource;
 import com.lch.menote.note.model.NoteElement;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public class NoteElementService {
 
-    private MemNoteElementRepo memNoteElementSource = new MemNoteElementRepo();
+    private NoteElementSource memNoteElementSource = NoteModuleInjector.getINS().provideNoteElementSource();
 
 
     public void insertText(int position) {

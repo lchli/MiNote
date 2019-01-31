@@ -15,6 +15,7 @@ import com.lch.menote.R;
 import com.lch.menote.note.model.NoteElement;
 import com.lch.menote.note.model.NoteModel;
 import com.lch.menote.note.presenter.NoteDetailPresenter;
+import com.lch.menote.utils.MvpUtils;
 import com.lch.video_player.LchVideoPlayer;
 import com.lch.video_player.VideoPlayer;
 import com.lchli.utils.base.BaseCompatActivity;
@@ -53,7 +54,7 @@ public class LocalNoteDetailUi extends BaseCompatActivity implements NoteDetailP
         super.onCreate(savedInstanceState);
 
         videoPlayer = LchVideoPlayer.newPlayer(getApplicationContext());
-        noteDetailPresenter = new NoteDetailPresenter(this, this);
+        noteDetailPresenter = new NoteDetailPresenter(this, MvpUtils.newUiThreadWeakProxy(this));
 
         setContentView(R.layout.activity_local_note_detail_ui);
         Toolbar toolbar = VF.f(this, R.id.toolbar);
@@ -148,9 +149,4 @@ public class LocalNoteDetailUi extends BaseCompatActivity implements NoteDetailP
         finish();
     }
 
-    @Override
-    public void finish() {
-        super.finish();
-        noteDetailPresenter.destroyView();
-    }
 }

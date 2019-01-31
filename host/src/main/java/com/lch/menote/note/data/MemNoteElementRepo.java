@@ -1,5 +1,6 @@
 package com.lch.menote.note.data;
 
+import com.lch.menote.note.datainterface.NoteElementSource;
 import com.lch.menote.note.model.NoteElement;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.List;
  * Created by lichenghang on 2018/5/20.
  */
 
-public class MemNoteElementRepo {
+public class MemNoteElementRepo implements NoteElementSource {
 
     private List<NoteElement> datas = new ArrayList<>();
 

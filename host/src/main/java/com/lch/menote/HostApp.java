@@ -15,9 +15,11 @@ import com.lch.menote.note.NoteModuleFactory;
 import com.lch.menote.note.NoteModuleInjector;
 import com.lch.menote.note.NoteRouteApiImpl;
 import com.lch.menote.note.data.DatabseNoteRepo;
+import com.lch.menote.note.data.MemNoteElementRepo;
 import com.lch.menote.note.data.NetNoteRepo;
 import com.lch.menote.note.data.SpNoteTagRepo;
 import com.lch.menote.note.datainterface.LocalNoteSource;
+import com.lch.menote.note.datainterface.NoteElementSource;
 import com.lch.menote.note.datainterface.NoteTagSource;
 import com.lch.menote.note.datainterface.RemoteNoteSource;
 import com.lch.menote.user.UserApiManager;
@@ -108,6 +110,11 @@ public class HostApp extends Application {
             @Override
             public RemoteNoteSource provideRemoteNoteSource() {
                 return new NetNoteRepo();
+            }
+
+            @Override
+            public NoteElementSource provideNoteElementSource() {
+                return new MemNoteElementRepo();
             }
         });
         NoteApiManager.getINS().initImpl(new NoteRouteApiImpl());

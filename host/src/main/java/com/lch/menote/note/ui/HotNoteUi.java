@@ -13,10 +13,10 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.lch.menote.R;
 import com.lch.menote.kotlinext.ContextExtKt;
-import com.lch.menote.note.datainterface.RemoteNoteSource;
 import com.lch.menote.note.events.CloudNoteListChangedEvent;
 import com.lch.menote.note.model.NoteModel;
-import com.lch.menote.note.presenter.CloudNoteListPresenter;
+import com.lch.menote.note.presenter.HotNoteListPresenter;
+import com.lch.menote.utils.MvpUtils;
 import com.lchli.utils.base.BaseFragment;
 import com.lchli.utils.tool.EventBusUtils;
 import com.lchli.utils.tool.Navigator;
@@ -36,27 +36,26 @@ import java.util.List;
  * Created by lichenghang on 2018/5/20.
  */
 
-public class HotNoteUi extends BaseFragment implements CloudNoteListPresenter.MvpView {
+public class HotNoteUi extends BaseFragment implements HotNoteListPresenter.MvpView {
 
     private HotNoteListAdp notesAdp;
     private CommonEmptyView empty_widget;
     private PullToRefreshListView moduleListRecyclerView;
     private FloatingActionButton fab;
-    private CloudNoteListPresenter cloudNotePresenter;
+    private HotNoteListPresenter cloudNotePresenter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBusUtils.register(this);
         notesAdp = new HotNoteListAdp();
-        cloudNotePresenter = new CloudNoteListPresenter(getActivity(), this);
+        cloudNotePresenter = new HotNoteListPresenter(getActivity(), MvpUtils.newUiThreadWeakProxy(this));
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         EventBusUtils.unregister(this);
-        cloudNotePresenter.destroyView();
     }
 
     @Nullable
@@ -158,7 +157,7 @@ public class HotNoteUi extends BaseFragment implements CloudNoteListPresenter.Mv
     }
 
     private void queryNotesAsync() {
-        cloudNotePresenter.refresh(new RemoteNoteSource.NetNoteQuery().setPublic(true));
+        cloudNotePresenter.refresh();
     }
 
     private void loadmore() {

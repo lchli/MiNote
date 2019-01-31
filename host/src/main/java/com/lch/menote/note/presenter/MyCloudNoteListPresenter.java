@@ -4,11 +4,12 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 
 import com.lch.menote.R;
-import com.lch.menote.note.service.CloudNoteService;
 import com.lch.menote.note.data.NetNoteRepo;
 import com.lch.menote.note.events.CloudNoteListChangedEvent;
 import com.lch.menote.note.model.NoteModel;
+import com.lch.menote.note.service.CloudNoteService;
 import com.lch.menote.user.UserApiManager;
+import com.lch.menote.user.route.User;
 import com.lchli.arch.clean.ControllerCallback;
 import com.lchli.utils.tool.EventBusUtils;
 import com.lchli.utils.tool.ListUtils;
@@ -17,11 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Presenter很难被复用。
+ * Presenter可测试，但很难被复用。
  * Created by lichenghang on 2019/1/29.
  */
 
-public class CloudNoteListPresenter {
+public class MyCloudNoteListPresenter {
 
     public interface MvpView {
         void showListNotes(List<NoteModel> datas);
@@ -48,13 +49,12 @@ public class CloudNoteListPresenter {
     private final CloudNoteService cloudNoteService = new CloudNoteService();
 
 
-    public CloudNoteListPresenter(Context context, MvpView view) {
+    public MyCloudNoteListPresenter(Context context, MvpView view) {
         this.context = context;
         this.view = view;
     }
 
-    public void refresh(NetNoteRepo.NetNoteQuery query) {
-        mQuery = query;
+    public void refresh() {
         isHaveMore = true;
         all.clear();
         page = 0;
@@ -94,13 +94,14 @@ public class CloudNoteListPresenter {
 
 
     private void getCloudNotes() {
+        User se = UserApiManager.getINS().getSession();
 
-        if (UserApiManager.getINS().getSession() == null) {
+        if (se == null) {
             view.showFail(context.getString(R.string.not_login));
             return;
         }
 
-        mQuery.setPage(page).setPageSize(PAGE_SIZE);
+        mQuery.setPage(page).setPageSize(PAGE_SIZE).setUserId(se.uid);
 
         view.showLoading();
 

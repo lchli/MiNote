@@ -30,6 +30,7 @@ import com.lchli.utils.tool.TaskExecutor;
 import java.util.List;
 
 /**
+ * 异步，可复用。
  * Created by lichenghang on 2018/5/19.
  */
 
@@ -63,9 +64,27 @@ public class CloudNoteService {
     }
 
 
-    public void saveNoteToNet(final NoteModel note, final ControllerCallback<Void> cb) {
+    public void uploadNote(final NoteModel note, final ControllerCallback<Void> cb) {
         note.uid = null;//server will generate uid.
         saveNoteToNetImpl(note, cb);
+    }
+
+    public void publicNetNote(final String noteId, final ControllerCallback<NoteModel> cb) {
+        new UseCase<Void, NoteModel>() {
+            @Override
+            protected ResponseValue<NoteModel> execute(Void parameters) {
+                return remoteNoteSource.publicNote(noteId);
+            }
+        }.invokeAsync(null, cb);
+    }
+
+    public void likeNetNote(final String noteId, final ControllerCallback<NoteModel> cb) {
+        new UseCase<Void, NoteModel>() {
+            @Override
+            protected ResponseValue<NoteModel> execute(Void parameters) {
+                return remoteNoteSource.likeNote(noteId);
+            }
+        }.invokeAsync(null, cb);
     }
 
 

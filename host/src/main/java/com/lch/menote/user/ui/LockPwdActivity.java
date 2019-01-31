@@ -1,6 +1,7 @@
 package com.lch.menote.user.ui;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
@@ -12,11 +13,11 @@ import com.lch.menote.R;
 import com.lch.menote.note.NoteApiManager;
 import com.lch.menote.user.presenterx.LockPwdPresenter;
 import com.lch.menote.utils.DialogTool;
+import com.lch.menote.utils.MvpUtils;
 import com.lchli.utils.base.BaseCompatActivity;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.OnItemClickListener;
 
-import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class LockPwdActivity extends BaseCompatActivity implements LockPwdPresen
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mUserController = new LockPwdPresenter(this,new ViewProxy(this));
+        mUserController = new LockPwdPresenter(this, MvpUtils.newUiThreadWeakProxy(this));
 
         setContentView(R.layout.activity_pwd);
         tvResetPwd = f(R.id.tvResetPwd);
@@ -94,22 +95,33 @@ public class LockPwdActivity extends BaseCompatActivity implements LockPwdPresen
                 dialog.dismiss();
 
                 if (position == 1) {
-                    DialogTool.showListDialog(LockPwdActivity.this, false, Arrays.asList("请再次确认?", "确定"), new OnItemClickListener() {
+                    new Handler().postDelayed(new Runnable() {
                         @Override
-                        public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
-                            dialog.dismiss();
-
-                            if (position == 1) {
-                                NoteApiManager.getINS().clearDB();
-                                ToastUtils.showShort("重置成功");
-                            }
+                        public void run() {
+                            showConfirmReset();
                         }
-                    });
+                    },1000);
+
+
                 }
             }
         });
 
 
+    }
+
+    private void showConfirmReset() {
+        DialogTool.showListDialog(this, false, Arrays.asList("请再次确认?", "确定"), new OnItemClickListener() {
+            @Override
+            public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
+                dialog.dismiss();
+
+                if (position == 1) {
+                    NoteApiManager.getINS().clearDB();
+                    ToastUtils.showShort("重置成功");
+                }
+            }
+        });
     }
 
     @Override
@@ -132,45 +144,4 @@ public class LockPwdActivity extends BaseCompatActivity implements LockPwdPresen
         finish();
     }
 
-    private static class ViewProxy implements LockPwdPresenter.MvpView {
-
-        private final WeakReference<LockPwdPresenter.MvpView> uiRef;
-
-        private ViewProxy(LockPwdPresenter.MvpView activity) {
-            this.uiRef = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void showLoading() {
-            final LockPwdPresenter.MvpView ui = uiRef.get();
-            if (ui != null) {
-                ui.showLoading();
-            }
-        }
-
-        @Override
-        public void dismissLoading() {
-            final LockPwdPresenter.MvpView ui = uiRef.get();
-            if (ui != null) {
-                ui.dismissLoading();
-            }
-        }
-
-        @Override
-        public void finishUi() {
-            final LockPwdPresenter.MvpView ui = uiRef.get();
-            if (ui != null) {
-                ui.finishUi();
-            }
-        }
-
-        @Override
-        public void showFail(String msg) {
-            final LockPwdPresenter.MvpView ui = uiRef.get();
-            if (ui != null) {
-                ui.showFail(msg);
-            }
-        }
-
-    }
 }

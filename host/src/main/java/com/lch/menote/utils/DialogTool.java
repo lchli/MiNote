@@ -50,7 +50,7 @@ public final class DialogTool {
 
 
     public static DialogPlus showListDialog(Activity activity,  boolean expand, List<String> items,OnItemClickListener listener) {
-        ArrayAdapter adp = new ArrayAdapter<String>(activity, android.R.layout.simple_expandable_list_item_1, items);
+        ArrayAdapter adp = new ArrayAdapter<>(activity, android.R.layout.simple_expandable_list_item_1, items);
         DialogPlus dia = DialogPlus.newDialog(activity)
                 .setAdapter(adp)
                 .setOnItemClickListener(listener)

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,20 +16,16 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.lch.menote.R;
-import com.lch.menote.note.service.CloudNoteService;
-import com.lch.menote.note.service.LocalNoteService;
 import com.lch.menote.note.data.entity.Note;
-import com.lch.menote.note.events.CloudNoteListChangedEvent;
-import com.lch.menote.note.events.LocalNoteListChangedEvent;
 import com.lch.menote.note.model.NoteModel;
 import com.lch.menote.note.model.NotePinedData;
-import com.lchli.arch.clean.ControllerCallback;
+import com.lch.menote.note.presenter.LocalNoteAdpPresenter;
+import com.lch.menote.utils.MvpUtils;
 import com.lchli.pinedrecyclerlistview.library.ListSectionData;
 import com.lchli.pinedrecyclerlistview.library.pinnedRecyclerView.PinnedRecyclerAdapter;
 import com.lchli.utils.tool.AppListItemAnimatorUtils;
 import com.lchli.utils.tool.ContextProvider;
 import com.lchli.utils.tool.DialogUtils;
-import com.lchli.utils.tool.EventBusUtils;
 import com.lchli.utils.tool.TimeUtils;
 import com.lchli.utils.tool.VF;
 import com.orhanobut.dialogplus.DialogPlus;
@@ -40,18 +35,38 @@ import com.orhanobut.dialogplus.OnItemClickListener;
  * Created by lichenghang on 2018/5/27.
  */
 
-public class LocalNoteListAdp extends PinnedRecyclerAdapter {
+public class LocalNoteListAdp extends PinnedRecyclerAdapter implements LocalNoteAdpPresenter.MvpView {
     private static final int VIEW_TYPE_ITEM = 0;
     public static final int VIEW_TYPE_PINED = 1;
 
     private final Bitmap def = BitmapFactory.decodeResource(ContextProvider.context().getResources(), R.drawable.ic_add_note);
     private Activity activity;
-    private final CloudNoteService cloudNoteController = new CloudNoteService();
-    private final LocalNoteService localNoteController = new LocalNoteService();
+    private LocalNoteAdpPresenter localNoteAdpPresenter;
 
 
     public LocalNoteListAdp(Activity activity) {
         this.activity = activity;
+        localNoteAdpPresenter = new LocalNoteAdpPresenter(activity.getApplicationContext(), MvpUtils.newUiThreadWeakProxy(this));
+    }
+
+    @Override
+    public void showFail(String msg) {
+        ToastUtils.showShort(msg);
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void dismissLoading() {
+
+    }
+
+    @Override
+    public void toast(String msg) {
+        ToastUtils.showShort(msg);
     }
 
     @Override
@@ -156,20 +171,7 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter {
                     public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
                         dialog.dismiss();
 
-                        localNoteController.deleteLocalNote(data.uid, new ControllerCallback<Void>() {
-
-                            @Override
-                            public void onSuccess(@Nullable Void aVoid) {
-                                EventBusUtils.post(new LocalNoteListChangedEvent());
-                            }
-
-                            @Override
-                            public void onError(int code, String msg) {
-                                ToastUtils.showShort(msg);
-                            }
-
-                        });
-
+                        localNoteAdpPresenter.onDeleteLocalNote(data.uid);
 
                     }
                 }, "删除");
@@ -182,21 +184,7 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter {
         holder.course_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cloudNoteController.saveNoteToNet(data, new ControllerCallback<Void>() {
-
-                    @Override
-                    public void onSuccess(@Nullable Void aVoid) {
-                        ToastUtils.showShort(context.getString(R.string.upload_note_success));
-
-                        EventBusUtils.post(new CloudNoteListChangedEvent());
-                    }
-
-                    @Override
-                    public void onError(int code, String msg) {
-                        ToastUtils.showShort(msg);
-                    }
-
-                });
+                localNoteAdpPresenter.onUploadNote(data);
             }
         });
 
