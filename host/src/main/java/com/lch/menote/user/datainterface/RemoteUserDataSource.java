@@ -5,16 +5,15 @@ import com.lchli.arch.clean.ResponseValue;
 
 public interface RemoteUserDataSource {
 
-    ResponseValue<User> addUser(String userName, String userPwd, String userHeadUrl);
+    ResponseValue<User> addUser(String userName, String userPwd, String userHeadUrl,String userContact);
 
     ResponseValue<User> getUser(String userName, String userPwd);
 
-    ResponseValue<User> updateUser(String updateUserId, String sessionUid, String sessionToken, UpdateUserParams updateUserParams);
+    ResponseValue<User> updateUser(UpdateUserParams updateUserParams);
 
-    ResponseValue<User> getUser(String userId, String sessionUid, String sessionToken);
+    ResponseValue<User> getUser(String userId);
 
       class UpdateUserParams {
-        public String name;
         public String pwd;
         public String headUrl;
         public String userContact;

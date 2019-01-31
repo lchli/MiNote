@@ -33,7 +33,7 @@ public class NetFileSource implements RemoteFileSource {
             }
         });
 
-        if (resf.hasError() || resf.data == null || TextUtils.isEmpty(resf.data.data)) {
+        if (resf.hasError() || resf.data == null || TextUtils.isEmpty(resf.data.data)|| resf.data.status!= ApiConstants.RESPONSE_CODE_SUCCESS) {
             ret.setErrorMsg("file upload fail.");
             return ret;
         }

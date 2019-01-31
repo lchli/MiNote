@@ -18,7 +18,7 @@ import com.lchli.utils.tool.AliJsonHelper;
 public class NetUserDataSource implements RemoteUserDataSource {
 
     @Override
-    public ResponseValue<User> addUser(String userName, String userPwd, String userHeadUrl) {
+    public ResponseValue<User> addUser(String userName, String userPwd, String userHeadUrl, String userContact) {
         ResponseValue<User> ret = new ResponseValue<>();
 
         ApiRequestParams params = RequestUtils.minoteStringRequestParams();
@@ -26,6 +26,7 @@ public class NetUserDataSource implements RemoteUserDataSource {
         params.addParam("userName", userName);
         params.addParam("userPwd", userPwd);
         params.addParam("userHeadUrl", userHeadUrl);
+        params.addParam("userContact", userContact);
 
         NetworkResponse<LoginResponse> res = NetKit.apiRequest().syncPost(params, new Parser<LoginResponse>() {
             @Override
@@ -83,18 +84,14 @@ public class NetUserDataSource implements RemoteUserDataSource {
 
 
     @Override
-    public ResponseValue<User> updateUser(String updateUserId, String sessionUid, String sessionToken, UpdateUserParams updateUserParams) {
+    public ResponseValue<User> updateUser(UpdateUserParams updateUserParams) {
         ResponseValue<User> ret = new ResponseValue<>();
 
         ApiRequestParams params = RequestUtils.minoteStringRequestParams();
         params.setUrl(ApiConstants.USER_UPDATE);
-        params.addParam("userName", updateUserParams.name);
         params.addParam("userPwd", updateUserParams.pwd);
-        params.addParam("userId", updateUserId);
         params.addParam("userHeadUrl", updateUserParams.headUrl);
-        params.addParam("token", sessionToken);
         params.addParam("userContact", updateUserParams.userContact);
-        params.addParam("myUserId", sessionUid);
 
         NetworkResponse<LoginResponse> res = NetKit.apiRequest().syncPost(params, new Parser<LoginResponse>() {
             @Override
@@ -119,14 +116,12 @@ public class NetUserDataSource implements RemoteUserDataSource {
     }
 
     @Override
-    public ResponseValue<User> getUser(String userId, String sessionUid, String sessionToken) {
+    public ResponseValue<User> getUser(String userId) {
         ResponseValue<User> ret = new ResponseValue<>();
 
         ApiRequestParams params = RequestUtils.minoteStringRequestParams();
         params.setUrl(ApiConstants.USER_GET_BY_ID);
         params.addParam("userId", userId);
-        params.addParam("token", sessionToken);
-        params.addParam("myUserId", sessionUid);
 
         NetworkResponse<LoginResponse> res = NetKit.apiRequest().syncGet(params, new Parser<LoginResponse>() {
             @Override
