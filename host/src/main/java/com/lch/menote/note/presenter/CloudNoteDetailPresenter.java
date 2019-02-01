@@ -7,10 +7,9 @@ import android.support.annotation.Nullable;
 import com.blankj.utilcode.util.ToastUtils;
 import com.lch.menote.R;
 import com.lch.menote.note.events.CloudNoteListChangedEvent;
+import com.lch.menote.note.model.CloudNoteModel;
 import com.lch.menote.note.model.NoteElement;
-import com.lch.menote.note.model.NoteModel;
 import com.lch.menote.note.service.CloudNoteService;
-import com.lch.menote.note.ui.EditNoteUi;
 import com.lch.menote.user.UserApiManager;
 import com.lch.menote.user.route.User;
 import com.lchli.arch.clean.ControllerCallback;
@@ -26,7 +25,7 @@ import java.util.List;
  * Created by lichenghang on 2019/1/29.
  */
 
-public class NoteDetailPresenter {
+public class CloudNoteDetailPresenter {
 
     public interface MvpView {
 
@@ -49,30 +48,24 @@ public class NoteDetailPresenter {
         void finishUi();
     }
 
-    public static final int LAUNCH_FROM_LOCAL_NOTE = 1;
-    public static final int LAUNCH_FROM_CLOUD_NOTE = 2;
     private Context context;
     private MvpView view;
-    private int launchFrom;
-    private NoteModel model;
+    private CloudNoteModel model;
     private final CloudNoteService cloudNoteService = new CloudNoteService();
 
 
-    public NoteDetailPresenter(Context context, MvpView view) {
+    public CloudNoteDetailPresenter(Context context, MvpView view) {
         this.context = context;
         this.view = view;
     }
 
 
     public void onOptionsItemSelected(int id) {
-        if (id == R.id.action_edit_note) {
-            EditNoteUi.launch(context, model);
-            view.finishUi();
-        } else if (id == android.R.id.home) {
+        if (id == android.R.id.home) {
             view.finishUi();
         } else if (id == R.id.action_share_note) {
             try {
-                String path = model.ShareUrl;
+                String path = model.shareUrl;
                 Intent imageIntent = new Intent(Intent.ACTION_SEND);
                 imageIntent.setType("text/plain");
                 imageIntent.putExtra(Intent.EXTRA_TEXT, path);
@@ -90,8 +83,7 @@ public class NoteDetailPresenter {
     }
 
     public void initLoad(final Intent intent) {
-        model = (NoteModel) intent.getSerializableExtra("note");
-        launchFrom = intent.getIntExtra("from", LAUNCH_FROM_LOCAL_NOTE);
+        model = (CloudNoteModel) intent.getSerializableExtra("note");
 
         if (model == null) {
             view.showEmpty();
@@ -121,13 +113,7 @@ public class NoteDetailPresenter {
             return;
         }
 
-        if (launchFrom == LAUNCH_FROM_LOCAL_NOTE) {
-            view.removeMenue(R.id.action_like_note);
-            view.removeMenue(R.id.action_share_note);
-            view.removeMenue(R.id.action_public_note);
-        } else if (launchFrom == LAUNCH_FROM_CLOUD_NOTE) {
-            view.removeMenue(R.id.action_edit_note);
-        }
+        view.removeMenue(R.id.action_edit_note);
 
         User se = UserApiManager.getINS().getSession();
         if (se == null || !se.uid.equals(model.userId) || model.isPublic()) {
@@ -161,9 +147,9 @@ public class NoteDetailPresenter {
         }
 
         view.showLoading();
-        cloudNoteService.publicNetNote(model.uid, new ControllerCallback<NoteModel>() {
+        cloudNoteService.publicNetNote(model.uid, new ControllerCallback<CloudNoteModel>() {
             @Override
-            public void onSuccess(final @Nullable NoteModel note) {
+            public void onSuccess(final @Nullable CloudNoteModel note) {
                 if (note == null) {
                     view.showFail("data is null.");
                     view.dismissLoading();
@@ -213,9 +199,9 @@ public class NoteDetailPresenter {
         }
 
         view.showLoading();
-        cloudNoteService.likeNetNote(model.uid, new ControllerCallback<NoteModel>() {
+        cloudNoteService.likeNetNote(model.uid, new ControllerCallback<CloudNoteModel>() {
             @Override
-            public void onSuccess(final @Nullable NoteModel note) {
+            public void onSuccess(final @Nullable CloudNoteModel note) {
                 if (note == null) {
                     view.showFail("data is null.");
                     view.dismissLoading();

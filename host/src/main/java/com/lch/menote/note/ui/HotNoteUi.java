@@ -1,6 +1,7 @@
 package com.lch.menote.note.ui;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
@@ -9,12 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.blankj.utilcode.util.ToastUtils;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.lch.menote.R;
 import com.lch.menote.kotlinext.ContextExtKt;
 import com.lch.menote.note.events.CloudNoteListChangedEvent;
-import com.lch.menote.note.model.NoteModel;
 import com.lch.menote.note.presenter.HotNoteListPresenter;
 import com.lch.menote.utils.MvpUtils;
 import com.lchli.utils.base.BaseFragment;
@@ -24,11 +22,16 @@ import com.lchli.utils.tool.VF;
 import com.lchli.utils.widget.CommonEmptyView;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.OnItemClickListener;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
+import com.scwang.smartrefresh.layout.header.ClassicsHeader;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,10 +42,11 @@ import java.util.List;
 public class HotNoteUi extends BaseFragment implements HotNoteListPresenter.MvpView {
 
     private HotNoteListAdp notesAdp;
-    private CommonEmptyView empty_widget;
-    private PullToRefreshListView moduleListRecyclerView;
+    private ListView moduleListRecyclerView;
     private FloatingActionButton fab;
     private HotNoteListPresenter cloudNotePresenter;
+    private SmartRefreshLayout refreshLayout;
+    private CommonEmptyView empty_widget;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,22 +75,28 @@ public class HotNoteUi extends BaseFragment implements HotNoteListPresenter.MvpV
         empty_widget = VF.f(view, R.id.empty_widget);
         moduleListRecyclerView = VF.f(view, R.id.moduleListRecyclerView);
         fab = VF.f(view, R.id.fab);
+        refreshLayout = VF.f(view, R.id.refreshLayout);
 
         empty_widget.addEmptyText("no data");
 
-        moduleListRecyclerView.setMode(PullToRefreshBase.Mode.BOTH);
         moduleListRecyclerView.setAdapter(notesAdp);
-        moduleListRecyclerView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
-            @Override
-            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                queryNotesAsync();
-            }
 
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
-            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 loadmore();
             }
         });
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                queryNotesAsync();
+            }
+
+        });
+        refreshLayout.setRefreshHeader(new ClassicsHeader(view.getContext()));
+        refreshLayout.setRefreshFooter(new ClassicsFooter(view.getContext()));
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,10 +135,8 @@ public class HotNoteUi extends BaseFragment implements HotNoteListPresenter.MvpV
     }
 
     @Override
-    public void showListNotes(List<NoteModel> datas) {
-        List<Object> total = new ArrayList<>();
-        total.addAll(datas);
-        notesAdp.refresh(total);
+    public void showListNotes(List<Object> datas) {
+        notesAdp.refresh(datas);
     }
 
     @Override
@@ -143,17 +151,18 @@ public class HotNoteUi extends BaseFragment implements HotNoteListPresenter.MvpV
 
     @Override
     public void dismissLoading() {
-
+        refreshLayout.finishLoadMore();
+        refreshLayout.finishRefresh();
     }
 
     @Override
     public void showNoMore() {
-
+        ToastUtils.showShort("没有更多数据了");
     }
 
     @Override
-    public void showEmpty() {
-
+    public void showEmpty(boolean b) {
+        empty_widget.setVisibility(b ? View.VISIBLE : View.GONE);
     }
 
     private void queryNotesAsync() {

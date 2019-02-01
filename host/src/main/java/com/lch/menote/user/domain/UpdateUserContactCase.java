@@ -36,10 +36,7 @@ public class UpdateUserContactCase extends UseCase<UpdateUserContactCase.UpdateP
 
         RemoteUserDataSource.UpdateUserParams updateUserParams = new RemoteUserDataSource.UpdateUserParams();
         updateUserParams.userContact = parameters.userContact;
-        updateUserParams.headUrl = res.data.headUrl;
-        updateUserParams.name = res.data.name;
-        updateUserParams.pwd = res.data.pwd;
 
-        return dataSource.updateUser(res.data.uid, res.data.uid, res.data.token, updateUserParams);
+        return dataSource.updateUser(updateUserParams);
     }
 }

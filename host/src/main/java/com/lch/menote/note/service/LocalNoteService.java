@@ -1,8 +1,8 @@
 package com.lch.menote.note.service;
 
 import com.lch.menote.note.NoteModuleInjector;
+import com.lch.menote.note.data.entity.Note;
 import com.lch.menote.note.datainterface.LocalNoteSource;
-import com.lch.menote.note.model.NoteModel;
 import com.lch.menote.note.model.NotePinedData;
 import com.lch.menote.note.ui.LocalNoteListAdp;
 import com.lchli.arch.clean.ControllerCallback;
@@ -22,10 +22,10 @@ public class LocalNoteService {
 
     private final LocalNoteSource localNoteSource = NoteModuleInjector.getINS().provideLocalNoteSource();
 
-    public void saveLocalNote(final NoteModel note, final ControllerCallback<Void> cb) {
-        new UseCase<NoteModel, Void>() {
+    public void saveLocalNote(final Note note, final ControllerCallback<Void> cb) {
+        new UseCase<Note, Void>() {
             @Override
-            protected ResponseValue<Void> execute(NoteModel parameters) {
+            protected ResponseValue<Void> execute(Note parameters) {
                 return localNoteSource.save(parameters);
             }
         }.invokeAsync(note, cb);
@@ -45,7 +45,7 @@ public class LocalNoteService {
         new UseCase<Void, List<Object>>() {
             @Override
             protected ResponseValue<List<Object>> execute(Void parameters) {
-                ResponseValue<List<NoteModel>> notesRes = localNoteSource.queryNotes(query);
+                ResponseValue<List<Note>> notesRes = localNoteSource.queryNotes(query);
                 if (notesRes.hasError()) {
                     return new ResponseValue<List<Object>>().setErrorMsg(notesRes.getErrorMsg());
                 }
@@ -56,7 +56,7 @@ public class LocalNoteService {
                 List<Object> all = new ArrayList<>();
                 String preType = "";
 
-                for (NoteModel note : notesRes.data) {
+                for (Note note : notesRes.data) {
                     String currentType = note.type;
                     if (!preType.equals(currentType)) {
                         all.add(new NotePinedData(LocalNoteListAdp.VIEW_TYPE_PINED, currentType));

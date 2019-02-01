@@ -6,13 +6,13 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.lch.menote.R;
+import com.lch.menote.note.data.entity.Note;
 import com.lch.menote.note.events.LocalNoteListChangedEvent;
-import com.lch.menote.note.util.NoteUtils;
 import com.lch.menote.note.model.NoteElement;
-import com.lch.menote.note.model.NoteModel;
 import com.lch.menote.note.service.LocalNoteService;
 import com.lch.menote.note.service.NoteElementService;
 import com.lch.menote.note.service.NoteTagService;
+import com.lch.menote.note.util.NoteUtils;
 import com.lchli.arch.clean.ControllerCallback;
 import com.lchli.arch.clean.ResponseValue;
 import com.lchli.arch.clean.UseCase;
@@ -56,7 +56,7 @@ public class EditNotePresenter {
 
     }
 
-    private NoteModel oldNote;
+    private Note oldNote;
     private MvpView view;
     private final LocalNoteService localNoteService = new LocalNoteService();
     private final NoteTagService noteTagService = new NoteTagService();
@@ -72,7 +72,7 @@ public class EditNotePresenter {
     }
 
     public void onInit(Intent it) {
-        oldNote = (NoteModel) it.getSerializableExtra("note");
+        oldNote = (Note) it.getSerializableExtra("note");
 
         if (oldNote != null) {
             courseUUID = oldNote.uid;
@@ -118,12 +118,12 @@ public class EditNotePresenter {
             return;
         }
 
-        final NoteModel note = new NoteModel();
+        final Note note = new Note();
         note.uid = courseUUID;
         note.imagesDir = courseDir;
         note.type = currentTag;
         note.title = title;
-        note.updateTime = System.currentTimeMillis();
+        note.lastModifyTime = System.currentTimeMillis();
         note.content = AliJsonHelper.toJSONString(content);
 
         view.showLoading();

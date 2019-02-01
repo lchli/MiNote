@@ -1,6 +1,7 @@
 package com.lch.menote.note.datainterface;
 
-import com.lch.menote.note.model.NoteModel;
+import com.lch.menote.note.data.entity.Note;
+import com.lch.menote.note.model.CloudNoteModel;
 import com.lchli.arch.clean.ResponseValue;
 
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +24,6 @@ public interface RemoteNoteSource {
         public String title;
         public String uid;
         public String userId;
-        public String isPublic;
         public int page = 0;
         public int pageSize = 20;
 
@@ -50,11 +50,6 @@ public interface RemoteNoteSource {
 
         public NetNoteQuery setPageSize(int pageSize) {
             this.pageSize = pageSize;
-            return this;
-        }
-
-        public NetNoteQuery setPublic(boolean aPublic) {
-            isPublic = aPublic ? "1" : "0";
             return this;
         }
 
@@ -88,12 +83,12 @@ public interface RemoteNoteSource {
         }
     }
 
-    ResponseValue<List<NoteModel>> queryNotes(NetNoteQuery query);
+    ResponseValue<List<CloudNoteModel>> queryNotes(NetNoteQuery query);
 
-    ResponseValue<Void> save(@NotNull NoteModel note);
+    ResponseValue<Void> upload(@NotNull Note note);
 
     ResponseValue<Void> delete(@NotNull String noteId);
 
-    ResponseValue<NoteModel> likeNote(String noteId);
-    ResponseValue<NoteModel> publicNote(String noteId);
+    ResponseValue<CloudNoteModel> likeNote(String noteId);
+    ResponseValue<CloudNoteModel> publicNote(String noteId);
 }

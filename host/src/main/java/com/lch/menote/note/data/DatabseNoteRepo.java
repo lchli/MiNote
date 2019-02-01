@@ -6,15 +6,12 @@ import android.text.TextUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.lch.menote.note.data.db.DaoSessionManager;
 import com.lch.menote.note.data.db.gen.NoteDao;
-import com.lch.menote.note.data.mapper.ModelMapper;
-import com.lch.menote.note.datainterface.LocalNoteSource;
-import com.lch.menote.note.model.NoteModel;
 import com.lch.menote.note.data.entity.Note;
+import com.lch.menote.note.datainterface.LocalNoteSource;
 import com.lchli.arch.clean.ResponseValue;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -27,8 +24,8 @@ public class DatabseNoteRepo implements LocalNoteSource {
     }
 
     @Override
-    public ResponseValue<List<NoteModel>> queryNotes(LocalNoteQuery query) {
-        ResponseValue<List<NoteModel>> res = new ResponseValue<>();
+    public ResponseValue<List<Note>> queryNotes(LocalNoteQuery query) {
+        ResponseValue<List<Note>> res = new ResponseValue<>();
 
         try {
 
@@ -47,16 +44,7 @@ public class DatabseNoteRepo implements LocalNoteSource {
                 builder.orderAsc(NoteDao.Properties.Type).orderDesc(NoteDao.Properties.LastModifyTime);
             }
 
-            ArrayList<NoteModel> models = new ArrayList<>();
-
-            List<Note> notes = builder.list();
-            if (notes != null) {
-                for (Note n : notes) {
-                    models.add(ModelMapper.from(n));
-                }
-            }
-
-            res.data = models;
+            res.data = builder.list();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,11 +56,11 @@ public class DatabseNoteRepo implements LocalNoteSource {
     }
 
     @Override
-    public ResponseValue<Void> save(NoteModel note) {
+    public ResponseValue<Void> save(Note note) {
         ResponseValue<Void> ret = new ResponseValue<>();
 
         try {
-            DaoSessionManager.noteDao(context).insertOrReplace(ModelMapper.from(note));
+            DaoSessionManager.noteDao(context).insertOrReplace(note);
         } catch (Exception e) {
             e.printStackTrace();
             detectLockError(e);

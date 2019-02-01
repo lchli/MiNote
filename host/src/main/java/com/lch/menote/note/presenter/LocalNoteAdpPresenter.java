@@ -4,9 +4,9 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 
 import com.lch.menote.R;
+import com.lch.menote.note.data.entity.Note;
 import com.lch.menote.note.events.CloudNoteListChangedEvent;
 import com.lch.menote.note.events.LocalNoteListChangedEvent;
-import com.lch.menote.note.model.NoteModel;
 import com.lch.menote.note.service.CloudNoteService;
 import com.lch.menote.note.service.LocalNoteService;
 import com.lchli.arch.clean.ControllerCallback;
@@ -17,6 +17,7 @@ import com.lchli.utils.tool.EventBusUtils;
  */
 
 public class LocalNoteAdpPresenter {
+
     public interface MvpView {
 
         void showFail(String msg);
@@ -39,7 +40,7 @@ public class LocalNoteAdpPresenter {
         this.context = context;
     }
 
-    public void onUploadNote(NoteModel model) {
+    public void onUploadNote(Note model) {
         view.showLoading();
         cloudNoteService.uploadNote(model, new ControllerCallback<Void>() {
             @Override

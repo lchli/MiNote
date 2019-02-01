@@ -15,12 +15,18 @@
             android:layout_height="wrap_content"
             android:background="@color/titleView_bgColor" />
 
-        <com.handmark.pulltorefresh.library.PullToRefreshListView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/moduleListRecyclerView"
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            />
+            android:layout_height="match_parent">
+
+
+            <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/moduleListRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
         <com.lchli.utils.widget.CommonEmptyView
             android:id="@+id/empty_widget"

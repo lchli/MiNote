@@ -14,4 +14,5 @@ public class User implements Serializable{
     public String token;
     public String headUrl;
     public String userContact;
+    public String nick;
 }

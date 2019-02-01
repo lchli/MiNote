@@ -18,6 +18,8 @@ public class RegisterUseCase extends UseCase<RegisterUseCase.RegisterParams, Use
         public String userName;
         public String userPwd;
         public String userHeadPath;
+        public String userNick;
+        public String userContact;
     }
 
 
@@ -47,7 +49,7 @@ public class RegisterUseCase extends UseCase<RegisterUseCase.RegisterParams, Use
             }
         }
 
-        ResponseValue<User> res = userDataSource.addUser(parameters.userName, parameters.userPwd, headUrl);
+        ResponseValue<User> res = userDataSource.addUser(parameters.userName, parameters.userPwd, headUrl,parameters.userContact,parameters.userNick);
         if (res.hasError() || res.data == null) {
             return res;
         }

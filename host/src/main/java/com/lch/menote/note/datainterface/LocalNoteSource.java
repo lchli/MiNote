@@ -1,6 +1,6 @@
 package com.lch.menote.note.datainterface;
 
-import com.lch.menote.note.model.NoteModel;
+import com.lch.menote.note.data.entity.Note;
 import com.lchli.arch.clean.ResponseValue;
 
 import java.util.List;
@@ -41,9 +41,9 @@ public interface LocalNoteSource {
     }
 
 
-    ResponseValue<List<NoteModel>> queryNotes(LocalNoteQuery query);
+    ResponseValue<List<Note>> queryNotes(LocalNoteQuery query);
 
-    ResponseValue<Void> save(NoteModel note);
+    ResponseValue<Void> save(Note note);
 
     ResponseValue<Void> delete(String noteId);
 }

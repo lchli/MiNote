@@ -2,6 +2,7 @@ package com.lch.menote.utils;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -58,5 +59,32 @@ public final class DialogTool {
                 .create();
         dia.show();
         return dia;
+    }
+
+    public static Dialog showLoadingDialog(Activity activity, String msg) {
+        Dialog dialog = createLoadingDialog(activity, msg);
+        dialog.show();
+
+        return dialog;
+    }
+
+    public static Dialog showLoadingDialog(Activity activity) {
+        Dialog dialog = createLoadingDialog(activity);
+        dialog.show();
+
+        return dialog;
+    }
+
+    public static Dialog createLoadingDialog(Activity activity, String msg) {
+        ProgressDialog dialog = new ProgressDialog(activity);
+        dialog.setIndeterminate(true);
+        dialog.setTitle(msg);
+        dialog.setCanceledOnTouchOutside(false);
+
+        return dialog;
+    }
+
+    public static Dialog createLoadingDialog(Activity activity) {
+        return createLoadingDialog(activity, "加载中...");
     }
 }

@@ -1,5 +1,6 @@
 package com.lch.menote.user.dataimpl;
 
+import com.apkfuns.logutils.LogUtils;
 import com.lch.menote.ApiConstants;
 import com.lch.menote.user.dataimpl.response.LoginResponse;
 import com.lch.menote.user.datainterface.RemoteUserDataSource;
@@ -18,7 +19,7 @@ import com.lchli.utils.tool.AliJsonHelper;
 public class NetUserDataSource implements RemoteUserDataSource {
 
     @Override
-    public ResponseValue<User> addUser(String userName, String userPwd, String userHeadUrl, String userContact) {
+    public ResponseValue<User> addUser(String userName, String userPwd, String userHeadUrl, String userContact, String nick) {
         ResponseValue<User> ret = new ResponseValue<>();
 
         ApiRequestParams params = RequestUtils.minoteStringRequestParams();
@@ -27,10 +28,12 @@ public class NetUserDataSource implements RemoteUserDataSource {
         params.addParam("userPwd", userPwd);
         params.addParam("userHeadUrl", userHeadUrl);
         params.addParam("userContact", userContact);
+        params.addParam("userNick", nick);
 
         NetworkResponse<LoginResponse> res = NetKit.apiRequest().syncPost(params, new Parser<LoginResponse>() {
             @Override
             public LoginResponse parse(String s) {
+                LogUtils.e(s);
                 return AliJsonHelper.parseObject(s, LoginResponse.class);
             }
         });
@@ -40,7 +43,17 @@ public class NetUserDataSource implements RemoteUserDataSource {
             return ret;
         }
 
-        if (res.data == null || res.data.data == null) {
+        if (res.data == null) {
+            ret.setErrorMsg("return data is null.");
+            return ret;
+        }
+
+        if (res.data.status != ApiConstants.RESPONSE_CODE_SUCCESS) {
+            ret.setErrorMsg(res.data.getMessage());
+            return ret;
+        }
+
+        if (res.data.data == null) {
             ret.setErrorMsg("return data is null.");
             return ret;
         }
@@ -63,6 +76,7 @@ public class NetUserDataSource implements RemoteUserDataSource {
         NetworkResponse<LoginResponse> res = NetKit.apiRequest().syncGet(params, new Parser<LoginResponse>() {
             @Override
             public LoginResponse parse(String s) {
+                LogUtils.e(s);
                 return AliJsonHelper.parseObject(s, LoginResponse.class);
             }
         });
@@ -72,7 +86,18 @@ public class NetUserDataSource implements RemoteUserDataSource {
             return ret;
         }
 
-        if (res.data == null || res.data.data == null) {
+
+        if (res.data == null) {
+            ret.setErrorMsg("return data is null.");
+            return ret;
+        }
+
+        if (res.data.status != ApiConstants.RESPONSE_CODE_SUCCESS) {
+            ret.setErrorMsg(res.data.getMessage());
+            return ret;
+        }
+
+        if (res.data.data == null) {
             ret.setErrorMsg("return data is null.");
             return ret;
         }
@@ -92,6 +117,7 @@ public class NetUserDataSource implements RemoteUserDataSource {
         params.addParam("userPwd", updateUserParams.pwd);
         params.addParam("userHeadUrl", updateUserParams.headUrl);
         params.addParam("userContact", updateUserParams.userContact);
+        params.addParam("userNick", updateUserParams.userNick);
 
         NetworkResponse<LoginResponse> res = NetKit.apiRequest().syncPost(params, new Parser<LoginResponse>() {
             @Override

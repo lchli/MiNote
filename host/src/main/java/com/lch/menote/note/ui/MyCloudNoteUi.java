@@ -1,19 +1,26 @@
 package com.lch.menote.note.ui;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.ListView;
 
 import com.blankj.utilcode.util.ToastUtils;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.lch.menote.R;
 import com.lch.menote.note.events.CloudNoteListChangedEvent;
-import com.lch.menote.note.model.NoteModel;
+import com.lch.menote.note.model.CloudNoteModel;
 import com.lch.menote.note.presenter.MyCloudNoteListPresenter;
 import com.lch.menote.utils.MvpUtils;
 import com.lchli.utils.base.BaseCompatActivity;
 import com.lchli.utils.tool.EventBusUtils;
+import com.lchli.utils.widget.CommonEmptyView;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
+import com.scwang.smartrefresh.layout.header.ClassicsHeader;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -27,8 +34,10 @@ import java.util.List;
 public class MyCloudNoteUi extends BaseCompatActivity implements MyCloudNoteListPresenter.MvpView {
 
     private CloudNoteListAdapter notesAdp;
-    private PullToRefreshListView moduleListRecyclerView;
+    private ListView moduleListRecyclerView;
     private MyCloudNoteListPresenter cloudNotePresenter;
+    private SmartRefreshLayout refreshLayout;
+    private CommonEmptyView empty_widget;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,24 +46,34 @@ public class MyCloudNoteUi extends BaseCompatActivity implements MyCloudNoteList
 
         setContentView(R.layout.fragment_cloud_note_list);
         moduleListRecyclerView = f(R.id.moduleListRecyclerView);
+        empty_widget = f(R.id.empty_widget);
+        refreshLayout = f(R.id.refreshLayout);
 
-        moduleListRecyclerView.setMode(PullToRefreshBase.Mode.BOTH);
-        moduleListRecyclerView.setAdapter(notesAdp);
-        moduleListRecyclerView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
-            @Override
-            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                queryNotesAsync();
-            }
 
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
-            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 loadmore();
             }
         });
 
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                queryNotesAsync();
+            }
+
+        });
+        refreshLayout.setRefreshHeader(new ClassicsHeader(this));
+        refreshLayout.setRefreshFooter(new ClassicsFooter(this));
+
+        empty_widget.addEmptyText("no data");
+
 
         cloudNotePresenter = new MyCloudNoteListPresenter(this, MvpUtils.newUiThreadWeakProxy(this));
         notesAdp = new CloudNoteListAdapter(this, cloudNotePresenter);
+        moduleListRecyclerView.setAdapter(notesAdp);
+
 
         queryNotesAsync();
     }
@@ -80,7 +99,7 @@ public class MyCloudNoteUi extends BaseCompatActivity implements MyCloudNoteList
     }
 
     @Override
-    public void showListNotes(List<NoteModel> datas) {
+    public void showListNotes(List<CloudNoteModel> datas) {
         notesAdp.refresh(datas);
     }
 
@@ -96,6 +115,8 @@ public class MyCloudNoteUi extends BaseCompatActivity implements MyCloudNoteList
 
     @Override
     public void dismissLoading() {
+        refreshLayout.finishLoadMore();
+        refreshLayout.finishRefresh();
 
     }
 
@@ -105,8 +126,8 @@ public class MyCloudNoteUi extends BaseCompatActivity implements MyCloudNoteList
     }
 
     @Override
-    public void showEmpty() {
-
+    public void showEmpty(boolean b) {
+        empty_widget.setVisibility(b ? View.VISIBLE : View.GONE);
     }
 
 }

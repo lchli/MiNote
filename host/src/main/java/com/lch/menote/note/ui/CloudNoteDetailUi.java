@@ -12,9 +12,9 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.lch.audio_player.AudioPlayer;
 import com.lch.audio_player.LchAudioPlayer;
 import com.lch.menote.R;
-import com.lch.menote.note.data.entity.Note;
+import com.lch.menote.note.model.CloudNoteModel;
 import com.lch.menote.note.model.NoteElement;
-import com.lch.menote.note.presenter.LocalNoteDetailPresenter;
+import com.lch.menote.note.presenter.CloudNoteDetailPresenter;
 import com.lch.menote.utils.MvpUtils;
 import com.lch.video_player.LchVideoPlayer;
 import com.lch.video_player.VideoPlayer;
@@ -23,30 +23,29 @@ import com.lchli.utils.tool.VF;
 
 import java.util.List;
 
-public class LocalNoteDetailUi extends BaseCompatActivity implements LocalNoteDetailPresenter.MvpView {
+public class CloudNoteDetailUi extends BaseCompatActivity implements CloudNoteDetailPresenter.MvpView {
 
     private ListView imageEditText_content;
     private AudioPlayer audioPlayer = LchAudioPlayer.newAudioPlayer();
     private VideoPlayer videoPlayer;
     private NoteElementNotEditAdapter adapter;
     private Menu menu;
-    private LocalNoteDetailPresenter noteDetailPresenter;
+    private CloudNoteDetailPresenter noteDetailPresenter;
 
 
-    public static void launchFromLocal(Context context, Note note) {
-        Intent it = new Intent(context, LocalNoteDetailUi.class);
+    public static void launchFromCloud(Context context, CloudNoteModel note) {
+        Intent it = new Intent(context, CloudNoteDetailUi.class);
         it.putExtra("note", note);
         it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(it);
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         videoPlayer = LchVideoPlayer.newPlayer(getApplicationContext());
-        noteDetailPresenter = new LocalNoteDetailPresenter(this, MvpUtils.newUiThreadWeakProxy(this));
+        noteDetailPresenter = new CloudNoteDetailPresenter(this, MvpUtils.newUiThreadWeakProxy(this));
 
         setContentView(R.layout.activity_local_note_detail_ui);
         Toolbar toolbar = VF.f(this, R.id.toolbar);
@@ -118,6 +117,16 @@ public class LocalNoteDetailUi extends BaseCompatActivity implements LocalNoteDe
         }
     }
 
+    @Override
+    public void showLikeMenuIcon(int resid) {
+        if (menu == null) {
+            return;
+        }
+        MenuItem likeMenu = menu.findItem(R.id.action_like_note);
+        if (likeMenu != null) {
+            likeMenu.setIcon(resid);
+        }
+    }
 
     @Override
     public void removeMenue(int id) {

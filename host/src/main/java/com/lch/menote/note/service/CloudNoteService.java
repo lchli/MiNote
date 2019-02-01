@@ -7,9 +7,10 @@ import com.lch.menote.file.FileModuleInjector;
 import com.lch.menote.file.datainterface.RemoteFileSource;
 import com.lch.menote.note.NoteModuleInjector;
 import com.lch.menote.note.data.NetNoteRepo;
+import com.lch.menote.note.data.entity.Note;
 import com.lch.menote.note.datainterface.RemoteNoteSource;
+import com.lch.menote.note.model.CloudNoteModel;
 import com.lch.menote.note.model.NoteElement;
-import com.lch.menote.note.model.NoteModel;
 import com.lch.menote.user.UserApiManager;
 import com.lch.menote.user.route.User;
 import com.lch.menote.utils.MvpUtils;
@@ -34,17 +35,17 @@ public class CloudNoteService {
     private final RemoteNoteSource remoteNoteSource = NoteModuleInjector.getINS().provideRemoteNoteSource();
     private final RemoteFileSource remoteFileSource = FileModuleInjector.getINS().provideRemoteFileSource();
 
-    public void getCloudNotes(final NetNoteRepo.NetNoteQuery query, ControllerCallback<List<NoteModel>> cb) {
-        new UseCase<Void, List<NoteModel>>() {
+    public void getCloudNotes(final NetNoteRepo.NetNoteQuery query, ControllerCallback<List<CloudNoteModel>> cb) {
+        new UseCase<Void, List<CloudNoteModel>>() {
             @Override
-            protected ResponseValue<List<NoteModel>> execute(Void parameters) {
+            protected ResponseValue<List<CloudNoteModel>> execute(Void parameters) {
                 return remoteNoteSource.queryNotes(query);
             }
         }.invokeAsync(null, cb);
     }
 
 
-    public void deleteNote(final String noteId, final ControllerCallback<Void> cb) {
+    public void deleteNetNote(final String noteId, final ControllerCallback<Void> cb) {
         new UseCase<Void, Void>() {
             @Override
             protected ResponseValue<Void> execute(Void parameters) {
@@ -54,36 +55,32 @@ public class CloudNoteService {
 
     }
 
-    public void updateNetNote(final NoteModel note, final ControllerCallback<Void> cb) {
-        saveNoteToNetImpl(note, cb);
-    }
 
-
-    public void uploadNote(final NoteModel note, final ControllerCallback<Void> cb) {
+    public void uploadNote(final Note note, final ControllerCallback<Void> cb) {
         note.uid = null;//server will generate uid.
         saveNoteToNetImpl(note, cb);
     }
 
-    public void publicNetNote(final String noteId, final ControllerCallback<NoteModel> cb) {
-        new UseCase<Void, NoteModel>() {
+    public void publicNetNote(final String noteId, final ControllerCallback<CloudNoteModel> cb) {
+        new UseCase<Void, CloudNoteModel>() {
             @Override
-            protected ResponseValue<NoteModel> execute(Void parameters) {
+            protected ResponseValue<CloudNoteModel> execute(Void parameters) {
                 return remoteNoteSource.publicNote(noteId);
             }
         }.invokeAsync(null, cb);
     }
 
-    public void likeNetNote(final String noteId, final ControllerCallback<NoteModel> cb) {
-        new UseCase<Void, NoteModel>() {
+    public void likeNetNote(final String noteId, final ControllerCallback<CloudNoteModel> cb) {
+        new UseCase<Void, CloudNoteModel>() {
             @Override
-            protected ResponseValue<NoteModel> execute(Void parameters) {
+            protected ResponseValue<CloudNoteModel> execute(Void parameters) {
                 return remoteNoteSource.likeNote(noteId);
             }
         }.invokeAsync(null, cb);
     }
 
 
-    private void saveNoteToNetImpl(final NoteModel note, final ControllerCallback<Void> callback) {
+    private void saveNoteToNetImpl(Note note, final ControllerCallback<Void> callback) {
         final ControllerCallback<Void> cb = MvpUtils.newUiThreadProxy(callback);
 
         if (note == null) {
@@ -97,12 +94,14 @@ public class CloudNoteService {
             return;
         }
 
+        final Note copy = note.copySelf();
+
         new UseCase<Void, Void>() {
             @Override
             protected ResponseValue<Void> execute(Void parameters) {
                 ResponseValue<Void> ret = new ResponseValue<>();
 
-                final List<NoteElement> elms = AliJsonHelper.parseArray(note.content, NoteElement.class);
+                final List<NoteElement> elms = AliJsonHelper.parseArray(copy.content, NoteElement.class);
                 if (ListUtils.isEmpty(elms)) {
                     ret.setErrorMsg("note content is empty.");
                     return ret;
@@ -123,10 +122,10 @@ public class CloudNoteService {
                 }//for
 
                 if (isHasFile) {
-                    note.content = AliJsonHelper.toJSONString(elms);//reset.
+                    copy.content = AliJsonHelper.toJSONString(elms);//reset.
                 }
 
-                final ResponseValue<Void> resSave = remoteNoteSource.save(note);
+                final ResponseValue<Void> resSave = remoteNoteSource.upload(copy);
 
                 if (resSave.hasError()) {
                     ret.setErrorMsg(resSave.getErrorMsg());

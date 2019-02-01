@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.lch.menote.R;
-import com.lch.menote.note.model.NoteModel;
+import com.lch.menote.note.model.CloudNoteModel;
 import com.lch.menote.note.presenter.MyCloudNoteListPresenter;
 import com.lch.menote.user.ui.UserInfoActivity;
 import com.lchli.utils.base.AbsAdapter;
@@ -24,7 +24,7 @@ import com.orhanobut.dialogplus.OnItemClickListener;
  * Created by lichenghang on 2018/6/2.
  */
 
-public class CloudNoteListAdapter extends AbsAdapter<NoteModel> {
+public class CloudNoteListAdapter extends AbsAdapter<CloudNoteModel> {
 
     private MyCloudNoteListPresenter noteController;
     private final Activity activity;
@@ -42,7 +42,7 @@ public class CloudNoteListAdapter extends AbsAdapter<NoteModel> {
 
     @Override
     public void onBindViewHolder(AbsAdapter.AbsViewHolder holder, int position) {
-        final NoteModel model = getItem(position);
+        final CloudNoteModel model = getItem(position);
         if (model == null) {
             return;
         }
@@ -55,7 +55,7 @@ public class CloudNoteListAdapter extends AbsAdapter<NoteModel> {
         h.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LocalNoteDetailUi.launchFromCloud(v.getContext(), model);
+                CloudNoteDetailUi.launchFromCloud(v.getContext(), model);
             }
         });
         h.course_thumb_imageView.setOnClickListener(new View.OnClickListener() {

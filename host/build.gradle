@@ -127,6 +127,7 @@ dependencies {
     api "com.github.lchli:LchVideoPlayer:1.1.0"
     api "com.github.lchli:boxing:$rootProject.ext.boxing_version"
 
-    api 'com.laputapp:laputapp-pulltorefresh:2.1.1'
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-18'
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-18'//没有使用特殊Header，可以不加这行
 
 }

@@ -21,8 +21,8 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.lch.audio_player.AudioPlayer;
 import com.lch.audio_player.LchAudioPlayer;
 import com.lch.menote.R;
+import com.lch.menote.note.data.entity.Note;
 import com.lch.menote.note.model.NoteElement;
-import com.lch.menote.note.model.NoteModel;
 import com.lch.menote.note.presenter.EditNotePresenter;
 import com.lch.menote.utils.DialogTool;
 import com.lch.menote.utils.MvpUtils;
@@ -60,7 +60,7 @@ public class EditNoteUi extends BaseCompatActivity implements EditNotePresenter.
     private VideoPlayer videoPlayer;
     private EditNotePresenter editNotePresenter;
 
-    public static void launch(Context context, NoteModel note) {
+    public static void launch(Context context, Note note) {
         Intent it = new Intent(context, EditNoteUi.class);
         it.putExtra("note", note);
         it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

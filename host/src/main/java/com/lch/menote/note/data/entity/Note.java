@@ -9,8 +9,9 @@ import java.io.Serializable;
 /**
  * Created by Administrator on 2017/9/21.
  */
-@Entity
-public class Note implements Serializable {
+
+@Entity(nameInDb = "NOTE")
+public class Note implements Serializable {//LOCAL NOTE.
 
     public static final int CAT_NOTE = 1;
     public static final int CAT_MUSIC = 2;
@@ -35,6 +36,10 @@ public class Note implements Serializable {
 
     public int category = CAT_NOTE;
 
+
+
+
+
     @Generated(hash = 22410477)
     public Note(String imagesDir, String content, long lastModifyTime, String title,
             String type, String thumbNail, String uid, String userId,
@@ -50,9 +55,32 @@ public class Note implements Serializable {
         this.category = category;
     }
 
+
+
     @Generated(hash = 1272611929)
     public Note() {
     }
+
+
+  
+
+
+    public Note copySelf() {
+        Note copy = new Note();
+        copy.imagesDir = imagesDir;
+        copy.content = content;
+        copy.lastModifyTime = lastModifyTime;
+        copy.title = title;
+        copy.type = type;
+        copy.thumbNail = thumbNail;
+        copy.uid = uid;
+        copy.userId = userId;
+        copy.category = category;
+
+        return copy;
+    }
+
+  
 
     public String getImagesDir() {
         return this.imagesDir;

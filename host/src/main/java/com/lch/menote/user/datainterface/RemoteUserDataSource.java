@@ -5,7 +5,7 @@ import com.lchli.arch.clean.ResponseValue;
 
 public interface RemoteUserDataSource {
 
-    ResponseValue<User> addUser(String userName, String userPwd, String userHeadUrl,String userContact);
+    ResponseValue<User> addUser(String userName, String userPwd, String userHeadUrl,String userContact,String nick);
 
     ResponseValue<User> getUser(String userName, String userPwd);
 
@@ -17,5 +17,6 @@ public interface RemoteUserDataSource {
         public String pwd;
         public String headUrl;
         public String userContact;
+        public String userNick;
     }
 }

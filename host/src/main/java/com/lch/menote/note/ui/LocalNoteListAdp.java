@@ -1,10 +1,12 @@
 package com.lch.menote.note.ui;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +19,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.lch.menote.R;
 import com.lch.menote.note.data.entity.Note;
-import com.lch.menote.note.model.NoteModel;
 import com.lch.menote.note.model.NotePinedData;
 import com.lch.menote.note.presenter.LocalNoteAdpPresenter;
+import com.lch.menote.utils.DialogTool;
 import com.lch.menote.utils.MvpUtils;
 import com.lchli.pinedrecyclerlistview.library.ListSectionData;
 import com.lchli.pinedrecyclerlistview.library.pinnedRecyclerView.PinnedRecyclerAdapter;
@@ -40,6 +42,7 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter implements LocalNote
     public static final int VIEW_TYPE_PINED = 1;
 
     private final Bitmap def = BitmapFactory.decodeResource(ContextProvider.context().getResources(), R.drawable.ic_add_note);
+    private final Dialog loading;
     private Activity activity;
     private LocalNoteAdpPresenter localNoteAdpPresenter;
 
@@ -47,21 +50,27 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter implements LocalNote
     public LocalNoteListAdp(Activity activity) {
         this.activity = activity;
         localNoteAdpPresenter = new LocalNoteAdpPresenter(activity.getApplicationContext(), MvpUtils.newUiThreadWeakProxy(this));
+        loading = DialogTool.createLoadingDialog(activity);
+        loading.setCancelable(false);
+
     }
 
     @Override
     public void showFail(String msg) {
+        if (TextUtils.isEmpty(msg)) {
+            msg = "上传失败";
+        }
         ToastUtils.showShort(msg);
     }
 
     @Override
     public void showLoading() {
-
+        loading.show();
     }
 
     @Override
     public void dismissLoading() {
-
+        loading.dismiss();
     }
 
     @Override
@@ -125,13 +134,13 @@ public class LocalNoteListAdp extends PinnedRecyclerAdapter implements LocalNote
 
         ViewHolder holder = (ViewHolder) h;
 
-        final NoteModel data = (NoteModel) o;
+        final Note data = (Note) o;
 
         final Context context = holder.itemView.getContext();
 
         holder.couse_title_textView.setText(data.title);
 
-        holder.course_time_textView.setText(TimeUtils.getTime(data.updateTime));
+        holder.course_time_textView.setText(TimeUtils.getTime(data.lastModifyTime));
 
         if (!isScrolling) {
 

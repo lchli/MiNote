@@ -12,9 +12,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.lch.menote.R;
-import com.lch.menote.note.data.entity.Note;
+import com.lch.menote.note.model.CloudNoteModel;
 import com.lch.menote.note.model.HeadData;
-import com.lch.menote.note.model.NoteModel;
 import com.lch.menote.user.ui.UserInfoActivity;
 import com.lchli.utils.base.AbsAdapter;
 import com.lchli.utils.tool.AppListItemAnimatorUtils;
@@ -77,7 +76,7 @@ public class HotNoteListAdp extends AbsAdapter<Object> {
 
         final ViewHolder holder = (ViewHolder) h;
 
-        final NoteModel data = (NoteModel) o;
+        final CloudNoteModel data = (CloudNoteModel) o;
 
         final Context context = holder.itemView.getContext();
 
@@ -107,11 +106,7 @@ public class HotNoteListAdp extends AbsAdapter<Object> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (data.category == Note.CAT_MUSIC) {
-                    MusicActivity.Companion.launch(context, data);
-                } else {
-                    LocalNoteDetailUi.launchFromCloud(context, data);
-                }
+                CloudNoteDetailUi.launchFromCloud(context, data);
             }
         });
 

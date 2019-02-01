@@ -28,6 +28,6 @@ public class GetUserInfoCase extends UseCase<GetUserInfoCase.Params, User> {
 
     @Override
     protected ResponseValue<User> execute(Params parameters) {
-        return dataSource.getUser(parameters.userId, parameters.sessionUid, parameters.sessionToken);
+        return dataSource.getUser(parameters.userId);
     }
 }

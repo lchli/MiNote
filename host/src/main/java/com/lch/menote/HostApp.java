@@ -38,6 +38,10 @@ import com.lch.netkit.v2.NetKit;
 import com.lchli.imgloader.ImgLoaderManager;
 import com.lchli.utils.tool.ContextProvider;
 
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+
 
 /**
  * Created by Administrator on 2017/9/21.
@@ -55,13 +59,16 @@ public class HostApp extends Application {
                 e.printStackTrace();
             }
         });
-        NetKit.init(this);
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(120, TimeUnit.SECONDS)
+                .writeTimeout(120, TimeUnit.SECONDS);
+
+        NetKit.init(this, builder);
 
         ContextProvider.initContext(this);
         Utils.init(this);
         BoxingMediaLoader.getInstance().init(new IBoxingMediaLoaderImpl());
-
-        // RouteEngine.INSTANCE.init(this, HomeRouteApiImpl.class, NoteRouteApiImpl.class, UserRouteApiImpl.class);
 
         ImgLoaderManager.getINS().init(this, null);
 

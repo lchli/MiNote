@@ -2,6 +2,7 @@ package com.lch.menote.file.dataImpl;
 
 import android.text.TextUtils;
 
+import com.apkfuns.logutils.LogUtils;
 import com.lch.menote.ApiConstants;
 import com.lch.menote.file.datainterface.RemoteFileSource;
 import com.lch.menote.note.data.response.UploadFileResponse;
@@ -29,6 +30,7 @@ public class NetFileSource implements RemoteFileSource {
         NetworkResponse<UploadFileResponse> resf = NetKit.fileRequest().syncUploadFile(param, new Parser<UploadFileResponse>() {
             @Override
             public UploadFileResponse parse(String s) {
+                LogUtils.e(s);
                 return AliJsonHelper.parseObject(s, UploadFileResponse.class);
             }
         });

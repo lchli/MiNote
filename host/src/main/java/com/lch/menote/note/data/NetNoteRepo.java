@@ -2,12 +2,14 @@ package com.lch.menote.note.data;
 
 import android.support.annotation.NonNull;
 
+import com.apkfuns.logutils.LogUtils;
 import com.lch.menote.ApiConstants;
 import com.lch.menote.model.BaseResponse;
+import com.lch.menote.note.data.entity.Note;
 import com.lch.menote.note.data.response.QueryNoteResponse;
 import com.lch.menote.note.data.response.SingleNoteResponse;
 import com.lch.menote.note.datainterface.RemoteNoteSource;
-import com.lch.menote.note.model.NoteModel;
+import com.lch.menote.note.model.CloudNoteModel;
 import com.lch.menote.utils.RequestUtils;
 import com.lch.netkit.v2.NetKit;
 import com.lch.netkit.v2.apirequest.ApiRequestParams;
@@ -29,40 +31,42 @@ public class NetNoteRepo implements RemoteNoteSource {
 
     @Override
     @NonNull
-    public ResponseValue<List<NoteModel>> queryNotes(NetNoteQuery query) {
+    public ResponseValue<List<CloudNoteModel>> queryNotes(NetNoteQuery query) {
 
         ApiRequestParams param = RequestUtils.minoteStringRequestParams()
                 .setUrl(ApiConstants.QUERY_NOTE)
-                .addParam("userId", query.userId)
+                .addParam("ownerUserId", query.userId)
                 .addParam("page", query.page + "")
                 .addParam("uid", query.uid)
                 .addParam("pageSize", query.pageSize + "")
-                .addParam("isPublic", query.isPublic)
+                .addParam("title", query.title)
+                .addParam("type", query.tag)
                 .addParam("sort", query.sortResult());
 
 
         NetworkResponse<QueryNoteResponse> ret = NetKit.apiRequest().syncPost(param, new Parser<QueryNoteResponse>() {
             @Override
             public QueryNoteResponse parse(String s) {
+                LogUtils.e(s);
                 return AliJsonHelper.parseObject(s, QueryNoteResponse.class);
             }
         });
 
         if (ret.hasError()) {
-            return new ResponseValue<List<NoteModel>>().setErrorMsg(ret.getErrorMsg());
+            return new ResponseValue<List<CloudNoteModel>>().setErrorMsg(ret.getErrorMsg());
         }
 
         if (ret.data == null) {
-            return new ResponseValue<List<NoteModel>>().setErrorMsg("ret data is null.");
+            return new ResponseValue<List<CloudNoteModel>>().setErrorMsg("ret data is null.");
         }
 
 
-        return new ResponseValue<List<NoteModel>>().setData(ret.data.data);
+        return new ResponseValue<List<CloudNoteModel>>().setData(ret.data.data);
     }
 
 
     @Override
-    public ResponseValue<Void> save(@NotNull NoteModel note) {
+    public ResponseValue<Void> upload(@NotNull Note note) {
         ResponseValue<Void> ret = new ResponseValue<>();
 
         ApiRequestParams params = RequestUtils.minoteStringRequestParams()
@@ -70,20 +74,21 @@ public class NetNoteRepo implements RemoteNoteSource {
                 .addParam("content", note.content)
                 .addParam("title", note.title)
                 .addParam("type", note.type)
-                .addParam("thumbNail", note.thumbNail)
                 .addParam("uid", note.uid)
-                .addParam("isPublic", note.isPublic);
+                .addParam("isPublic", CloudNoteModel.PUBLIC_FALSE);
 
 
         NetworkResponse<BaseResponse> res = NetKit.apiRequest().syncPost(params, new Parser<BaseResponse>() {
             @Override
             public BaseResponse parse(String s) {
+                LogUtils.e(s);
                 return AliJsonHelper.parseObject(s, BaseResponse.class);
             }
         });
 
 
         if (res.hasError()) {
+            LogUtils.e("hasError:" + res.getErrorMsg());
             ret.setErrorMsg(res.getErrorMsg());
             return ret;
         }
@@ -115,6 +120,7 @@ public class NetNoteRepo implements RemoteNoteSource {
         NetworkResponse<BaseResponse> res = NetKit.apiRequest().syncPost(params, new Parser<BaseResponse>() {
             @Override
             public BaseResponse parse(String s) {
+                LogUtils.e(s);
                 return AliJsonHelper.parseObject(s, BaseResponse.class);
             }
         });
@@ -139,8 +145,8 @@ public class NetNoteRepo implements RemoteNoteSource {
 
 
     @Override
-    public ResponseValue<NoteModel> likeNote(String noteId) {
-        ResponseValue<NoteModel> ret = new ResponseValue<>();
+    public ResponseValue<CloudNoteModel> likeNote(String noteId) {
+        ResponseValue<CloudNoteModel> ret = new ResponseValue<>();
 
         ApiRequestParams params = RequestUtils.minoteStringRequestParams()
                 .setUrl(ApiConstants.LIKE_NOTE)
@@ -149,6 +155,7 @@ public class NetNoteRepo implements RemoteNoteSource {
         NetworkResponse<SingleNoteResponse> res = NetKit.apiRequest().syncPost(params, new Parser<SingleNoteResponse>() {
             @Override
             public SingleNoteResponse parse(String s) {
+                LogUtils.e(s);
                 return AliJsonHelper.parseObject(s, SingleNoteResponse.class);
             }
         });
@@ -175,8 +182,8 @@ public class NetNoteRepo implements RemoteNoteSource {
     }
 
     @Override
-    public ResponseValue<NoteModel> publicNote(String noteId) {
-        ResponseValue<NoteModel> ret = new ResponseValue<>();
+    public ResponseValue<CloudNoteModel> publicNote(String noteId) {
+        ResponseValue<CloudNoteModel> ret = new ResponseValue<>();
 
         ApiRequestParams params = RequestUtils.minoteStringRequestParams()
                 .setUrl(ApiConstants.PUBLIC_NOTE)
@@ -185,6 +192,7 @@ public class NetNoteRepo implements RemoteNoteSource {
         NetworkResponse<SingleNoteResponse> res = NetKit.apiRequest().syncPost(params, new Parser<SingleNoteResponse>() {
             @Override
             public SingleNoteResponse parse(String s) {
+                LogUtils.e(s);
                 return AliJsonHelper.parseObject(s, SingleNoteResponse.class);
             }
         });

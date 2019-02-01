@@ -13,18 +13,17 @@ import com.lch.menote.R
 import com.lch.menote.kotlinext.launchActivity
 import com.lch.menote.kotlinext.log
 import com.lch.menote.kotlinext.saveViewBmpToSdcard
-import com.lch.menote.note.service.LocalNoteService
 import com.lch.menote.note.data.entity.Note
 import com.lch.menote.note.events.LocalNoteListChangedEvent
+import com.lch.menote.note.model.CloudNoteModel
 import com.lch.menote.note.model.LinkData
 import com.lch.menote.note.model.MusicData
-import com.lch.menote.note.model.NoteModel
+import com.lch.menote.note.service.LocalNoteService
 import com.lchli.arch.clean.ControllerCallback
 import com.lchli.utils.tool.AliJsonHelper
 import com.lchli.utils.tool.AppListItemAnimatorUtils
 import com.lchli.utils.tool.EventBusUtils
 import com.lchli.utils.tool.UUIDUtils
-
 import kotlinx.android.synthetic.main.activity_edit_music.*
 
 class MusicActivity : AppCompatActivity() {
@@ -39,7 +38,7 @@ class MusicActivity : AppCompatActivity() {
 
         private const val EXTRA_NOTE = "EXTRA_NOTE"
 
-        fun launch(context: Context, note: NoteModel? = null) {
+        fun launch(context: Context, note: Note? = null) {
             val it = Intent(context, MusicActivity::class.java)
             if (note != null) {
                 it.putExtra(EXTRA_NOTE, note)
@@ -63,7 +62,7 @@ class MusicActivity : AppCompatActivity() {
         mMusicAdapter = MusicAdapter(this)
         musicGrid.adapter = mMusicAdapter
 
-        val note = intent.getSerializableExtra(EXTRA_NOTE) as? NoteModel
+        val note = intent.getSerializableExtra(EXTRA_NOTE) as? CloudNoteModel
         if (note != null) {
             val oldDatas: List<MusicData>? = AliJsonHelper.parseArray(note.content, MusicData::class.java)
             if (oldDatas != null) {
@@ -184,11 +183,11 @@ class MusicActivity : AppCompatActivity() {
     fun saveDraft(v: View) {
         val content = Gson().toJson(datas)
 
-        val note = NoteModel()
+        val note = Note()
         note.type = tv_note_category.text.toString()
         note.title = et_note_title.text.toString()
         note.uid = courseUUID
-        note.updateTime = System.currentTimeMillis()
+        note.lastModifyTime = System.currentTimeMillis()
         note.content = content
         note.category = Note.CAT_MUSIC
 
