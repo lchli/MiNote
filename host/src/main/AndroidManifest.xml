@@ -16,6 +16,7 @@
         android:roundIcon="@drawable/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
+        android:testOnly="false"
         tools:replace="android:theme,android:icon,android:label">
         <activity android:name=".app.HostActivity">
             <intent-filter>

@@ -101,7 +101,6 @@ public class HotNoteUi extends BaseFragment implements HotNoteListPresenter.MvpV
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigator.launchActivity(getActivity(), EditNoteUi.class);
 
                 ContextExtKt.showListDialog(getActivity(), new OnItemClickListener() {
                     @Override
