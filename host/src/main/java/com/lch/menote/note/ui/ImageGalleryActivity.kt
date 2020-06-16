@@ -9,8 +9,9 @@ import android.widget.ImageView
 import com.bigkoo.convenientbanner.ConvenientBanner
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator
 import com.bigkoo.convenientbanner.holder.Holder
-import com.bumptech.glide.Glide
 import com.lch.menote.R
+import com.lchli.imgloader.ImgLoaderManager
+import com.lchli.imgloader.ImgSource
 import com.lchli.utils.base.BaseCompatActivity
 import kotlinx.android.synthetic.main.activity_image_gallery.*
 import java.util.*
@@ -49,7 +50,8 @@ class ImageGalleryActivity : BaseCompatActivity() {
         }
 
         override fun UpdateUI(context: Context, position: Int, path: String) {
-            Glide.with(context).load(path).into(imageView!!)
+
+            ImgLoaderManager.getINS().display(imageView, ImgSource.create().setImgPath(path),null)
         }
     }
 

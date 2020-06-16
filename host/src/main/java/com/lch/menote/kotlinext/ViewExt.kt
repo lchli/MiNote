@@ -10,9 +10,10 @@ import android.view.ViewGroup
 import com.blankj.utilcode.util.ToastUtils
 import com.lchli.utils.tool.BitmapScaleUtil
 import com.lchli.utils.tool.UUIDUtils
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.io.File
 
 
@@ -30,17 +31,22 @@ fun View.drawBitmap(): Bitmap {
 
 
 fun View.saveViewBmpToSdcard() {
-    val viewBmp = this.drawBitmap()
-    val destFile = File(Environment.getExternalStorageDirectory(), UUIDUtils.uuid() + ".jpg")
 
-    val job = async(CommonPool) {
-        val ret = BitmapScaleUtil.saveBitmap(viewBmp, destFile, 100)
-        viewBmp.recycle()
 
-        ret
-    }
 
-    launch(Android) {
+    GlobalScope.launch(Dispatchers.Main) {
+        val viewBmp = drawBitmap()
+
+        val destFile = File(Environment.getExternalStorageDirectory(), UUIDUtils.uuid() + ".jpg")
+
+        val job = async(Dispatchers.IO) {
+            val ret = BitmapScaleUtil.saveBitmap(viewBmp, destFile, 100)
+            viewBmp.recycle()
+
+            ret
+        }
+
+
 
         val isSuccess = job.await()
         if (!isSuccess) {
@@ -69,14 +75,15 @@ fun View.saveViewBmpToSdcard2() {
 
     val destFile = File(Environment.getExternalStorageDirectory(), UUIDUtils.uuid() + ".jpg")
 
-    val job = async(CommonPool) {
-        val ret = BitmapScaleUtil.saveBitmap(viewBmp, destFile, 100)
-        viewBmp.recycle()
 
-        ret
-    }
 
-    launch(Android) {
+    GlobalScope.launch(Dispatchers.Main) {
+        val job = async(Dispatchers.IO) {
+            val ret = BitmapScaleUtil.saveBitmap(viewBmp, destFile, 100)
+            viewBmp.recycle()
+
+            ret
+        }
 
         val isSuccess = job.await()
         if (!isSuccess) {

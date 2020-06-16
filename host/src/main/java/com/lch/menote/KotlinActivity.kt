@@ -1,12 +1,11 @@
 package com.lch.menote
 
+import android.app.Activity
 import android.os.Bundle
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import com.bl.wst.R
 import kotlinx.coroutines.*
 
-class KotlinActivity : AppCompatActivity() {
+class KotlinActivity : Activity() {
     private val scope = MainScope()
 
     override fun onCreate(savedInstanceState: Bundle?) {
