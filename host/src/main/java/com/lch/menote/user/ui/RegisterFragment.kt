@@ -34,8 +34,8 @@ class RegisterFragment : Fragment(), RegisterPresenter.MvpView {
     private var mLoadingDialog: ProgressDialog? = null
     private var user_account_edit: EditText? = null
     private var user_pwd_edit: EditText? = null
-    private val viewModel: RegisterVM = ViewModelProviders.of(this).get(RegisterVM::class.java)
-     //val  viewModel: RegisterVM by viewModels()
+   // private val viewModel: RegisterVM = ViewModelProviders.of(this).get(RegisterVM::class.java)
+     //val  viewModel: RegisterVM by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
